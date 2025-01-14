@@ -1,0 +1,27 @@
+/* Input.module.css */
+.input {
+    width: 320px;
+    height: 50px;
+    font-size: 18px;
+    flex-shrink: 0;
+  
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid var(--AIVLE-02-gray-gray-07, #8E8E8E);
+  
+    color: #8E8E8E;
+    padding: 10px;
+  
+    /* Optional: Add focus and hover effects */
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  .input:focus {
+    border-color: #007BFF; /* Example: blue border on focus */
+  }
+  
+  .input:hover {
+    border-color: #666666; /* Example: darker border on hover */
+  }
+  

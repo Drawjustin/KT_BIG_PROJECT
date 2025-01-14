@@ -1,4 +1,3 @@
-
 import React from 'react';
 import styles from './Footer.module.css'; // CSS 모듈 전체를 객체로 가져옵니다.
 
