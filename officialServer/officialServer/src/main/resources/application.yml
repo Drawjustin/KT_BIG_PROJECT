@@ -1,0 +1,15 @@
+spring:
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: none
+#      naming:
+#        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    show-sql: true
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test01?serverTimezone=Asia/Seoul
+    username: root
+    password: 1234
+
