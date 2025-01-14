@@ -1,0 +1,15 @@
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* Tailwind의 items-end */
+    user-select: none; /* Tailwind의 select-none */
+    height: 5rem; /* Tailwind의 h-20 (20 * 0.25rem = 5rem) */
+  }
+  
+  .copyright {
+    display: flex; /* Tailwind의 web:flex */
+    font-weight: 300; /* Tailwind의 font-thin */
+    font-size: 0.75rem; /* Tailwind의 text-xs (12px = 0.75rem) */
+    font-family: Arial, sans-serif; /* Tailwind의 font-arial */
+  }
+  

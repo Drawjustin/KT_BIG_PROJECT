@@ -1,8 +1,12 @@
 import React from 'react';
 import styles from './Navbar.module.css';
+import LoginButton from '../button/LoginButton';
 
 function Navbar() {
-
+  const handleLoginClick = () => {
+    console.log("Login button clicked!");
+    // 여기에 로그인 로직 추가
+  };
 
   return (
     <nav className={styles.navbar}>
@@ -24,8 +28,8 @@ function Navbar() {
           <a href="/about" className={styles.menuLink}>이용안내</a>
         </li>
       </ul>
-      <div>
-        btn
+      <div className={styles.loginButtonContainer}>
+        <LoginButton onClick={handleLoginClick} />
       </div>
     </nav>
   );
