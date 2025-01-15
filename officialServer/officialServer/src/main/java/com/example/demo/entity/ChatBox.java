@@ -1,17 +1,16 @@
 package com.example.demo.entity;
 
 import com.example.demo.entity.baseEntity.baseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 @Table(name = "chat_box")
 public class ChatBox extends baseEntity{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatBoxSeq;
 
     private String chatBoxTitle;

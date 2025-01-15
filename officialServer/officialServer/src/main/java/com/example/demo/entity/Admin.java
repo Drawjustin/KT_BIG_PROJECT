@@ -2,14 +2,16 @@ package com.example.demo.entity;
 
 import com.example.demo.entity.baseEntity.baseEntity;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
 @Table(name = "admin")
 public class Admin extends baseEntity{
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userSeq;
     private Integer userId;
     private String userPassword;

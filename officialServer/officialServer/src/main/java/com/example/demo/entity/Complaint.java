@@ -1,24 +1,30 @@
 package com.example.demo.entity;
 
 import com.example.demo.entity.baseEntity.baseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 @Table(name = "complaint")
 public class Complaint extends baseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long complaintSeq;
 
-    private Long userSeq;
-    private Long memberSeq;
-    private Long departmentSeq;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "departmentSeq")
+    private Department department;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberSeq")
+    private Member member;
+    @JoinColumn(name = "userSeq")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
     private String complaintTitle;
     private String complaintContent;
     private String complaintFilePath;
+
+
 }

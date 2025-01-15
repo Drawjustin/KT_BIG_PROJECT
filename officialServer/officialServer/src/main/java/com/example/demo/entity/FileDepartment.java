@@ -1,18 +1,30 @@
 package com.example.demo.entity;
 
 import com.example.demo.entity.baseEntity.baseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.example.demo.entity.embeddable.FileDepartmentId;
+import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 @Table(name = "file_department")
 public class FileDepartment extends baseEntity {
 
-    @Id
-    @GeneratedValue
-    private Long fileSeq;
+    @EmbeddedId
+    private FileDepartmentId fileDepartmentId;
+    @MapsId("fileSeq")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "file_seq")
+    private File file;
 
-    private Long departmentSeq;
+    @MapsId("departmentSeq")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_seq")
+    private Department department;
+
+
+
+
 }
+
+
