@@ -3,14 +3,15 @@ package com.example.demo.entity;
 
 import com.example.demo.entity.baseEntity.baseEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 @Table(name = "user")
 public class User extends baseEntity {
-    public User() {
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +23,7 @@ public class User extends baseEntity {
     private String userNumber;
     private String userEmail;
 
+    @Builder
     public User(String userId, String userPassword, String userName, String userNumber, String userEmail) {
         this.userId = userId;
         this.userPassword = userPassword;
@@ -29,4 +31,5 @@ public class User extends baseEntity {
         this.userNumber = userNumber;
         this.userEmail = userEmail;
     }
+
 }

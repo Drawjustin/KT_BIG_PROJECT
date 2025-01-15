@@ -3,6 +3,7 @@ package com.example.demo.entity.embeddable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.MapsId;
+import lombok.Builder;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -28,5 +29,10 @@ public class FileDepartmentId implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(fileSeq, departmentSeq);
+    }
+    @Builder
+    public FileDepartmentId(Long fileSeq, Long departmentSeq) {
+        this.fileSeq = fileSeq;
+        this.departmentSeq = departmentSeq;
     }
 }
