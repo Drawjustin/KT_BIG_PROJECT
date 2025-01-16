@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>회원가입</title>
+</head>
+<body>
+<!-- action 속성: REST API 엔드포인트 설정 -->
+<form action="/api/join" method="post">
+  <!-- Form 데이터 -->
+  이메일: <input type="email" name="userEmail" required><br>
+  비밀번호: <input type="password" name="userPassword" required><br>
+  이름: <input type="text" name="userName" required><br>
+  전화번호: <input type="text" name="userNumber"><br>
+  <input type="submit" value="회원가입">
+</form>
+</body>
+</html>
