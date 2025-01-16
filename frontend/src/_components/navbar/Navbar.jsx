@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './Navbar.module.css';
+import { Link } from 'react-router-dom';
 import LoginButton from '../button/LoginButton';
 
 function Navbar() {
@@ -10,22 +11,24 @@ function Navbar() {
 
   return (
     <nav className={styles.navbar}>
-      <div className={styles.logo}>공무원SOS</div>
+      <div className={styles.logo}>
+        {/* 로고 클릭 시 홈으로 이동 */}
+        <Link to="/" className={styles.logoLink}>
+          공무원SOS
+        </Link>
+      </div>
       <ul className={styles.menu}>
         <li>
-          <a href="/" className={styles.menuLink}>Home</a>
+          <Link to="/complaint" className={styles.menuLink}>민원 도우미</Link>
         </li>
         <li>
-          <a href="/complainhelper" className={styles.menuLink}>민원 도우미</a>
+          <Link to="/official" className={styles.menuLink}>공문서 도우미</Link>
         </li>
         <li>
-          <a href="/docuhelper" className={styles.menuLink}>공문서 도우미</a>
+          <Link to="/dataroom" className={styles.menuLink}>자료실</Link>
         </li>
         <li>
-          <a href="/dataroom" className={styles.menuLink}>자료실</a>
-        </li>
-        <li>
-          <a href="/about" className={styles.menuLink}>이용안내</a>
+          <Link to="/about" className={styles.menuLink}>이용안내</Link>
         </li>
       </ul>
       <div className={styles.loginButtonContainer}>
