@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from './LoginPage.module.css';
 import LoginForm from './LoginForm';
-import Footer from '../../_components/footer/Footer'
 import { Link } from 'react-router-dom';
 function LoginPage() {
   return (
@@ -15,7 +14,6 @@ function LoginPage() {
         <a href="/find-id">아이디(이메일) 찾기</a>
       </div>
     </div>
-    <Footer/>
     </>
     
   );
