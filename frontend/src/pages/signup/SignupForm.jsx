@@ -4,7 +4,7 @@ import Button from '../../_components/button/Button'
 import Checkbox from '../../_components/checkbox/Checkbox';
 import styles from './SignUpForm.module.css';
 
-const SignUpForm = () => {
+const SignupForm = () => {
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -145,4 +145,4 @@ const SignUpForm = () => {
   );
 };
 
-export default SignUpForm;
+export default SignupForm;

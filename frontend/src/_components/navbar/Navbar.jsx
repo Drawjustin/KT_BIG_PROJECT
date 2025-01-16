@@ -1,13 +1,17 @@
 import React from 'react';
 import styles from './Navbar.module.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LoginButton from '../button/LoginButton';
 
 function Navbar() {
+  const navigate = useNavigate(); // useNavigate 훅 사용
+
   const handleLoginClick = () => {
     console.log("Login button clicked!");
-    // 여기에 로그인 로직 추가
+    navigate('/login'); // 로그인 페이지로 이동
   };
+
+
 
   return (
     <nav className={styles.navbar}>
