@@ -21,7 +21,7 @@ public class BaseEntity {
     private LocalDateTime updatedAt; // 데이터 수정 시간
 
     @Column(name = "is_deleted")
-    private Boolean isDeleted=false; // 삭제 여부 (논리 삭제)
+    private Boolean isDeleted=false; // 삭제 여부, 디폴트 false
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;

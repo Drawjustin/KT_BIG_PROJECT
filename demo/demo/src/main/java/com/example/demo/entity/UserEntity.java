@@ -3,10 +3,6 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -38,30 +34,13 @@ public class UserEntity extends BaseEntity {
     private String userRole="USER"; //디폴트 값 설정
 
 
-    public void setUserSeq(Long userSeq) {
-        this.userSeq = userSeq;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setUserNumber(String userNumber) {
-        this.userNumber = userNumber;
-    }
-
-    public void setUserEmail(String userEmail) {
+    // 모든 필드를 초기화하는 생성자 추가
+    public UserEntity(String userEmail, String userId, String userPassword, String userName, String userNumber, String userRole) {
         this.userEmail = userEmail;
+        this.userId = userId;
+        this.userPassword = userPassword;
+        this.userName = userName;
+        this.userNumber = userNumber;
+        this.userRole = userRole != null ? userRole : "USER"; // null이면 "USER"로 기본값 설정
     }
-
-    public void setUserRole(String userRole) {this.userRole = userRole;}
-
 }

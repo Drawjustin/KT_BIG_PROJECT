@@ -31,17 +31,15 @@ public class JoinService {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
 
-        // 새로운 회원 정보 저장
-        UserEntity user = new UserEntity();
-        user.setUserEmail(email); // 사용자 이메일 설정
-        user.setUserId(userId); // 사용자 ID 설정
-        user.setUserPassword(bCryptPasswordEncoder.encode(password)); // 비밀번호 암호화 후 저장
-        user.setUserName(userName); // 사용자 이름 설정
-        user.setUserNumber(userNumber); // 사용자 전화번호 설정
-        user.setUserRole(userRole);//역할 설정, Security에 필요
-
-        // 역할 디폴트로 "USER" 설정
-        user.setUserRole("USER");
+        // 새로운 회원 정보 생성
+        UserEntity user = new UserEntity(
+                email,
+                userId,
+                bCryptPasswordEncoder.encode(password), // 비밀번호 암호화
+                userName,
+                userNumber,
+                "USER" // 역할 디폴트로 "USER" 설정
+        );
 
         // 데이터베이스에 저장
         userRepository.save(user);

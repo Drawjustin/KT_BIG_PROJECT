@@ -11,7 +11,7 @@ public class JoinDTO {
     private String userPassword; // 사용자 비밀번호
     private String userName;    // 사용자 이름
     private String userNumber;  // 사용자 번호
-    private String userRole;        // 사용자 역할부여
+    private String userRole;    // 사용자 역할부여
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
