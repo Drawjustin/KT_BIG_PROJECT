@@ -16,7 +16,7 @@ const Navbar: React.FC = () => {
       <div className={styles.logo}>
         {/* 로고 클릭 시 홈으로 이동 */}
         <Link to="/" className={styles.logoLink}>
-          공무원SOS
+          국민 신문고
         </Link>
       </div>
       <ul className={styles.menu}>

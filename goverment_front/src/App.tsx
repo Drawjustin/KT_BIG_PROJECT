@@ -7,6 +7,7 @@ import Home from './pages/home/Home';
 import ComplaintPage from './pages/\bcomplaint/ComplaintPage';
 import About from './pages/about/About';
 import LoginPage from './pages/login/LoginPage';
+import SignupPage from './pages/signup/SignupPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/dataroom" element={<ComplaintPage/>} />
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage/>} />
       </Routes>
       <Footer />
     </Router>
