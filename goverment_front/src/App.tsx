@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Navbar from './_components/navbar/Navbar';
 import Footer from './_components/footer/Footer';
-import Home from './pages/home/Home';
-import ComplaintPage from './pages/\bcomplaint/ComplaintPage';
-import About from './pages/about/About';
-import LoginPage from './pages/login/LoginPage';
-import SignupPage from './pages/signup/SignupPage';
+import Home from './_pages/home/Home';
+import ComplaintPage from './_pages/complaint/ComplaintPage';
+import About from './_pages/about/About';
+import LoginPage from './_pages/login/LoginPage';
+import SignupPage from './_pages/signup/SignupPage';
 
 function App() {
   return (
