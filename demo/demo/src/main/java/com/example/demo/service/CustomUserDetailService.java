@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+//DB에서 사용자 정보 로드
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 
@@ -23,7 +24,7 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername (String userEmail) throws UsernameNotFoundException{
 
-        //DB 조회
+        //DB에 userEmail 조회
         UserEntity userData=userRepository.findByUserEmail(userEmail);
 
         if(userData != null){
