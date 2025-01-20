@@ -57,12 +57,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
         // 로그인 성공 시 JWT 발급 등 처리
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        String userEmail = customUserDetails.getUsername();
+        //String userEmail = customUserDetails.getUsername();
+        String userEmail = authentication.getName();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
-
         String role = auth.getAuthority();
 
         // 토큰 발급
