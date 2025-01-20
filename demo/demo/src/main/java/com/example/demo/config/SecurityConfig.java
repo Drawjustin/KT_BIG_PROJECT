@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.jwt.JWTFilter;
 import com.example.demo.jwt.JWTUtil;
 import com.example.demo.jwt.LoginFilter;
 import io.jsonwebtoken.Jwt;
@@ -58,6 +59,8 @@ public class SecurityConfig {
                         .requestMatchers("/user/**").hasRole("USER")  // 사용자만 접근 가능
                         .anyRequest().authenticated()); // 나머지 요청은 인증 필요
 
+        http
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
         //필터 추가 LoginFilter()는 인자를 받음 (AuthenticationManager() 메소드에 authenticationConfiguration 객체를 넣어야 함) 따라서 등록 필요
         http
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil,jwtProperties), UsernamePasswordAuthenticationFilter.class);

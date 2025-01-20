@@ -20,15 +20,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        Collection<GrantedAuthority> collection=new ArrayList<>();
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
 
-        collection.add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return userEntity.getUserRole();
-            }
-        });
-        return collection;
+        authorities.add(() -> userEntity.getUserRole());
+        return authorities;
     }
 
     //password 리턴

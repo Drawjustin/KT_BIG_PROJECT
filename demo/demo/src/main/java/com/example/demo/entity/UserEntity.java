@@ -30,8 +30,8 @@ public class UserEntity extends BaseEntity {
     @Column(name = "user_number", length = 13)
     private String userNumber; // 사용자의 번호 (전화번호 등)
 
-    @Column(name = "user_role", nullable = false) // Role security에서 필요
-    private String userRole="USER"; //디폴트 값 설정
+    @Column(name = "user_role", nullable = true) // Role security에서 필요
+    private String userRole;
 
 
     // 모든 필드를 초기화하는 생성자 추가
@@ -41,6 +41,6 @@ public class UserEntity extends BaseEntity {
         this.userPassword = userPassword;
         this.userName = userName;
         this.userNumber = userNumber;
-        this.userRole = userRole != null ? userRole : "USER"; // null이면 "USER"로 기본값 설정
+        this.userRole = (userRole != null) ? userRole : "USER"; // 기본값 설정 확인
     }
 }
