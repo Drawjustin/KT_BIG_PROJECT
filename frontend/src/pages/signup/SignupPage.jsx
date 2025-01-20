@@ -1,14 +1,16 @@
 import React from 'react';
-import styles from './SignUpPage.module.css';
-import SignupForm from './SignupForm'
-const SignupPage = () => {
+import styles from './SignupPage.module.css';
+import SignupForm from './SignupForm';
+function SignupPage() {
   return (
-    
+    <>
     <div className={styles.container}>
       <h1 className={styles.title}>회원가입</h1>
-      <SignupForm/>
+      <SignupForm />
     </div>
+    </>
+    
   );
-};
+}
 
 export default SignupPage;

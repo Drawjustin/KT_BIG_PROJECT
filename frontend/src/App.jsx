@@ -22,7 +22,6 @@ function App() {
         <Route path="/complaint" element={<Complaint />} />
         <Route path="/official" element={<Official />} />
         <Route path="/dataroom" element={<Filepage/>} />
-        <Route path="/official" element={<Official />} />
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />

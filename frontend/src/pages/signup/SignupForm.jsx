@@ -7,12 +7,12 @@ import styles from './SignUpForm.module.css';
 
 const SignupForm = () => {
   const [form, setForm] = useState({
-    name: '',
-    email: '',
-    username: '',
-    password: '',
+    userName: '',
+    userEmail: '',
+    userId: '',
+    userPassword: '',
     confirmPassword: '',
-    phone: '',
+    userNumber: '',
     agreeAll: false,
     agreeTerms: false,
     agreePrivacy: false,
@@ -20,6 +20,7 @@ const SignupForm = () => {
     agreeMarketing: false,
     agreeAge: false,
   });
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -54,7 +55,7 @@ const SignupForm = () => {
     e.preventDefault();
 
     // Validate form
-    if (form.password !== form.confirmPassword) {
+    if (form.userPassword !== form.confirmPassword) {
       alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.');
       return;
     }
@@ -64,13 +65,26 @@ const SignupForm = () => {
       return;
     }
 
+    setLoading(true);
+
     try {
-      const response = await axios.post('/api/signup', form);
+      const response = await axios.post(
+        'https://72d8028a-efbe-48a4-b90c-c1ab678f9f26.mock.pstmn.io/api/signup',
+        {
+          userName: form.userName,
+          userEmail: form.userEmail,
+          userId: form.userId,
+          userPassword: form.userPassword,
+          userNumber: form.userNumber,
+        }
+      );
       console.log('API Response:', response.data);
       alert('회원가입이 성공적으로 완료되었습니다!');
     } catch (error) {
       console.error('API Error:', error);
-      alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+      alert('오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,53 +92,52 @@ const SignupForm = () => {
     <form className={styles.form} onSubmit={handleSubmit}>
       <Input
         type="text"
-        name="name"
+        name="userName"
         placeholder="예) 홍길동"
         label="이름*"
-        value={form.name} // 상태와 연결
-        onChange={handleInputChange} // 상태 업데이트 함수
+        value={form.userName}
+        onChange={handleInputChange}
       />
       <Input
         type="email"
-        name="email"
+        name="userEmail"
         placeholder="예) abc@gmail.com"
         label="이메일*"
-        value={form.email} // 상태와 연결
-        onChange={handleInputChange} // 상태 업데이트 함수
+        value={form.userEmail}
+        onChange={handleInputChange}
       />
       <Input
         type="text"
-        name="username"
+        name="userId"
         placeholder="영문,숫자 조합 8-16자"
         label="아이디*"
-        value={form.username} // 상태와 연결
-        onChange={handleInputChange} // 상태 업데이트 함수
+        value={form.userId}
+        onChange={handleInputChange}
       />
       <Input
         type="password"
-        name="password"
+        name="userPassword"
         placeholder="영문,숫자 조합 8-16자"
         label="비밀번호*"
-        value={form.password} // 상태와 연결
-        onChange={handleInputChange} // 상태 업데이트 함수
+        value={form.userPassword}
+        onChange={handleInputChange}
       />
       <Input
         type="password"
         name="confirmPassword"
         placeholder="비밀번호를 한 번 더 입력해주세요"
         label="비밀번호 확인*"
-        value={form.confirmPassword} // 상태와 연결
-        onChange={handleInputChange} // 상태 업데이트 함수
+        value={form.confirmPassword}
+        onChange={handleInputChange}
       />
       <Input
         type="text"
-        name="phone"
+        name="userNumber"
         placeholder="휴대폰 번호 입력"
-        label="휴대폰번호 본인인증*"
-        value={form.phone} // 상태와 연결
-        onChange={handleInputChange} // 상태 업데이트 함수
+        label="휴대폰번호*"
+        value={form.userNumber}
+        onChange={handleInputChange}
       />
-      <Button type="button" onClick={() => console.log('인증 요청')}>인증하기</Button>
 
       <div className={styles.checkboxes}>
         <Checkbox
@@ -165,7 +178,12 @@ const SignupForm = () => {
         />
       </div>
 
-      <Button type="submit">회원가입</Button>
+      <Button
+        type="submit"
+        onClick={loading ? null : handleSubmit}
+      >
+        {loading ? '처리 중...' : '회원가입'}
+      </Button>
     </form>
   );
 };
