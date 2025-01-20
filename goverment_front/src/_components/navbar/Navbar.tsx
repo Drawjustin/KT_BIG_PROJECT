@@ -21,7 +21,7 @@ const Navbar: React.FC = () => {
       </div>
       <ul className={styles.menu}>
         <li>
-          <Link to="/dataroom" className={styles.menuLink}>민원</Link>
+          <Link to="/board" className={styles.menuLink}>민원 게시판</Link>
         </li>
         <li>
           <Link to="/about" className={styles.menuLink}>이용안내</Link>

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 const LoginPage: React.FC = () => {
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>공무원 SOS</h1>
+      <h1 className={styles.title}>국민 신문고</h1>
       <LoginForm />
       <div className={styles.links}>
         <Link to="/signup">회원가입</Link>
