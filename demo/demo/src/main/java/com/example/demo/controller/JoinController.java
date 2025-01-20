@@ -11,6 +11,7 @@ public class JoinController {
     private final JoinService joinService;
 
     public JoinController(JoinService joinService) {
+
         this.joinService = joinService;
     }
 
