@@ -34,10 +34,15 @@ const List: React.FC = () => {
   const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
 
   // 검색 핸들러
-  const handleSearch = (searchTerm: string) => {
-    const filtered = posts.filter((post) =>
-      post.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  const handleSearch = (searchTerm: string, filter: string) => {
+    const filtered = posts.filter((post) => {
+      if (filter === "title") {
+        return post.title.toLowerCase().includes(searchTerm.toLowerCase());
+      } else if (filter === "body") {
+        return post.body.toLowerCase().includes(searchTerm.toLowerCase());
+      }
+      return false;
+    });
     setFilteredPosts(filtered);
     setCurrentPage(1); // 검색 시 첫 페이지로 이동
   };
