@@ -10,12 +10,13 @@ import HomePage from './_pages/home/HomePage';
 import List from './_pages/board/List';
 import Detail from './_pages/board/Detail';
 import BoardForm from './_pages/board/BoardForm';
-
+import { Provider } from 'react-redux';
+import store from './store'; // store.ts파일
 
 function App() {
   return (
-    
-    <Router>
+    <Provider store={store}> {/* Redux Provider로 애플리케이션 감싸기 */}
+      <Router>
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -29,6 +30,8 @@ function App() {
       </Routes>
       <Footer />
     </Router>
+    </Provider>
+    
   );
 }
 
