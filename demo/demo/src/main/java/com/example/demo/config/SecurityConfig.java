@@ -80,6 +80,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/home", "/signup","/api/**","/login").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")//관리자만 접근가능
                         .requestMatchers("/user/**").hasRole("USER")  // 사용자만 접근 가능
+                        .requestMatchers("/reissue").permitAll() //토큰 refresh 발급
                         .anyRequest().authenticated()); // 나머지 요청은 인증 필요
 
         http
