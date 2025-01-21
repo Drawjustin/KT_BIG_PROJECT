@@ -9,6 +9,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class InitSetting {
@@ -33,7 +35,7 @@ public class InitSetting {
             InitChat();
             InitFile();
             InitTelecom();
-            InitFileDepartment();
+            InitFileTeam();
             InitMember();
             InitBlock();
             InitComplaint();
@@ -67,13 +69,11 @@ public class InitSetting {
         }
 
         private void InitTelecom() {
-            Department department = em.find(Department.class, 1L);
             Telecom teleContent = Telecom.builder()
                     .telecomContent("teleContent")
                     .telecomCount((byte) 2)
                     .telecomFilePath("C:\\HOME\\BACK\\IWANT")
                     .isComplain(false)
-                    .department(department)
                     .build();
             em.persist(teleContent);
         }
@@ -88,7 +88,7 @@ public class InitSetting {
             em.persist(member);
         }
 
-        private void InitFileDepartment() {
+        private void InitFileTeam() {
             File file = em.find(File.class, 1L);
             Team team = em.find(Team.class,1L);
 
@@ -96,6 +96,9 @@ public class InitSetting {
                     .fileSeq(file.getFileSeq())
                     .teamSeq(team.getTeamSeq())
                     .build();
+
+            if (em.find(FileTeam.class, fileTeamId) != null) return;
+
             FileTeam fileTeam = FileTeam.builder()
                     .fileTeamId(fileTeamId)
                     .file(file)

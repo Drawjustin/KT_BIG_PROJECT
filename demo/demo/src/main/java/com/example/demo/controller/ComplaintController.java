@@ -1,78 +1,77 @@
-//package com.example.demo.controller;
-//
-//import com.example.demo.dto.ComplaintCreateRequestDTO;
-//import com.example.demo.dto.ComplaintListResponseDTO;
-//import com.example.demo.dto.ComplaintResponseDTO;
-//import com.example.demo.dto.ComplaintUpdateRequestDTO;
-//import com.example.demo.service.ComplaintService;
-//import org.springframework.data.domain.PageRequest;
-//import org.springframework.data.domain.Pageable;
-//import org.springframework.http.MediaType;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.*;
-//import org.springframework.data.domain.Sort;
-//import com.example.demo.entity.Complaint;
-//import java.time.LocalDateTime;
-//
-//import java.io.IOException;
-//import java.time.format.DateTimeParseException;
-//import lombok.extern.slf4j.Slf4j;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import org.springframework.web.multipart.MultipartFile;
-//
-//@Slf4j
-//@RestController
-//@RequestMapping("/complaint")
-//public class ComplaintController {
-//    private final ComplaintService complaintService;
-//    private static final Logger logger = LoggerFactory.getLogger(ComplaintController.class);
-//
-//    public ComplaintController(ComplaintService complaintService) {
-//        this.complaintService = complaintService;
-//    }
-//    // 민원 등록
-//    @PostMapping("/create")
-//    @ResponseBody
-//    public ResponseEntity<?> createComplaint(
-//            @RequestParam("memberSeq") Long memberSeq,
-//            @RequestParam("departmentSeq") Long departmentSeq,
-//            @RequestParam("title") String title,
-//            @RequestParam("content") String content,
-//            @RequestParam(value = "file", required = false) MultipartFile file) {
-//
-//        try {
-//            // 수동으로 DTO 생성
-//            ComplaintCreateRequestDTO request = ComplaintCreateRequestDTO.builder()
-//                    .memberSeq(memberSeq)
-//                    .departmentSeq(departmentSeq)
-//                    .title(title)
-//                    .content(content)
-//                    .file(file)
-//                    .build();
-//
-//            log.info("Received complaint create request: {}", request);
-//            // 추가: 서비스 호출 전 로그
-//            log.info("About to call ComplaintService.createComplaint");
-//
-//            // 서비스 호출
-//            ComplaintResponseDTO saved = complaintService.createComplaint(request);
-//
-//            // 추가: 서비스 호출 후 로그
-//            log.info("ComplaintService.createComplaint call completed");
-//
-//            if (saved != null && saved.getComplaintSeq() != null) {
-//                return ResponseEntity.ok().body(saved);
-//            }
-//            return ResponseEntity.badRequest().build();
-//        } catch (Exception e) {
-//            log.error("Complaint creation failed: {}", e.getMessage(), e);
-//            return ResponseEntity.internalServerError().build();
-//        }
-//    }
-//
-//
-//    // 민원 수정
+package com.example.demo.controller;
+
+import com.example.demo.dto.ComplaintCreateRequestDTO;
+import com.example.demo.dto.ComplaintResponseDTO;
+import com.example.demo.dto.ComplaintUpdateRequestDTO;
+import com.example.demo.service.ComplaintService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Sort;
+import com.example.demo.entity.Complaint;
+import java.time.LocalDateTime;
+
+import java.io.IOException;
+import java.time.format.DateTimeParseException;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
+
+@Slf4j
+@RestController
+@RequestMapping("/complaint")
+public class ComplaintController {
+    private final ComplaintService complaintService;
+    private static final Logger logger = LoggerFactory.getLogger(ComplaintController.class);
+
+    public ComplaintController(ComplaintService complaintService) {
+        this.complaintService = complaintService;
+    }
+    // 민원 등록
+    @PostMapping("/create")
+    @ResponseBody
+    public ResponseEntity<?> createComplaint(
+            @RequestParam("memberSeq") Long memberSeq,
+            @RequestParam("teamSeq") Long teamSeq,
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            @RequestParam(value = "file", required = false) MultipartFile file) {
+
+        try {
+            // 수동으로 DTO 생성
+            ComplaintCreateRequestDTO request = ComplaintCreateRequestDTO.builder()
+                    .memberSeq(memberSeq)
+                    .teamSeq(teamSeq)
+                    .title(title)
+                    .content(content)
+                    .file(file)
+                    .build();
+
+            log.info("Received complaint create request: {}", request);
+            // 추가: 서비스 호출 전 로그
+            log.info("About to call ComplaintService.createComplaint");
+
+            // 서비스 호출
+            ComplaintResponseDTO saved = complaintService.createComplaint(request);
+
+            // 추가: 서비스 호출 후 로그
+            log.info("ComplaintService.createComplaint call completed");
+
+            if (saved != null && saved.getComplaintSeq() != null) {
+                return ResponseEntity.ok().body(saved);
+            }
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            log.error("Complaint creation failed: {}", e.getMessage(), e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+
+    // 민원 수정
 //    @PutMapping("/{id}/update")
 //    public ResponseEntity<ComplaintResponseDTO> complaintUpdate(
 //            @PathVariable Long id,
@@ -136,4 +135,4 @@
 //        logger.info("Fetching complaints with pagination: page={}, size={}", page, size);
 //        return ResponseEntity.ok(response);
 //    }
-//}
+}

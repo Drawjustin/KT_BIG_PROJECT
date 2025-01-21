@@ -33,8 +33,8 @@ public class Telecom extends baseEntity {
 
 
     @Builder
-    public Telecom(Department department, String telecomContent, String telecomFilePath, Boolean isComplain, Byte telecomCount) {
-        this.department = department;
+
+    public Telecom(String telecomContent, String telecomFilePath, Boolean isComplain, Byte telecomCount) {
         this.telecomContent = telecomContent;
         this.telecomFilePath = telecomFilePath;
         this.isComplain = isComplain;

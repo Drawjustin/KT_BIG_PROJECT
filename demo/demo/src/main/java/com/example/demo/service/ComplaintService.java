@@ -1,124 +1,106 @@
-//package com.example.demo.service;
-//
-//import com.example.demo.config.FileStorageProperties;
-//import com.example.demo.dto.ComplaintCreateRequestDTO;
-//import com.example.demo.dto.ComplaintUpdateRequestDTO;
-//import com.example.demo.dto.ComplaintResponseDTO;
-//import com.example.demo.dto.ComplaintListResponseDTO;
-//import com.example.demo.exception.DepartmentNotFoundException;
-//import com.example.demo.exception.MemberNotFoundException;
-//import com.example.demo.entity.Complaint;
-//import com.example.demo.entity.Department;
-//import com.example.demo.entity.Member;
-//import com.example.demo.repository.ComplaintRepository;
-//import com.example.demo.repository.DepartmentRepository;
-//import com.example.demo.repository.MemberRepository;
-//
-//import jakarta.transaction.Transactional;
-//import lombok.Value;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.Pageable;
-//import org.springframework.stereotype.Service;
-//import org.springframework.web.multipart.MultipartFile;
-//
-//import java.io.IOException;
-//import java.nio.file.Files;
-//import java.nio.file.Path;
-//import java.nio.file.Paths;
-//import java.nio.file.StandardCopyOption;
-//import java.time.LocalDateTime;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import lombok.extern.slf4j.Slf4j;
-//
-//
-//@Slf4j
-//@Service
-//@Transactional
-//public class ComplaintService {
-//
-//    private static final Logger logger = LoggerFactory.getLogger(ComplaintService.class);
-//
-//    private final ComplaintRepository complaintRepository;
-//    private final MemberRepository memberRepository;
-//    private final DepartmentRepository departmentRepository;
-//
-//    @Autowired
-//    public ComplaintService(
-//            ComplaintRepository complaintRepository,
-//            MemberRepository memberRepository,
-//            DepartmentRepository departmentRepository) {
-//        this.complaintRepository = complaintRepository;
-//        this.memberRepository = memberRepository;
-//        this.departmentRepository = departmentRepository;
-//    }
-//
-//    // 민원 등록
-//    @Transactional
-//    public ComplaintResponseDTO createComplaint(ComplaintCreateRequestDTO request) {
-//        log.info("Received ComplaintCreateRequestDTO: {}", request);
-//
-//        try {
-//            // Step 1: Member 조회
-//            log.info("Finding member with ID: {}", request.getMemberSeq());
-//            Member member = memberRepository.findById(request.getMemberSeq())
-//                    .orElseThrow(() -> new RuntimeException("Member not found"));
-//            log.info("Found member: {}", member);
-//
-//            // Step 2: Department 조회
-//            log.info("Finding department with ID: {}", request.getDepartmentSeq());
-//            Department department = departmentRepository.findById(request.getDepartmentSeq())
-//                    .orElseThrow(() -> new RuntimeException("Department not found"));
-//            log.info("Found department: {}", department);
-//
-//            // Step 3: 파일 처리
-//            String filePath = null;
-//            if (request.getFile() != null && !request.getFile().isEmpty()) {
-//                log.info("Processing file upload: {}", request.getFile().getOriginalFilename());
-//                try {
-//                    filePath = saveFile(request.getFile());
-//                    log.info("File saved successfully at: {}", filePath);
-//                } catch (IOException e) {
-//                    log.error("File save failed: {}", e.getMessage(), e);
-//                    throw new RuntimeException("Failed to save file", e);
-//                }
-//            }
-//
-//            // Step 4: Complaint 엔티티 생성
-//            log.info("Building complaint entity");
-//            Complaint complaint = Complaint.builder()
-//                    .member(member)
-//                    .department(department)
-//                    .complaintTitle(request.getTitle())
-//                    .complaintContent(request.getContent())
-//                    .complaintFilePath(filePath)
-//                    .build();
-//            log.info("Built complaint entity: {}", complaint);
-//
-//            // Step 5: 저장
-//            log.info("Saving complaint to database");
-//            Complaint savedComplaint = complaintRepository.save(complaint);
-//            log.info("Successfully saved complaint: {}", savedComplaint);
-//
-//            // Step 6: DTO 변환 및 반환
+package com.example.demo.service;
+
+import com.example.demo.config.FileStorageProperties;
+import com.example.demo.dto.ComplaintCreateRequestDTO;
+import com.example.demo.dto.ComplaintUpdateRequestDTO;
+import com.example.demo.dto.ComplaintResponseDTO;
+import com.example.demo.entity.Team;
+import com.example.demo.exception.DepartmentNotFoundException;
+import com.example.demo.exception.MemberNotFoundException;
+import com.example.demo.entity.Complaint;
+import com.example.demo.entity.Department;
+import com.example.demo.entity.Member;
+
+import com.example.demo.repository.ComplaintRepository;
+import com.example.demo.repository.MemberRepository;
+import com.example.demo.repository.TeamRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
+
+@Slf4j
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class ComplaintService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ComplaintService.class);
+
+    private final ComplaintRepository complaintRepository;
+    private final MemberRepository memberRepository;
+    private final TeamRepository teamRepository;
+
+
+    // 민원 등록
+    @Transactional
+    public ComplaintResponseDTO createComplaint(ComplaintCreateRequestDTO request) {
+        log.info("Received ComplaintCreateRequestDTO: {}", request);
+
+        try {
+            // Step 1: Member 조회
+            Member member = memberRepository.findById(request.getMemberSeq())
+                    .orElseThrow(() -> new RuntimeException("Member not found"));
+
+            // Step 2: Department 조회
+            Team team = teamRepository.findById(request.getTeamSeq())
+                    .orElseThrow(() -> new RuntimeException("Department not found"));
+
+            // Step 3: 파일 처리
+            String filePath = null;
+            if (request.getFile() != null && !request.getFile().isEmpty()) {
+                try {
+                    filePath = saveFile(request.getFile());
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to save file", e);
+                }
+            }
+
+            // Step 4: Complaint 엔티티 생성
+            Complaint complaint = Complaint.builder()
+                    .member(member)
+                    .team(team)
+                    .complaintTitle(request.getTitle())
+                    .complaintContent(request.getContent())
+                    .complaintFilePath(filePath)
+                    .build();
+
+            // Step 5: 저장
+            Complaint savedComplaint = complaintRepository.save(complaint);
+
+            // Step 6: DTO 변환 및 반환
 //            ComplaintResponseDTO responseDTO = ComplaintResponseDTO.from(savedComplaint);
-//            log.info("Returning response DTO: {}", responseDTO);
-//            return responseDTO;
-//
-//        } catch (Exception e) {
-//            log.error("Exception occurred during complaint creation: {}", e.getMessage(), e);
-//            throw e; // 예외를 컨트롤러로 재전달
-//        }
-//    }
-//
-//    // 파일 저장 메서드
-//    public String saveFile(MultipartFile file) throws IOException {
-//        if (file == null || file.isEmpty()) {
-//            log.warn("File is null or empty, skipping file save.");
-//            return null;
-//        }
-//
+            return new ComplaintResponseDTO();
+
+        } catch (Exception e) {
+            log.error("Exception occurred during complaint creation: {}", e.getMessage(), e);
+            throw e; // 예외를 컨트롤러로 재전달
+        }
+    }
+
+    // 파일 저장 메서드
+    public String saveFile(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            log.warn("File is null or empty, skipping file save.");
+            return null;
+        }
+        return file.getOriginalFilename();
+
 //        // 파일 저장 경로
 //        String uploadDir = "uploads/complaints/";
 //        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
@@ -134,10 +116,10 @@
 //        Path filePath = uploadPath.resolve(fileName);
 //        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 //        log.info("File saved at: {}", filePath);
-//
-//        // 저장된 파일 경로 반환
+
+        // 저장된 파일 경로 반환
 //        return uploadDir + fileName;
-//    }
+    }
 //
 //    // 민원 수정
 //    @Transactional
@@ -196,4 +178,4 @@
 //        // Page<Complaint> -> PaginatedResponse 변환
 //        return ComplaintListResponseDTO.fromPageWithPagination(page);
 //    }
-//}
+}

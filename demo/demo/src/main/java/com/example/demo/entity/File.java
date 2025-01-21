@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "file")
+@Table(name = "files")
 public class File extends baseEntity {
 
     @Id
