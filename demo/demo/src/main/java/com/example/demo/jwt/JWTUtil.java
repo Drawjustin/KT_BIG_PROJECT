@@ -48,6 +48,15 @@ public class JWTUtil {
 
     }
 
+    public String getCategory(String token){
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("category", String.class);
+    }
+
     //만료시간 확인
     public Boolean isExpired(String token) {
         return Jwts.parser()
@@ -60,8 +69,9 @@ public class JWTUtil {
     }
 
     //jwt생성 메소드
-    public String createJwt(String userEmail, String role, Long expiredMs) {
+    public String createJwt(String category, String userEmail, String role, Long expiredMs) {
         return Jwts.builder()
+                .claim("category", category)
                 .claim("userEmail", userEmail)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))

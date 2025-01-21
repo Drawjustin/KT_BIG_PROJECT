@@ -1,12 +1,13 @@
 package com.example.demo.jwt;
 
-import com.example.demo.config.JwtProperties;
 import com.example.demo.dto.CustomUserDetails;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,14 +23,12 @@ import java.util.Map;
 // login 필터
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
-    private Long expirationTime;
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
 
-    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, JwtProperties jwtProperties) {
+    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        this.expirationTime = jwtProperties.getExpirationTime();
     }
 
     @Override
@@ -66,13 +65,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String role = auth.getAuthority();
 
         // 토큰 발급
-        String token = jwtUtil.createJwt(userEmail, role, expirationTime);
+        String access = jwtUtil.createJwt("access",userEmail, role,600000L);
+        String refresh = jwtUtil.createJwt("refresh",userEmail, role,86400000L);
 
-        // Header에 담아서 응답, 접두사 Bearer 추가
-        response.setCharacterEncoding("UTF-8");
-        response.addHeader("Authorization", "Bearer " + token);
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write("{\"message\": \"로그인 성공\", \"token\": \"Bearer " + token + "\"}");
+        //응답 설정
+        response.setHeader("access", access);
+        response.addCookie(createCookie("refresh", refresh));
+        response.setStatus(HttpStatus.OK.value());
     }
 
     @Override
@@ -82,4 +81,16 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setContentType("application/json");
         response.getWriter().write("{\"error\": \"로그인 실패\", \"message\": \"" + failed.getMessage() + "\"}");
     }
+
+    private Cookie createCookie(String key, String value) {
+
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(24*60*60);
+        //cookie.setSecure(true); //https시 이걸 사용
+        //cookie.setPath("/");
+        cookie.setHttpOnly(true);
+
+        return cookie;
+    }
 }
+
