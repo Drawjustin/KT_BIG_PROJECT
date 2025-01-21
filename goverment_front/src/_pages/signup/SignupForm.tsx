@@ -4,6 +4,7 @@ import Input from '../../_components/button/Input';
 import Button from '../../_components/button/Button';
 import Checkbox from '../../_components/button/Checkbox';
 import styles from './SignUpForm.module.css';
+import { useNavigate } from 'react-router-dom';
 
 // Form 상태 타입 정의
 interface FormState {
@@ -38,6 +39,7 @@ const SignupForm: React.FC = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // navigate 함수 초기화
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -96,6 +98,7 @@ const SignupForm: React.FC = () => {
       );
       console.log('API Response:', response.data);
       alert('회원가입이 성공적으로 완료되었습니다!');
+      navigate('/login'); 
     } catch (error) {
       console.error('API Error:', error);
       alert('오류가 발생했습니다. 다시 시도해주세요.');
