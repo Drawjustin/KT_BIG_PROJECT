@@ -1,8 +1,10 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.RefreshEntity;
+import com.example.demo.entity.UserEntity;
 import com.example.demo.jwt.JWTUtil;
 import com.example.demo.repository.RefreshRepository;
+import com.example.demo.repository.UserRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,10 +23,12 @@ public class ReissueService {
 
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
+    private final UserRepository userRepository;
 
-    public ReissueService(JWTUtil jwtUtil,RefreshRepository refreshRepository) {
+    public ReissueService(JWTUtil jwtUtil,RefreshRepository refreshRepository, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
         this.refreshRepository=refreshRepository;
+        this.userRepository = userRepository;
     }
 
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
@@ -55,7 +59,7 @@ public class ReissueService {
         }
 
         //DB에 저장되어 있는지 확인
-        Boolean isExist = refreshRepository.existsByRefresh(refresh);
+        Boolean isExist = refreshRepository.existsByRefreshTokenContent(refresh);
         if (!isExist) {
 
             //response body
@@ -70,7 +74,7 @@ public class ReissueService {
         String newRefresh = jwtUtil.createJwt("refresh", userEmail, userRole, 86400000L);
 
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
-        refreshRepository.deleteByRefresh(refresh);
+        refreshRepository.deleteByRefreshTokenContent(refresh);
         addRefreshEntity(userEmail, newRefresh, 86400000L);
 
         //response
@@ -81,13 +85,19 @@ public class ReissueService {
     }
 
     private void addRefreshEntity(String userEmail, String refresh, Long expiredMs) {
+        java.util.Date expirationDate = new java.util.Date(System.currentTimeMillis() + expiredMs);
 
-        Date date = new Date(System.currentTimeMillis() + expiredMs);
+        // 사용자 이메일로 UserEntity를 조회
+        UserEntity userEntity = userRepository.findByUserEmail(userEmail);
+        if (userEntity == null) {
+            throw new RuntimeException("User not found with email: " + userEmail);
+        }
 
-        RefreshEntity refreshEntity = new RefreshEntity();
-        refreshEntity.setUserEmail(userEmail);
-        refreshEntity.setRefresh(refresh);
-        refreshEntity.setExpiration(date.toString());
+        RefreshEntity refreshEntity = new RefreshEntity(
+                userEntity,              // UserEntity
+                refresh,                 // refreshTokenContent
+                expirationDate          // refreshTokenExpiration
+        );
 
         refreshRepository.save(refreshEntity);
     }

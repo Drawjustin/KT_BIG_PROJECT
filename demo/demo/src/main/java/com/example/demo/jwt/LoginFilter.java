@@ -2,7 +2,9 @@ package com.example.demo.jwt;
 
 import com.example.demo.dto.CustomUserDetails;
 import com.example.demo.entity.RefreshEntity;
+import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.RefreshRepository;
+import com.example.demo.repository.UserRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -29,12 +31,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+    private final UserRepository userRepository;
     private final RefreshRepository refreshRepository;
 
-    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil,RefreshRepository refreshRepository) {
+    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil,UserRepository userRepository,RefreshRepository refreshRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        this.refreshRepository=refreshRepository;
+        this.userRepository = userRepository;
+        this.refreshRepository = refreshRepository;
     }
 
     @Override
@@ -75,7 +79,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String refresh = jwtUtil.createJwt("refresh",userEmail, role,86400000L);
 
         // Refresh 토큰 저장
-
+        addRefreshEntity(userEmail, refresh, 86400000L);
 
         //응답 설정
         response.setHeader("access", access);
@@ -94,12 +98,19 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //refresh 저장메소드
     private void addRefreshEntity(String userEmail, String refresh, Long expiredMs) {
 
-        Date date = new Date(System.currentTimeMillis() + expiredMs);
+        Date expirationDate = new Date(System.currentTimeMillis() + expiredMs);
 
+        // 사용자 이메일로 UserEntity를 조회 (가정)
+        UserEntity userEntity = userRepository.findByUserEmail(userEmail);
+
+        // RefreshEntity 생성 및 설정
         RefreshEntity refreshEntity = new RefreshEntity();
-        refreshEntity.setUserEmail(userEmail);
-        refreshEntity.setRefresh(refresh);
-        refreshEntity.setExpiration(date.toString());
+        refreshEntity.setUserEntity(userEntity);                    // UserEntity 설정
+        refreshEntity.setRefreshTokenContent(refresh);             // refresh 토큰 내용 설정
+        refreshEntity.setRefreshTokenExpiration(expirationDate);   // 만료일 설정
+
+        // 양방향 관계 설정
+        userEntity.setRefreshToken(refreshEntity);
 
         refreshRepository.save(refreshEntity);
     }
