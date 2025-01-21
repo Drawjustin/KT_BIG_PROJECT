@@ -52,12 +52,26 @@ public class ReissueService {
         String userEmail = jwtUtil.getUserEmail(refresh);
         String userRole = jwtUtil.getRole(refresh);
 
-        //새로운 access 토큰 발급
+        //새로운 access,refresh 토큰 발급
         String newAccess = jwtUtil.createJwt("access", userEmail, userRole, 600000L);
+        String newRefresh = jwtUtil.createJwt("refresh", userEmail, userRole, 86400000L);
 
         //response
         response.setHeader("access", newAccess);
+        response.addCookie(createCookie("refresh", newRefresh));
 
         return ResponseEntity.ok(newAccess);
     }
+
+    private Cookie createCookie(String key, String value) {
+
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(24*60*60);
+        //cookie.setSecure(true);
+        //cookie.setPath("/");
+        cookie.setHttpOnly(true);
+
+        return cookie;
+    }
+
 }
