@@ -1,20 +1,24 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../store';
+import { logout } from '../../slices/loginSlice';
 import styles from './Navbar.module.css';
-import LoginButton from '../button/LoginButton';
 
 const Navbar: React.FC = () => {
-  const navigate = useNavigate(); // useNavigate 훅 사용
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleLoginClick = () => {
-    console.log("Login button clicked!");
-    navigate('/login'); // 로그인 페이지로 이동
+  const { isLoggedIn } = useSelector((state: RootState) => state.login);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/'); // 로그아웃 후 홈으로 이동
   };
 
   return (
     <nav className={styles.navbar}>
       <div className={styles.logo}>
-        {/* 로고 클릭 시 홈으로 이동 */}
         <Link to="/" className={styles.logoLink}>
           국민 신문고
         </Link>
@@ -28,7 +32,20 @@ const Navbar: React.FC = () => {
         </li>
       </ul>
       <div className={styles.loginButtonContainer}>
-        <LoginButton onClick={handleLoginClick} />
+        {isLoggedIn ? (
+          <>
+            <Link to="/mypage" className={styles.menuLink}>
+              마이페이지
+            </Link>
+            <button onClick={handleLogout} className={styles.logoutButton}>
+              로그아웃
+            </button>
+          </>
+        ) : (
+          <button onClick={() => navigate('/login')} className={styles.loginButton}>
+            로그인
+          </button>
+        )}
       </div>
     </nav>
   );
