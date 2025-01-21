@@ -33,11 +33,9 @@ public class UserEntity extends BaseEntity {
     @Column(name = "user_role", nullable = true) // Role security에서 필요
     private String userRole;
 
-    // UserEntity.java에 추가
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private RefreshEntity refreshToken;
 
-    // getter/setter 추가
     public RefreshEntity getRefreshToken() {
         return refreshToken;
     }

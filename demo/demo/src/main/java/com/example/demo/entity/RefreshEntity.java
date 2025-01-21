@@ -34,7 +34,6 @@ public class RefreshEntity {
         this.refreshTokenExpiration = refreshTokenExpiration;
     }
 
-    // RefreshEntity.java에 추가
     public void setUserEntity(UserEntity userEntity) {
         this.userEntity = userEntity;
     }
