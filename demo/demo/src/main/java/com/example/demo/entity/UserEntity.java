@@ -33,6 +33,33 @@ public class UserEntity extends BaseEntity {
     @Column(name = "user_role", nullable = true) // Role security에서 필요
     private String userRole;
 
+    public void setUserSeq(Long userSeq) {
+        this.userSeq = userSeq;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setUserNumber(String userNumber) {
+        this.userNumber = userNumber;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
 
     // 모든 필드를 초기화하는 생성자 추가
     public UserEntity(String userEmail, String userId, String userPassword, String userName, String userNumber, String userRole) {
@@ -43,4 +70,6 @@ public class UserEntity extends BaseEntity {
         this.userNumber = userNumber;
         this.userRole = (userRole != null) ? userRole : "USER"; // 기본값 설정 확인
     }
+
+
 }
