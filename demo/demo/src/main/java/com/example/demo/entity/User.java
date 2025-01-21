@@ -20,6 +20,10 @@ public class User {
     @Column(name = "user_seq")
     private Long userSeq;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_seq", nullable = false)
+    private Department department;
+
     @Column(name = "user_id", length = 30, nullable = false)
     private String userId;
 
@@ -35,6 +39,9 @@ public class User {
     @Column(name = "user_email", length = 30)
     private String userEmail;
 
+    @Column(name = "user_role", length = 50)
+    private String userRole;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -43,9 +50,6 @@ public class User {
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Complaint> complaints = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Chat> chats = new ArrayList<>();
@@ -72,16 +76,4 @@ public class User {
         this.isDeleted = false;
     }
 
-    // 추가된 생성자 Test용
-    public User(Long userSeq) {
-        this.userSeq = userSeq;
-    }
-
-
-    public void updateUser(String name, String number, String email) {
-        this.userName = name;
-        this.userNumber = number;
-        this.userEmail = email;
-        this.updatedAt = LocalDateTime.now();
-    }
 }

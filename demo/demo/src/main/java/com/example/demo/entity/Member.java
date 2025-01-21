@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,9 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "member")
 public class Member {
 
@@ -20,7 +24,7 @@ public class Member {
     @Column(name = "member_seq")
     private Long memberSeq;
 
-    @Column(name = "member_id", nullable = false)
+    @Column(name = "member_id", nullable = false, unique = true)
     private Integer memberId;
 
     @Column(name = "member_password", length = 512, nullable = false)
@@ -33,19 +37,15 @@ public class Member {
     private String memberEmail;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @Column(name = "is_deleted")
-    private Boolean isDeleted;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.isDeleted = false;
-    }
+    @Builder.Default
+    private Boolean isDeleted = false;
 
     @PreUpdate
     protected void onUpdate() {
@@ -53,15 +53,20 @@ public class Member {
     }
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Block> blocks = new ArrayList<>(); // block과의 관계 추가
+    @Builder.Default
+    private List<Block> blocks = new ArrayList<>();
 
-    @Builder
-    public Member(Integer memberId, String memberPassword, String memberName, String memberEmail) {
-        this.memberId = memberId;
-        this.memberPassword = memberPassword;
-        this.memberName = memberName;
-        this.memberEmail = memberEmail;
-        this.createdAt = LocalDateTime.now();
-        this.isDeleted = false;
+    @OneToMany(mappedBy = "member")
+    @Builder.Default
+    @JsonManagedReference
+    private List<Complaint> complaints = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "memberSeq=" + memberSeq +
+                ", memberName='" + memberName + '\'' +
+                '}';
     }
+
 }

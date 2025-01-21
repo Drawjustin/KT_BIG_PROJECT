@@ -29,7 +29,7 @@ public class ChatBox {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "is_deleted")
+    @Column(name = "is_deleted",nullable = false)
     private Boolean isDeleted;
 
     // Chat과의 관계 (One-to-Many)
