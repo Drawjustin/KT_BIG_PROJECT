@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.entity.baseEntity.baseEntity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,15 +18,15 @@ import java.util.List;
 @Entity
 @Builder
 @Table(name = "member")
-public class Member {
+public class Member extends baseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_seq")
     private Long memberSeq;
 
-    @Column(name = "member_id", nullable = false, unique = true)
-    private Integer memberId;
+    @Column(name = "member_id", length = 30, nullable = false, unique = true)
+    private String memberId;
 
     @Column(name = "member_password", length = 512, nullable = false)
     private String memberPassword;
@@ -36,37 +37,11 @@ public class Member {
     @Column(name = "member_email", length = 30)
     private String memberEmail;
 
-    @Column(name = "created_at")
-    @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "is_deleted")
-    @Builder.Default
-    private Boolean isDeleted = false;
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+    @Builder
+    public Member(String memberId, String memberPassword, String memberName, String memberEmail) {
+        this.memberId = memberId;
+        this.memberPassword = memberPassword;
+        this.memberName = memberName;
+        this.memberEmail = memberEmail;
     }
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<Block> blocks = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    @Builder.Default
-    @JsonManagedReference
-    private List<Complaint> complaints = new ArrayList<>();
-
-    @Override
-    public String toString() {
-        return "Member{" +
-                "memberSeq=" + memberSeq +
-                ", memberName='" + memberName + '\'' +
-                '}';
-    }
-
 }

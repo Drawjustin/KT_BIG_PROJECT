@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.entity.baseEntity.baseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,50 +11,24 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @Table(name = "block")
-public class Block {
+public class Block extends baseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "block_seq")
     private Long blockSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_seq", nullable = false)
-    private Department department;
+    @JoinColumn(name = "team_seq", nullable = false)
+    private Team team;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_seq", nullable = false)
     private Member member;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "is_deleted",nullable = false)
-    private Boolean isDeleted;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.isDeleted = false;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 
     @Builder
-    public Block(Department department, Member member) {
-        this.department = department;
+    public Block(Team team, Member member) {
+        this.team = team;
         this.member = member;
-        this.createdAt = LocalDateTime.now();
-        this.isDeleted = false;
-    }
-    public void updateBlock(Department department, Member member) {
-        this.department = department;
-        this.member = member;
-        this.updatedAt = LocalDateTime.now();
     }
 }

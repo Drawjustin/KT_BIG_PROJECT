@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.entity.baseEntity.baseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,16 +11,13 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @Table(name = "telecom")
-public class Telecom {
+public class Telecom extends baseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "telecom_seq")
     private Long telecomSeq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_seq", nullable = false)
-    private Department department;
-
+    @Lob
     @Column(name = "telecom_content", columnDefinition = "TEXT")
     private String telecomContent;
 
@@ -32,25 +30,7 @@ public class Telecom {
     @Column(name = "telecom_count")
     private Byte telecomCount;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "is_deleted")
-    private Boolean isDeleted;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.isDeleted = false;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 
     @Builder
     public Telecom(Department department, String telecomContent, String telecomFilePath, Boolean isComplain, Byte telecomCount) {
@@ -59,7 +39,5 @@ public class Telecom {
         this.telecomFilePath = telecomFilePath;
         this.isComplain = isComplain;
         this.telecomCount = telecomCount;
-        this.createdAt = LocalDateTime.now();
-        this.isDeleted = false;
     }
 }

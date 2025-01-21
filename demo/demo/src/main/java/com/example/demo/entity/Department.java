@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.entity.baseEntity.baseEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Table(name = "department")
-public class Department {
+public class Department extends baseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "department_seq")
@@ -29,58 +30,9 @@ public class Department {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organization_seq", nullable = false)
     private Organization organization; // Organization 관계 설정
-
-    @OneToMany(mappedBy = "department")
-    @JsonBackReference
-    private List<Complaint> complaints; // 관련된 민원들
-
-    @OneToMany(mappedBy = "department")
-    private List<FileDepartment> fileDepartments; // 관련된 파일 부서
-
-    @OneToMany(mappedBy = "department")
-    private List<Block> blocks; // 관련된 차단
-
-    @OneToMany(mappedBy = "department")
-    private List<Telecom> telecoms; // 관련된 텔레콤
-
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<User> users = new ArrayList<>();
-
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt; // 생성 시간
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt; // 수정 시간
-
-    @Builder.Default
-    @Column(name = "is_deleted", nullable = false)
-    private Boolean isDeleted = false; // 삭제 여부
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+    @Builder
+    public Department(String departmentName, Organization organization) {
+        this.departmentName = departmentName;
+        this.organization = organization;
     }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    // Getter
-    public Long getDepartmentSeq() {
-        return departmentSeq;
-    }
-
-    public String getDepartmentName() {
-        return departmentName;
-    }
-    @Override
-    public String toString() {
-        return "Department{" +
-                "departmentSeq=" + departmentSeq +
-                ", departmentName='" + departmentName + '\'' +
-                '}';
-    }
-
-
 }

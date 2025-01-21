@@ -21,8 +21,8 @@ public class User {
     private Long userSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_seq", nullable = false)
-    private Department department;
+    @JoinColumn(name = "team_seq", nullable = false)
+    private Team team;
 
     @Column(name = "user_id", length = 30, nullable = false)
     private String userId;
@@ -42,38 +42,14 @@ public class User {
     @Column(name = "user_role", length = 50)
     private String userRole;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "is_deleted")
-    private Boolean isDeleted;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Chat> chats = new ArrayList<>();
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.isDeleted = false;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
     @Builder
-    public User(String userId, String userPassword, String userName, String userNumber, String userEmail) {
+    public User(Team team, String userId, String userPassword, String userName, String userNumber, String userEmail, String userRole) {
+        this.team = team;
         this.userId = userId;
         this.userPassword = userPassword;
         this.userName = userName;
         this.userNumber = userNumber;
         this.userEmail = userEmail;
-        this.createdAt = LocalDateTime.now();
-        this.isDeleted = false;
+        this.userRole = userRole;
     }
-
 }
