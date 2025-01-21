@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.RefreshEntity;
 import com.example.demo.jwt.JWTUtil;
+import com.example.demo.repository.RefreshRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Date;
 
 
 //쿠키: 만약에 access토큰 만료시 다시 만들어줌
@@ -17,9 +20,11 @@ import java.util.Arrays;
 public class ReissueService {
 
     private final JWTUtil jwtUtil;
+    private final RefreshRepository refreshRepository;
 
-    public ReissueService(JWTUtil jwtUtil) {
+    public ReissueService(JWTUtil jwtUtil,RefreshRepository refreshRepository) {
         this.jwtUtil = jwtUtil;
+        this.refreshRepository=refreshRepository;
     }
 
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
@@ -49,6 +54,14 @@ public class ReissueService {
             return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
         }
 
+        //DB에 저장되어 있는지 확인
+        Boolean isExist = refreshRepository.existsByRefresh(refresh);
+        if (!isExist) {
+
+            //response body
+            return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
+        }
+
         String userEmail = jwtUtil.getUserEmail(refresh);
         String userRole = jwtUtil.getRole(refresh);
 
@@ -56,11 +69,27 @@ public class ReissueService {
         String newAccess = jwtUtil.createJwt("access", userEmail, userRole, 600000L);
         String newRefresh = jwtUtil.createJwt("refresh", userEmail, userRole, 86400000L);
 
+        //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
+        refreshRepository.deleteByRefresh(refresh);
+        addRefreshEntity(userEmail, newRefresh, 86400000L);
+
         //response
         response.setHeader("access", newAccess);
         response.addCookie(createCookie("refresh", newRefresh));
 
         return ResponseEntity.ok(newAccess);
+    }
+
+    private void addRefreshEntity(String userEmail, String refresh, Long expiredMs) {
+
+        Date date = new Date(System.currentTimeMillis() + expiredMs);
+
+        RefreshEntity refreshEntity = new RefreshEntity();
+        refreshEntity.setUserEmail(userEmail);
+        refreshEntity.setRefresh(refresh);
+        refreshEntity.setExpiration(date.toString());
+
+        refreshRepository.save(refreshEntity);
     }
 
     private Cookie createCookie(String key, String value) {
