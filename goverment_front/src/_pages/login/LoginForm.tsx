@@ -1,14 +1,13 @@
 import React, { useState, ChangeEvent } from 'react';
-import { useDispatch } from 'react-redux';
-import { setLoginState } from '../../slices/loginSlice';
-import axios from 'axios';
+import { useAppDispatch } from '../../hooks/dispatchhook'; // 커스텀 디스패치 훅
+import { loginPostAsync } from '../../slices/loginSlice';
 import Button from '../../_components/button/Button';
 import Input from '../../_components/button/Input';
 import styles from './LoginForm.module.css';
 
 const LoginForm: React.FC = () => {
   const [form, setForm] = useState({ email: '', password: '' });
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -20,15 +19,20 @@ const LoginForm: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('/api/login', form);
-      console.log('Login successful:', response.data);
+      // loginParam 선언
+      const loginParam = {
+        email: form.email,
+        pw: form.password, // password를 pw로 매핑
+      };
 
-      // 로그인 상태 업데이트
-      dispatch(setLoginState({ email: form.email, password: form.password }));
+      // 비동기 디스패치 호출
+      await dispatch(loginPostAsync(loginParam)).unwrap();
 
+      // 성공 메시지
       alert('로그인 성공!');
     } catch (error) {
-      console.error('Login failed:', error);
+      // 실패 메시지
+      console.error('로그인 실패:', error);
       alert('로그인 실패. 다시 시도해주세요.');
     }
   };

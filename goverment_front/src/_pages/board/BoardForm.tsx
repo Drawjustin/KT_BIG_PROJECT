@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { mockPosts as initialPosts } from "../../mock/posts";
-import axios from 'axios';
 
 interface Post {
   id: number;
