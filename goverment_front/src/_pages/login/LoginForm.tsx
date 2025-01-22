@@ -4,10 +4,13 @@ import { loginPostAsync } from '../../slices/loginSlice';
 import Button from '../../_components/button/Button';
 import Input from '../../_components/button/Input';
 import styles from './LoginForm.module.css';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm: React.FC = () => {
   const [form, setForm] = useState({ email: '', password: '' });
   const dispatch = useAppDispatch();
+  const navigate = useNavigate(); // useNavigate 훅 사용
+
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -30,6 +33,8 @@ const LoginForm: React.FC = () => {
 
       // 성공 메시지
       alert('로그인 성공!');
+      navigate('/'); // 리다이렉트 경로
+
     } catch (error) {
       // 실패 메시지
       console.error('로그인 실패:', error);
