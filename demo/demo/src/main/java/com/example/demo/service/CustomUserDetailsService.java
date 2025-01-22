@@ -20,7 +20,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.userRepository=userRepository;
     }
 
-
     //이메일 확인
     @Override
     public UserDetails loadUserByUsername (String userEmail) throws UsernameNotFoundException{
@@ -36,11 +35,5 @@ public class CustomUserDetailsService implements UserDetailsService {
         // UserDetails에 담아서 반환
         return new CustomUserDetails(userData);
 
-//        if(userData != null){
-//            //UserDetails에 담아서 return하면 AutneticationManager가 검증 함
-//            return new CustomUserDetails(userData);
-//
-//        }
-//        return null;
     }
 }

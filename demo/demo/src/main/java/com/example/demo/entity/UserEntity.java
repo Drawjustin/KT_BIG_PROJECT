@@ -33,15 +33,17 @@ public class UserEntity extends BaseEntity {
     @Column(name = "user_role", nullable = true) // Role security에서 필요
     private String userRole;
 
-    @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private RefreshEntity refreshToken;
 
-    public RefreshEntity getRefreshToken() {
-        return refreshToken;
-    }
-
-    public void setRefreshToken(RefreshEntity refreshToken) {
-        this.refreshToken = refreshToken;
+    // 모든 필드를 초기화하는 생성자 추가
+    public UserEntity(String userEmail, String userId, String userPassword, String userName, String userNumber, String userRole) {
+        this.userEmail = userEmail;
+        this.userId = userId;
+        this.userPassword = userPassword;
+        this.userName = userName;
+        this.userNumber = userNumber;
+        this.userRole = (userRole != null) ? userRole : "USER"; // 기본값 설정 확인
     }
 
     public void setUserSeq(Long userSeq) {
@@ -72,15 +74,16 @@ public class UserEntity extends BaseEntity {
         this.userRole = userRole;
     }
 
-    // 모든 필드를 초기화하는 생성자 추가
-    public UserEntity(String userEmail, String userId, String userPassword, String userName, String userNumber, String userRole) {
-        this.userEmail = userEmail;
-        this.userId = userId;
-        this.userPassword = userPassword;
-        this.userName = userName;
-        this.userNumber = userNumber;
-        this.userRole = (userRole != null) ? userRole : "USER"; // 기본값 설정 확인
+    public void setRefreshToken(RefreshEntity refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
+    // 필요한 수정 메서드만 제공
+    public void updatePassword(String newPassword) {
+        this.userPassword = newPassword;
+    }
 
+    public void updateRefreshToken(RefreshEntity refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }

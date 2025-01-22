@@ -1,15 +1,18 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
 
 //토큰 저장 엔티티
+@NoArgsConstructor // 기본 생성자
 @Entity
 @Getter
-@NoArgsConstructor
+@Setter // RefreshEntity의 필드 수정 가능하도록 추가
 @Table(name = "refresh_token")
 public class RefreshEntity {
 
@@ -18,43 +21,26 @@ public class RefreshEntity {
     @Column(name = "refresh_token_seq", nullable = false)
     private Long refreshTokenSeq;
 
-    @OneToOne
-    @JoinColumn(name = "user_seq", nullable = false) // user_seq를 외래 키로 사용
-    private UserEntity userEntity; // 연관된 사용자 엔터티
-
-    @Column(name = "refresh_token_content", length = 500)
+    @Column(name = "refresh_token_content", nullable = false, length = 512)
     private String refreshTokenContent;
 
-    @Column(name = "refresh_token_expiration")
+    @Column(name = "refresh_token_expiration", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date refreshTokenExpiration;
 
-    public RefreshEntity(String refreshTokenContent, Date refreshTokenExpiration) {
-        this.refreshTokenContent = refreshTokenContent;
-        this.refreshTokenExpiration = refreshTokenExpiration;
-    }
-
-    public void setUserEntity(UserEntity userEntity) {
-        this.userEntity = userEntity;
-    }
-
-    public void setRefreshTokenSeq(Long refreshTokenSeq) {
-        this.refreshTokenSeq = refreshTokenSeq;
-    }
+    @OneToOne
+    @JoinColumn(name = "user_seq", nullable = false, unique = true) // UserEntity의 PK를 FK로 사용
+    private UserEntity userEntity;
 
 
-    public void setRefreshTokenContent(String refreshTokenContent) {
-        this.refreshTokenContent = refreshTokenContent;
-    }
-
-    public void setRefreshTokenExpiration(Date refreshTokenExpiration) {
-        this.refreshTokenExpiration = refreshTokenExpiration;
-    }
-
-    // RefreshEntity 생성자 수정
     public RefreshEntity(UserEntity userEntity, String refreshTokenContent, Date refreshTokenExpiration) {
         this.userEntity = userEntity;
         this.refreshTokenContent = refreshTokenContent;
         this.refreshTokenExpiration = refreshTokenExpiration;
     }
+    public void updateToken(String newToken, Date newExpiration) {
+        this.refreshTokenContent = newToken;
+        this.refreshTokenExpiration = newExpiration;
+    }
 }
+

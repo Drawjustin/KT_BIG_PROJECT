@@ -18,7 +18,6 @@ import java.io.PrintWriter;
 //JWT 검증 필터
 public class JWTFilter extends OncePerRequestFilter {
 
-
     private final JWTUtil jwtUtil;
 
     public JWTFilter(JWTUtil jwtUtil){
@@ -71,6 +70,7 @@ public class JWTFilter extends OncePerRequestFilter {
         //토큰에서 userEmail과 role 획득
         String userEmail = jwtUtil.getUserEmail(accessToken);
         String userRole = jwtUtil.getRole(accessToken);
+
 
         UserEntity userEntity = new UserEntity();
         userEntity.setUserEmail(userEmail);

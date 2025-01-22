@@ -1,11 +1,10 @@
 package com.example.demo.config;
 
-import com.example.demo.jwt.CustomLogoutFilter;
 import com.example.demo.jwt.JWTFilter;
 import com.example.demo.jwt.JWTUtil;
-import com.example.demo.jwt.LoginFilter;
 import com.example.demo.repository.RefreshRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.AccessTokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +15,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsConfiguration;
 import java.util.Collections;
@@ -27,41 +25,41 @@ import jakarta.servlet.http.HttpServletRequest;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    //AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
+    private final AccessTokenService accessTokenService;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
     private final UserRepository userRepository;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil,UserRepository userRepository,RefreshRepository refreshRepository) {
-
+    public SecurityConfig(
+            AccessTokenService accessTokenService,
+            AuthenticationConfiguration authenticationConfiguration,
+            JWTUtil jwtUtil,
+            UserRepository userRepository,
+            RefreshRepository refreshRepository) {
+        this.accessTokenService = accessTokenService;
         this.authenticationConfiguration = authenticationConfiguration;
-        this.jwtUtil=jwtUtil;
-        this.userRepository=userRepository;
-        this.refreshRepository=refreshRepository;
+        this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
+        this.refreshRepository = refreshRepository;
     }
 
     //AuthenticationManager Bean 등록, 이메일과 비밀번호 검증->유효 시 authentication객체 리턴
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-
         return configuration.getAuthenticationManager();
     }
 
-
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
-
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-
-
         //프론트엔드 서버3000으로 받기
         http
                 .cors((corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
-
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 
@@ -81,28 +79,24 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf.disable())
-                .csrf((auth)-> auth.disable())
                 .formLogin((auth)-> auth.disable())
                 .httpBasic((auth)-> auth.disable())
                 .authorizeHttpRequests((auth)-> auth
-                        .requestMatchers("/", "/home", "/signup","/api/**","/login").permitAll()
+                        .requestMatchers("/","/api/**","/api/login","/api/join","/api/reissue","/api/logout").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")//관리자만 접근가능
                         .requestMatchers("/user/**").hasRole("USER")  // 사용자만 접근 가능
                         .requestMatchers("/reissue").permitAll() //토큰 refresh 발급
                         .anyRequest().authenticated()); // 나머지 요청은 인증 필요
 
+        // JWT 필터 설정
         http
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
-        //필터 추가 LoginFilter()는 인자를 받음 (AuthenticationManager() 메소드에 authenticationConfiguration 객체를 넣어야 함) 따라서 등록 필요
-        http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, userRepository, refreshRepository), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil),
+                        UsernamePasswordAuthenticationFilter.class);
 
+        // 세션 관리 설정
         http
-                .addFilterBefore(new CustomLogoutFilter(jwtUtil,refreshRepository), LogoutFilter.class);
-
-        http
-                .sessionManagement((session)-> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }

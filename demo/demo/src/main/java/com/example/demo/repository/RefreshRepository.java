@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.entity.RefreshEntity;
+import com.example.demo.entity.UserEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,4 +12,11 @@ public interface RefreshRepository extends JpaRepository<RefreshEntity, Long> {
 
     @Transactional
     void deleteByRefreshTokenContent(String refreshTokenContent); //만료된 refresh토큰 삭제메소드
+
+    void deleteByUserEntity(UserEntity userEntity);
+
+    RefreshEntity findByUserEntity(UserEntity userEntity); // 사용자 엔터티로 RefreshEntity 조회
+
+
+
 }

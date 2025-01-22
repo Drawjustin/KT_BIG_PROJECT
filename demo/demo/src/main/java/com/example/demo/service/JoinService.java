@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.JoinDTO;
 import com.example.demo.entity.UserEntity;
+import com.example.demo.exception.EmailAlreadyExistsException;
 import com.example.demo.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,11 +27,10 @@ public class JoinService {
         String userNumber = joinDTO.getUserNumber();
         String userRole = joinDTO.getUserRole();
 
-        // 이메일 중복 확인
-        if (userRepository.existsByUserEmail(email)) {
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+        // 이메일 중복 체크
+        if (userRepository.existsByUserEmail(joinDTO.getUserEmail())) {
+            throw new EmailAlreadyExistsException("이미 사용 중인 이메일입니다.");
         }
-
         // 새로운 회원 정보 생성
         UserEntity user = new UserEntity(
                 email,
