@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Date;
 
 
 @Service
@@ -55,14 +56,25 @@ public class ReissueService {
 
             String userEmail = jwtUtil.getUserEmail(refreshToken);
             UserEntity userEntity = userRepository.findByUserEmail(userEmail);
+
             if (userEntity == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
 
             CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
-            String newAccessToken = jwtUtil.createJwt(customUserDetails, "access");
 
+            // 기존 토큰 찾아서 업데이트
+            String newRefreshToken = jwtUtil.createJwt(customUserDetails, "refresh");
+            RefreshEntity existingToken = refreshTokenService.findValidRefreshToken(userEntity);
+            existingToken.updateToken(newRefreshToken, new Date(System.currentTimeMillis() + 86400000L));
+
+            // 새로운 access 토큰 생성
+            String newAccessToken = jwtUtil.createJwt(customUserDetails, "access");
             accessTokenService.saveAccessToken(newAccessToken, 600000L);
+
+            // 둘 다 반환
+            response.setHeader("access", newAccessToken);
+            response.addCookie(createCookie("refresh", newRefreshToken));
 
             response.setHeader("access", newAccessToken);
             return ResponseEntity.ok(newAccessToken);
