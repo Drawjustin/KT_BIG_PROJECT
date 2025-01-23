@@ -1,8 +1,14 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './Input.module.css';
 
-const Input = ({ label, type, name, placeholder, onChange, value }) => (
+const Input = ({
+  label = '', // 기본값 설정
+  type,
+  name,
+  placeholder,
+  onChange,
+  value = '', // 기본값 설정
+}) => (
   <div className={styles.inputContainer}>
     {/* 라벨이 있는 경우 표시 */}
     {label && <label htmlFor={name} className={styles.label}>{label}</label>}
@@ -25,11 +31,6 @@ Input.propTypes = {
   placeholder: PropTypes.string.isRequired, // placeholder 텍스트
   onChange: PropTypes.func.isRequired, // 입력값 변경 핸들러
   value: PropTypes.string, // 입력값
-};
-
-Input.defaultProps = {
-  label: '', // 라벨이 없을 수도 있음
-  value: '', // 초기값 없음
 };
 
 export default Input;
