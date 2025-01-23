@@ -11,6 +11,8 @@ import LoginPage from './pages/login/LoginPage';
 import SignupPage from './pages/signup/SignupPage';
 import { Provider } from 'react-redux';
 import store from './store';
+import MyPage from './pages/mypage/myPage';
+import ProtectedRoute from './routes/ProtectedRoute';
 
 function App() {
   return (
@@ -21,11 +23,13 @@ function App() {
       <Navbar />
       <Routes>
         {/* 라우트 설정 */}
+        
         <Route path="/" element={<HomePage />} />
-        <Route path="/complaint" element={<Complaint />} />
-        <Route path="/official" element={<Official />} />
-        <Route path="/dataroom" element={<Filepage/>} />
+        <Route path="/complaint" element={<ProtectedRoute><Complaint/></ProtectedRoute>} /> {/**민원 도우미 */}
+        <Route path="/official" element={<Official />} /> {/**공무원 도우미 */}
+        <Route path="dataroom" element={<Filepage/>} />
         <Route path="/about" element={<About />} />
+        <Route path="/myPage" element={<MyPage/>} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         
