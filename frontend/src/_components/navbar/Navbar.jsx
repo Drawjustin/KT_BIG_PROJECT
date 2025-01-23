@@ -1,22 +1,23 @@
-import React from 'react';
-import styles from './Navbar.module.css';
 import { Link, useNavigate } from 'react-router-dom';
-import LoginButton from '../button/LoginButton';
+import { useSelector, useDispatch } from 'react-redux'; // Redux 훅
+import { logout } from '../../slices/loginSlice'; // 로그아웃 액션
+import styles from './Navbar.module.css';
 
-function Navbar() {
-  const navigate = useNavigate(); // useNavigate 훅 사용
+const Navbar = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleLoginClick = () => {
-    console.log("Login button clicked!");
-    navigate('/login'); // 로그인 페이지로 이동
+  // 로그인 상태를 Redux에서 가져오기
+  const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
+
+  const handleLogout = () => {
+    dispatch(logout()); // 로그아웃 액션 디스패치
+    navigate('/'); // 로그아웃 후 홈으로 이동
   };
-
-
 
   return (
     <nav className={styles.navbar}>
       <div className={styles.logo}>
-        {/* 로고 클릭 시 홈으로 이동 */}
         <Link to="/" className={styles.logoLink}>
           공무원SOS
         </Link>
@@ -36,10 +37,25 @@ function Navbar() {
         </li>
       </ul>
       <div className={styles.loginButtonContainer}>
-        <LoginButton onClick={handleLoginClick} />
+        {isLoggedIn ? (
+          <>
+            {/* 로그인 상태일 때 표시 */}
+            <Link to="/mypage" className={styles.menuLink}>
+              마이페이지
+            </Link>
+            <button onClick={handleLogout} className={styles.logoutButton}>
+              로그아웃
+            </button>
+          </>
+        ) : (
+          // 비로그인 상태일 때 표시
+          <button onClick={() => navigate('/login')} className={styles.loginButton}>
+            로그인
+          </button>
+        )}
       </div>
     </nav>
   );
-}
+};
 
 export default Navbar;

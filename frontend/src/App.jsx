@@ -9,11 +9,14 @@ import Filepage from './pages/filepage/Filepage';
 import About from './pages/about/About';
 import LoginPage from './pages/login/LoginPage';
 import SignupPage from './pages/signup/SignupPage';
-
+import { Provider } from 'react-redux';
+import store from './store';
 
 function App() {
   return (
-    <Router>
+
+    <Provider store={store}> {/** redux provider로 어플리케이션 감싸기 */}
+      <Router>
       {/* 공통 레이아웃 */}
       <Navbar />
       <Routes>
@@ -36,6 +39,8 @@ function App() {
       </Routes>
       <Footer />
     </Router>
+    </Provider>
+    
   );
 }
 
