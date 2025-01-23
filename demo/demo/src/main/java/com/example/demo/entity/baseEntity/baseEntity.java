@@ -6,6 +6,7 @@ import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +16,7 @@ public class baseEntity {
     @Column(updatable = false)
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    @Setter
     private Boolean isDeleted;
     @PrePersist
     public void prePersist() {
@@ -27,4 +29,5 @@ public class baseEntity {
     public void preUpdate(){
         updatedAt = LocalDateTime.now();
     }
+
 }

@@ -5,12 +5,16 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @Entity
+//@SQLDelete(sql = "UPDATE chat SET is_deleted = true WHERE id = ?")
+//@SQLRestriction("is_deleted = false")
 @Table(name = "chat")
 public class Chat extends baseEntity {
 

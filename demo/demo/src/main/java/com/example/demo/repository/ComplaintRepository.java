@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 
 @Repository
-public interface ComplaintRepository extends JpaRepository<Complaint, Long>{
+public interface ComplaintRepository extends JpaRepository<Complaint, Long>, ComplaintRepositoryCustom{
     // 다중 조건 필터링
     @Query("SELECT c FROM Complaint c " +
             "WHERE (:memberSeq IS NULL OR c.member.memberSeq = :memberSeq) " +

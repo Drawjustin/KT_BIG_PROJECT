@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,7 +15,9 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "files")
+//@SQLDelete(sql = "UPDATE file SET is_deleted = true WHERE id = ?")
+//@SQLRestriction("is_deleted = false")
+@Table(name = "file")
 public class File extends baseEntity {
 
     @Id

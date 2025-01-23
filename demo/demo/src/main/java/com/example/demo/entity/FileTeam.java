@@ -6,10 +6,14 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Entity
 @NoArgsConstructor
+//@SQLDelete(sql = "UPDATE file_team SET is_deleted = true WHERE id = ?")
+//@SQLRestriction("is_deleted = false")
 @Table(name="file_team")
 public class FileTeam extends baseEntity {
 
@@ -27,7 +31,6 @@ public class FileTeam extends baseEntity {
     private Team team;
 
     @Builder
-
     public FileTeam(FileTeamId fileTeamId, File file, Team team) {
         this.fileTeamId = fileTeamId;
         this.file = file;

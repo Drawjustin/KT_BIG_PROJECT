@@ -1,11 +1,14 @@
 package com.example.demo.entity;
 
+import com.example.demo.entity.baseEntity.baseEntity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,9 +19,11 @@ import java.util.List;
 @Entity
 @Builder
 @NoArgsConstructor
+//@SQLDelete(sql = "UPDATE complaint SET is_deleted = true WHERE id = ?")
+//@SQLRestriction("is_deleted = false")
 @AllArgsConstructor
 @Table(name = "complaint")
-public class Complaint {
+public class Complaint extends baseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // Primary Key, AUTO_INCREMENT
@@ -50,4 +55,15 @@ public class Complaint {
         this.complaintContent = complaintContent;
         this.complaintFilePath = complaintFilePath;
     }
+
+    public void updateComplaint(String title, String content, String newFilePath) {
+        complaintTitle = title;
+        complaintContent = content;
+        complaintFilePath = newFilePath;
+    }
+
+    public void deleteComplaint(){
+
+    }
+
 }

@@ -5,11 +5,15 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @Table(name = "team")
+//@SQLDelete(sql = "UPDATE team SET is_deleted = true WHERE id = ?")
+//@SQLRestriction("is_deleted = false")
 public class Team extends baseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
