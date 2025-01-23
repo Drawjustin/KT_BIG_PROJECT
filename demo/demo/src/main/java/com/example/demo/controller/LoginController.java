@@ -82,9 +82,12 @@ public class LoginController {
             // 쿠키 설정
             response.addCookie(createCookie("refresh", refreshTokenEntity.getRefreshTokenContent()));
 
+            //json에 acess토큰 발급
             return ResponseEntity.ok()
-                    .header("access", access)
-                    .body(Map.of("message", "로그인 성공"));
+                    .body(Map.of(
+                            "userEmail", user.getUserEmail(),
+                            "accessToken", access
+                    ));
 
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED)

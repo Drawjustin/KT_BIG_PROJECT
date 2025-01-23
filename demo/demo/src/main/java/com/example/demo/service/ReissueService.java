@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Map;
 
 
 @Service
@@ -73,11 +74,10 @@ public class ReissueService {
             accessTokenService.saveAccessToken(newAccessToken, 600000L);
 
             // 둘 다 반환
-            response.setHeader("access", newAccessToken);
             response.addCookie(createCookie("refresh", newRefreshToken));
 
-            response.setHeader("access", newAccessToken);
-            return ResponseEntity.ok(newAccessToken);
+            return ResponseEntity.ok()
+                    .body(Map.of("accessToken", newAccessToken));
 
         } catch (ExpiredJwtException e) {
             log.error("Token validation failed", e);
