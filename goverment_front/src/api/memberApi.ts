@@ -23,7 +23,7 @@ export const loginPost = async (loginParam: { email: string; pw: string }) => {
 
 
 
-// (test code) 백엔드 서버 없이 하드코딩으로 로그인 테스트 (이메일,패스워드 설정 및 fake jwt token 전달)
+// //(test code) 백엔드 서버 없이 하드코딩으로 로그인 테스트 (이메일,패스워드 설정 및 fake jwt token 전달)
 // export const loginPost = async (loginParam: { email: string; pw: string }) => {
 //   return new Promise((resolve, reject) => {
 //     setTimeout(() => {

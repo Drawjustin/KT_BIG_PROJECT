@@ -12,6 +12,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   if (!isLoggedIn) {
     // 비로그인 상태라면 로그인 페이지로 리다이렉트
+    alert("로그인 권한이 필요합니다. 로그인 페이지로 이동합니다.");
     return <Navigate to="/login" replace />;
   }
 
