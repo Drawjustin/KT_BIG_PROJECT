@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/complaint")
+@RequestMapping("/complaints")
 public class ComplaintController {
     private final ComplaintService complaintService;
 
@@ -21,7 +21,7 @@ public class ComplaintController {
     }
 
     // TODO : 민원 등록
-    @PostMapping("/")
+    @PostMapping("")
     @ResponseBody
     public ResponseEntity<?> createComplaint (ComplaintCreateRequestDTO complaintCreateRequestDTO) {
         return ResponseEntity.ok().body(complaintService.createComplaint(complaintCreateRequestDTO));
@@ -47,7 +47,7 @@ public class ComplaintController {
     }
 
     //  TODO : 민원 페이지 조회
-    @GetMapping("/complaints")
+    @GetMapping("")
     public ResponseEntity<Page<ComplaintResponseDTO>> findComplaintsByConditions(@RequestParam(required = false) Long departmentSeq, Pageable pageable) {
         Page<ComplaintResponseDTO> complaints = complaintService.findComplaintsByConditions(departmentSeq, pageable);
         return ResponseEntity.ok(complaints);
