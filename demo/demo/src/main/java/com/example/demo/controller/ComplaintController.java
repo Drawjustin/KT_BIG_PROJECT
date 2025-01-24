@@ -21,14 +21,14 @@ public class ComplaintController {
     }
 
     // TODO : 민원 등록
-    @PostMapping("/create")
+    @PostMapping("/")
     @ResponseBody
     public ResponseEntity<?> createComplaint (ComplaintCreateRequestDTO complaintCreateRequestDTO) {
         return ResponseEntity.ok().body(complaintService.createComplaint(complaintCreateRequestDTO));
     }
 
     // TODO : 민원 수정
-    @PutMapping("/{complaintSeq}/update")
+    @PutMapping("/{complaintSeq}")
     public ResponseEntity<String> complaintUpdate(@PathVariable Long complaintSeq, @ModelAttribute ComplaintUpdateRequestDTO updateRequestDTO) throws IOException {
         return ResponseEntity.ok(complaintService.updateComplaint(complaintSeq, updateRequestDTO));
     }

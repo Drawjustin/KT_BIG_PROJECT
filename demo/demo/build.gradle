@@ -47,7 +47,6 @@ dependencies {
 	implementation 'mysql:mysql-connector-java:8.0.33'
 
 	// build.gradle 파일에 추가
-	//implementation 'org.springframework.boot:spring-boot-test:3.4.1'
 	testImplementation 'com.fasterxml.jackson.core:jackson-databind'
 	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
