@@ -1,17 +1,18 @@
 package com.example.demo.exception;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-@RequiredArgsConstructor
 public enum ErrorCodeCustom implements ErrorCode {
 
     NO_AUTHORIZATION(HttpStatus.FORBIDDEN, "해당 기능에 대한 권한이 없는 사용자입니다"),
     DUPLICATE_VALUE(HttpStatus.BAD_REQUEST, "중복 값이 허용되지 않습니다"),
     NO_MEMBER(HttpStatus.BAD_REQUEST, "해당하는 사용자가 존재하지 않습니다"),
     NO_DEPARTMENT(HttpStatus.BAD_REQUEST,"해당하는 부서가 존재하지 않습니다."),
+    NO_COMPLAINT(HttpStatus.BAD_REQUEST,"해당하는 민원이 존재하지 않습니다."),
     REQUIRED_VALUE(HttpStatus.BAD_REQUEST, "필수 입력 값이 누락되었습니다."),
     FAIL_SAVED_FILE(HttpStatus.BAD_REQUEST,"알 수 없는 이유로 파일을 저장하는데 실패했습니다."),
     HEADER_ACCESS_TOKEN_NOT_EXISTS(HttpStatus.BAD_REQUEST, "access token이 존재하지 않습니다"),

@@ -2,39 +2,25 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.ComplaintCreateRequestDTO;
 import com.example.demo.dto.ComplaintResponseDTO;
-import com.example.demo.entity.Member;
-import com.example.demo.entity.Team;
-import com.example.demo.repository.MemberRepository;
 import com.example.demo.service.ComplaintService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.FileInputStream;
 
-import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.path;
-import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ComplaintController.class)
-//@SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 class ComplaintControllerTest {
 
@@ -50,31 +36,7 @@ class ComplaintControllerTest {
             return Mockito.mock(ComplaintService.class);
         }
 
-//        @Bean
-//        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//            http
-//                    // 전역적으로 CSRF 비활성화
-//                    .csrf(csrf -> csrf.disable())
-//                    .authorizeHttpRequests(auth -> auth
-//                            // 어떤 요청이든 인증 없이 허용
-//                            .anyRequest().permitAll()
-//                    );
-//
-//            return http.build();
-//        }
     }
-//    @Configuration
-//    static class WebConfig implements WebMvcConfigurer {
-//
-//        @Override
-//        public void addCorsMappings(CorsRegistry registry) {
-//            registry.addMapping("/**")
-//                    .allowedOrigins("*")
-//                    .allowedMethods("GET", "POST", "PUT", "DELETE")
-//                    .allowedHeaders("*");
-//        }
-//    }
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -86,8 +48,8 @@ class ComplaintControllerTest {
     void createComplaint() throws Exception {
         //Given
         final String fileName = "OfficialSOS"; //파일명
-        final String contentType = "jpg"; //파일타입
-        final String filePath = "C://KT_BIG_PROJECT//demo//demo//uploads//OfficialSOS.jpg"; //파일경로
+        final String contentType = "jpg";
+        final String filePath = "D:\\Github\\KT_BIG_PROJECT_complaint\\demo\\demo\\src\\main\\resources\\Lenna.png"; //파일경로
         FileInputStream fileInputStream = new FileInputStream(filePath);
 
         //Mock파일생성
@@ -105,9 +67,6 @@ class ComplaintControllerTest {
                 .content("test")
                 .file(image1)
                 .build();
-
-        Mockito.when(complaintService.createComplaint(Mockito.any()))
-                .thenReturn(new ComplaintResponseDTO());
 
         ComplaintResponseDTO complaintResponseDTO = new ComplaintResponseDTO();
         ResultActions resultActions = mockMvc.perform(

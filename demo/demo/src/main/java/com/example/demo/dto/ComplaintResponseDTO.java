@@ -1,6 +1,5 @@
 package com.example.demo.dto;
 
-import com.example.demo.entity.Complaint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

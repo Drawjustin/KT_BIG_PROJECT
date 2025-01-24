@@ -3,11 +3,13 @@ package com.example.demo.entity.embeddable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
+@NoArgsConstructor
 public class FileTeamId implements Serializable {
 
     @Column(name = "file_seq")

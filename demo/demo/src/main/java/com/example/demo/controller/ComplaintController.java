@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.*;
+import com.example.demo.dto.ComplaintCreateRequestDTO;
+import com.example.demo.dto.ComplaintResponseDTO;
+import com.example.demo.dto.ComplaintUpdateRequestDTO;
 import com.example.demo.service.ComplaintService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,11 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/complaint")
