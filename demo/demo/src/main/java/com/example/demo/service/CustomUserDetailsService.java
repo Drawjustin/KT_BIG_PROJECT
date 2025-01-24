@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 //DB에서 사용자 정보 로드
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -25,12 +27,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername (String userEmail) throws UsernameNotFoundException{
 
         //DB에 userEmail 조회
-        UserEntity userData=userRepository.findByUserEmail(userEmail);
-
-        if (userData == null) {
-            // 사용자 정보가 없을 경우 예외 발생
+        Optional<UserEntity> userOptional = userRepository.findByUserEmail(userEmail);
+        if (!userOptional.isPresent()) {
             throw new UsernameNotFoundException("User not found with email: " + userEmail);
         }
+        UserEntity userData = userOptional.get();
 
         // UserDetails에 담아서 반환
         return new CustomUserDetails(userData);

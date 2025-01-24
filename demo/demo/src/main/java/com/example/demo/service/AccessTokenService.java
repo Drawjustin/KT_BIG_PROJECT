@@ -11,27 +11,24 @@ public class AccessTokenService {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+    private final String  KEY_PREFIX = "access_token:"; // Access Token prefix
+
+    public AccessTokenService(RedisTemplate<String, String> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     // 액세스 토큰을 Redis에 저장 (만료 시간 설정)
-    public void saveAccessToken(String accessToken, long expirationMillis) {
-        redisTemplate.opsForValue().set(
-                accessToken,
-                "active",
-                expirationMillis,
-                TimeUnit.MILLISECONDS
-        );
+    public void saveAccessToken(String userEmail, String accessToken, long expireTime) {
+        String key = KEY_PREFIX + userEmail;
+        redisTemplate.delete(key);  // 기존 토큰 삭제
+        redisTemplate.opsForValue().set(key, accessToken, expireTime, TimeUnit.MILLISECONDS);
     }
 
-    public String getAccessToken() {
-        return redisTemplate.opsForValue().get("accessToken");
+    public String getAccessToken(String userEmail) {
+        return redisTemplate.opsForValue().get(KEY_PREFIX + userEmail);
     }
 
-    // 특정 액세스 토큰의 존재 여부 확인
-    public boolean isAccessTokenInRedis(String accessToken) {
-        return Boolean.TRUE.equals(redisTemplate.hasKey(accessToken));
-    }
-
-    public void deleteAccessToken(String accessToken) {
-        redisTemplate.delete(accessToken);  // 만료된 토큰 삭제
+    public void deleteAccessToken(String userEmail) {
+        redisTemplate.delete(KEY_PREFIX + userEmail);
     }
 }

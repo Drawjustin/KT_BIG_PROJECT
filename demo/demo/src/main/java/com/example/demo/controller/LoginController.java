@@ -74,7 +74,7 @@ public class LoginController {
             String access = jwtUtil.createJwt(customUserDetails, "access", accessTokenExpiration);
             String refresh = jwtUtil.createJwt(customUserDetails, "refresh", refreshTokenExpiration);
             // Redis에 access 토큰 저장
-            accessTokenService.saveAccessToken(access, accessTokenExpiration);
+            accessTokenService.saveAccessToken(userEmail,access, accessTokenExpiration);
 
             // refres토큰 저장
             RefreshEntity refreshTokenEntity = refreshTokenService.saveOrReuseRefreshToken(user, refresh);

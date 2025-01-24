@@ -1,14 +1,21 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.RefreshEntity;
+import com.example.demo.entity.UserEntity;
 import com.example.demo.jwt.JWTUtil;
 import com.example.demo.repository.RefreshRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AccessTokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -16,52 +23,35 @@ public class LogoutController {
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
     private final AccessTokenService accessTokenService;
+    private final UserRepository userRepository;
 
-    public LogoutController(JWTUtil jwtUtil, RefreshRepository refreshRepository,AccessTokenService accessTokenService) {
+    public LogoutController(JWTUtil jwtUtil, RefreshRepository refreshRepository,AccessTokenService accessTokenService,UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
         this.accessTokenService=accessTokenService;
+        this.userRepository=userRepository;
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
-        // 쿠키에서 리프레시 토큰 추출
-        String refreshToken = extractRefreshTokenFromCookie(request);
+    @Transactional
+    public ResponseEntity<String> logout(@RequestBody Map<String, String> request) {
 
-        if (refreshToken != null) {
-            try {
-                // 토큰 유효성 검증
-                if (!jwtUtil.isExpired(refreshToken) &&
-                        "refresh".equals(jwtUtil.getCategory(refreshToken))) {
+        String userEmail = request.get("userEmail");
+        // body에서 액세스토큰 추출
+        String accessToken = request.get("access");
 
-                    // 1. Redis의 access 토큰만 삭제
-                    String accessToken = request.getHeader("access");
-                    if (accessToken != null) {
-                        accessTokenService.deleteAccessToken(accessToken);
-                    }
+        // Redis에서 액세스 토큰 삭제
+        accessTokenService.deleteAccessToken(userEmail);
 
-                    // refresh 토큰은 삭제하지 않음 (재사용)
-                    // refreshRepository.deleteByRefreshTokenContent(refreshToken);
-
-                }
-            } catch (Exception e) {
-                // 토큰 검증 중 오류 발생
-                return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST)
-                        .body("로그아웃 처리 중 오류가 발생했습니다.");
-            }
+        // DB에서 리프레시 토큰 삭제
+        Optional<UserEntity> userOptional = userRepository.findByUserEmail(userEmail);
+        if (userOptional.isPresent()) {
+            refreshRepository.deleteByUserEntity(userOptional.get());
+            return ResponseEntity.ok("로그아웃 성공");
         }
 
-        // 보안 컨텍스트 클리어
-        SecurityContextHolder.clearContext();
 
-//        // 리프레시 토큰 쿠키 제거
-//        Cookie cookie = new Cookie("refresh", null);
-//        cookie.setMaxAge(0);
-//        cookie.setHttpOnly(true);
-//        cookie.setPath("/");
-//        response.addCookie(cookie);
-
-        return ResponseEntity.ok("로그아웃 성공");
+        return ResponseEntity.badRequest().body("사용자를 찾을 수 없습니다");
     }
 
     private String extractRefreshTokenFromCookie(HttpServletRequest request) {

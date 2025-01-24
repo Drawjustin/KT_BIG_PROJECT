@@ -22,8 +22,8 @@ public class PasswordService {
     }
 
     public void sendTemporaryPassword(String email) {
-        UserEntity user = userRepository.findByUserEmail(email);
-        if (user == null) throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        UserEntity user = userRepository.findByUserEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         String tempPassword = generateRandomPassword();
         user.setUserPassword(passwordEncoder.encode(tempPassword));
@@ -33,8 +33,8 @@ public class PasswordService {
     }
 
     public void updatePassword(String email, String newPassword) {
-        UserEntity user = userRepository.findByUserEmail(email);
-        if (user == null) throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        UserEntity user = userRepository.findByUserEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         user.setUserPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);

@@ -56,11 +56,8 @@ public class ReissueService {
             }
 
             String userEmail = jwtUtil.getUserEmail(refreshToken);
-            UserEntity userEntity = userRepository.findByUserEmail(userEmail);
-
-            if (userEntity == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-            }
+            UserEntity userEntity = userRepository.findByUserEmail(userEmail)
+                    .orElseThrow(() -> new RuntimeException("유저 없음"));
 
             CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
 
@@ -71,7 +68,7 @@ public class ReissueService {
 
             // 새로운 access 토큰 생성
             String newAccessToken = jwtUtil.createJwt(customUserDetails, "access");
-            accessTokenService.saveAccessToken(newAccessToken, 600000L);
+            accessTokenService.saveAccessToken(userEmail, newAccessToken, 600000L);
 
             // 둘 다 반환
             response.addCookie(createCookie("refresh", newRefreshToken));

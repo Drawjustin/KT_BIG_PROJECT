@@ -9,77 +9,76 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 //JWT 검증 필터
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
 
-    public JWTFilter(JWTUtil jwtUtil){
+    public JWTFilter(JWTUtil jwtUtil) {
 
-        this.jwtUtil=jwtUtil;
+        this.jwtUtil = jwtUtil;
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.equals("/api/login") ||
+                path.equals("/api/join") ||
+                path.equals("/api/logout") ||
+                path.equals("/api/reissue");
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         //헤더에서 access키에 담긴 토큰을 꺼냄
-        String accessToken= request.getHeader("access");
+        String accessToken = request.getHeader("access");
 
         //토큰이 없으면 다음 필터로 넘김
         if (accessToken == null) {
-
             filterChain.doFilter(request, response);
-
             //그다음 필터로 넘김
             return;
         }
 
         //토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
-        try{
+        try {
             jwtUtil.isExpired(accessToken);
-        }catch (ExpiredJwtException e){
-            //response body
-            PrintWriter writer=response.getWriter();
-            writer.print("access token 만료");
 
-            //다음 필터로 넘기지 않고 여기서 끝내기
+            // 토큰 검증
+            String category = jwtUtil.getCategory(accessToken);
+            if (!category.equals("access")) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("invalid access token");
+                return;
+            }
+            // 사용자 인증
+            setAuthentication(jwtUtil.getUserEmail(accessToken), jwtUtil.getRole(accessToken));
+            filterChain.doFilter(request, response);
+
+        } catch (ExpiredJwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            response.getWriter().write("access token expired");
         }
-
-        // 토큰이 access인지 확인 (발급시 페이로드에 명시)
-        String category = jwtUtil.getCategory(accessToken);
-
-        if (!category.equals("access")) {
-
-            //response body
-            PrintWriter writer = response.getWriter();
-            writer.print("invalid access token");
-
-            //response status code
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        //토큰에서 userEmail과 role 획득
-        String userEmail = jwtUtil.getUserEmail(accessToken);
-        String userRole = jwtUtil.getRole(accessToken);
-
-
+    }
+    private void setAuthentication(String userEmail, String userRole) {
         UserEntity userEntity = new UserEntity();
         userEntity.setUserEmail(userEmail);
         userEntity.setUserRole(userRole);
-        CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
 
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authToken);
-
-        filterChain.doFilter(request, response);
+        Authentication auth = new UsernamePasswordAuthenticationToken(
+                new CustomUserDetails(userEntity),
+                null,
+                List.of(new SimpleGrantedAuthority(userRole))
+        );
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
+
 }

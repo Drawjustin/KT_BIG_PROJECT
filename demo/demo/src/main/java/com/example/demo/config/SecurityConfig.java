@@ -82,7 +82,7 @@ public class SecurityConfig {
                 .formLogin((auth)-> auth.disable())
                 .httpBasic((auth)-> auth.disable())
                 .authorizeHttpRequests((auth)-> auth
-                        .requestMatchers("/","/api/**","/api/login","/api/join","/api/reissue","/api/logout").permitAll()
+                        .requestMatchers("/api/login","/api/join","/api/reissue","/api/logout").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")//관리자만 접근가능
                         .requestMatchers("/user/**").hasRole("USER")  // 사용자만 접근 가능
                         .requestMatchers("/reissue").permitAll() //토큰 refresh 발급
