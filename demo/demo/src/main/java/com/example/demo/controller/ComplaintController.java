@@ -29,7 +29,7 @@ public class ComplaintController {
 
     // TODO : 민원 수정
     @PutMapping("/{complaintSeq}")
-    public ResponseEntity<String> complaintUpdate(@PathVariable Long complaintSeq, @ModelAttribute ComplaintUpdateRequestDTO updateRequestDTO) throws IOException {
+    public ResponseEntity<String> complaintUpdate(@PathVariable Long complaintSeq, @ModelAttribute ComplaintUpdateRequestDTO updateRequestDTO) {
         return ResponseEntity.ok(complaintService.updateComplaint(complaintSeq, updateRequestDTO));
     }
 
@@ -42,15 +42,14 @@ public class ComplaintController {
 
     //  TODO : 민원 단건 조회
     @GetMapping("/{complaintSeq}")
-    public ResponseEntity<ComplaintResponseDTO> getComplaint(@PathVariable Long complaintSeq) {ComplaintResponseDTO responseDTO = complaintService.findComplaintById(complaintSeq);
-        return ResponseEntity.ok(responseDTO);
+    public ResponseEntity<ComplaintResponseDTO> getComplaint(@PathVariable Long complaintSeq) {
+        return ResponseEntity.ok(complaintService.findComplaintById(complaintSeq));
     }
 
     //  TODO : 민원 페이지 조회
     @GetMapping("")
     public ResponseEntity<Page<ComplaintResponseDTO>> findComplaintsByConditions(@RequestParam(required = false) Long departmentSeq, Pageable pageable) {
-        Page<ComplaintResponseDTO> complaints = complaintService.findComplaintsByConditions(departmentSeq, pageable);
-        return ResponseEntity.ok(complaints);
+        return ResponseEntity.ok(complaintService.findComplaintsByConditions(departmentSeq, pageable));
     }
 
 }
