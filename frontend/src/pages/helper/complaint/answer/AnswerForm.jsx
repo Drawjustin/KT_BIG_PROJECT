@@ -1,21 +1,62 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 import axios from "axios";
 
-const AnswerForm = () => {
+/** AI 민원 답변 생성 및 저장 API 호출 컴포넌트 */
+const AnswerForm = ({ complaintSeq, memberSeq = 1, teamSeq = 1, jwtToken }) => {
   const [answer, setAnswer] = useState(""); // 답변 내용
   const [loading, setLoading] = useState(false); // 로딩 상태
   const [error, setError] = useState(null); // 에러 상태
+  const [success, setSuccess] = useState(false); // 저장 성공 여부
 
   // AI API 호출하여 답변 자동 생성
   const generateAnswer = async () => {
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:5000/api/generate-answer", { // 백엔드 api 엔드 포인트 확인 필요. 
-        question: "현재 게시글에 대한 질문 내용" // 필요한 데이터를 AI API로 전달
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/generate-answer", // ai 응답 api
+        {
+          question: "현재 게시글에 대한 질문 내용", // 필요한 데이터를 AI API로 전달
+        }
+      );
       setAnswer(response.data.generatedAnswer); // 생성된 답변 설정
     } catch (err) {
       console.error("답변 생성 중 오류 발생:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 답변 저장 API 호출
+  const saveAnswer = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      setSuccess(false);
+
+      // FormData 객체 생성
+      const formData = new FormData();
+      formData.append("memberSeq", memberSeq); // 사용자 ID
+      formData.append("teamSeq", teamSeq); // 팀/부서 ID
+      formData.append("title", "Complaint Answer"); // 제목 (하드코딩, 필요시 변경)
+      formData.append("content", answer); // 답변 내용
+      formData.append("complaintSeq", complaintSeq); // 민원 번호 (외부에서 전달)
+
+      // 저장 API 호출
+      const response = await axios.post("http://localhost:8080/complaint/create", formData, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`, // JWT 토큰
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.status === 200) {
+        setSuccess(true);
+        alert(`답변이 성공적으로 저장되었습니다! Complaint Seq: ${response.data.complaintSeq}`);
+      }
+    } catch (err) {
+      console.error("저장 중 오류 발생:", err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -33,13 +74,27 @@ const AnswerForm = () => {
         className="answer-textarea"
       ></textarea>
       <div className="answer-actions">
+        {/* AI 답변 생성 버튼 */}
         <button onClick={generateAnswer} disabled={loading}>
           {loading ? "생성 중..." : "답변 자동 생성"}
         </button>
+        {/* 답변 저장 버튼 */}
+        <button onClick={saveAnswer} disabled={loading || !answer}>
+          {loading ? "저장 중..." : "저장"}
+        </button>
       </div>
       {error && <p className="error-message">오류 발생: {error}</p>}
+      {success && <p className="success-message">저장이 완료되었습니다.</p>}
     </div>
   );
+};
+
+/** PropTypes로 props 검증 */
+AnswerForm.propTypes = {
+  complaintSeq: PropTypes.number.isRequired, // 민원 번호, 필수
+  memberSeq: PropTypes.number, // 사용자 ID, 선택적 (기본값: 1)
+  teamSeq: PropTypes.number, // 팀/부서 ID, 선택적 (기본값: 1)
+  jwtToken: PropTypes.string.isRequired, // JWT 토큰, 필수
 };
 
 export default AnswerForm;

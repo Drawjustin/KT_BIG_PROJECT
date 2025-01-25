@@ -10,7 +10,7 @@ const AnswerWrite = () => {
   const [loading, setLoading] = useState(true); // 로딩 상태
   const [error, setError] = useState(null); // 에러 상태
 
-  // 백엔드 데이터 가져오기
+  // 백엔드 api 호출 : title, isBad, content, summary, date -> 어떤 타입으로 주는지 확인 필요, prop-type validation변경 필요
   const fetchPostData = async () => {
     try {
       setLoading(true);
