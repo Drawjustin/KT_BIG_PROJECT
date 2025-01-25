@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-
+import styles from '../Answer.module.css'
 /** 저장된 답변 데이터 렌더링 */
 const AnswerSave = ({ data }) => {
   if (!data) return <p>저장된 답변이 없습니다.</p>;
@@ -7,7 +7,7 @@ const AnswerSave = ({ data }) => {
   const { title, content, memberName, departmentName, updatedAt, filePath } = data;
 
   return (
-    <div className="answer-save-container">
+    <div className={styles["answer-view-container"]}>
       <h3>저장된 답변</h3>
       <p>
         <strong>제목:</strong> {title}

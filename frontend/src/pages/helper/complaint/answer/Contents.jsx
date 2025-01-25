@@ -1,15 +1,16 @@
 import PropTypes from "prop-types";
+import styles from '../Answer.module.css'
 
 const Contents = ({ data }) => {
   const { title, isBad, content, summary, date, department, complaint_seq } = data;
 
   return (
-    <div className="post-detail">
+    <div className={styles["post-detail"]}>
       {/* Title */}
-      <div className="title-section">
+      <div className={styles["title-section"]}>
         <h1>{title}</h1>
         {isBad && (
-          <div className="alert-message">
+          <div className={styles["alert-message"]}>
             경고이미지 해당 게시글은 악성으로 판단됩니다.
           </div>
         )}
@@ -25,17 +26,17 @@ const Contents = ({ data }) => {
       </div>
 
       {/* Content */}
-      <div className="content-section">
-        <div className="case-title">
+      <div className={styles["content-section"]}>
+        <div className={styles["case-title"]}>
           <h2>사례: {title}</h2>
         </div>
-        <div className="case-content">
+        <div className={styles["case-content"]}>
           <p>{content}</p>
         </div>
       </div>
 
       {/* Summary */}
-      <div className="summary-section">
+      <div className={styles["summary-section"]}>
         <h3>요약</h3>
         <p>{summary}</p>
       </div>

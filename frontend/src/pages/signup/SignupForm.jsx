@@ -4,6 +4,7 @@ import Input from '../../_components/button/Input';
 import Button from '../../_components/button/Button';
 import Checkbox from '../../_components/checkbox/Checkbox';
 import styles from './SignUpForm.module.css';
+import { useNavigate } from 'react-router-dom';
 
 const SignupForm = () => {
   const [form, setForm] = useState({
@@ -18,6 +19,7 @@ const SignupForm = () => {
     agreePrivacy: false,
   });
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); //navigate함수 초기화
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -54,7 +56,7 @@ const SignupForm = () => {
       return;
     }
 
-    if (!form.agreeTerms || !form.agreePrivacy || !form.agreeAge) {
+    if (!form.agreeTerms || !form.agreePrivacy ) {
       alert('필수 약관에 동의해주세요.');
       return;
     }
@@ -77,6 +79,7 @@ const SignupForm = () => {
       if (response.status === 201) {
         console.log('API Response:', response.data);
         alert('회원가입이 성공적으로 완료되었습니다!');
+        navigate('/login');
       } else {
         alert('예상치 못한 오류가 발생했습니다.');
       }

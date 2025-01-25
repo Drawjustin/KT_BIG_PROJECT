@@ -1,17 +1,21 @@
-import { useState } from "react";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 
-const Searchbar = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState("title"); // 기본 필터를 'title'로 설정
+const SearchBar = ({ onSearch }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filter, setFilter] = useState('title'); // 기본 필터를 'title'로 설정
 
   const handleSearch = () => {
-    onSearch(searchTerm, filter); // 전달받은 onSearch 함수 호출
+    onSearch(searchTerm, filter);
   };
 
   return (
-    <>
+    <div>
       <div>
-        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
           <option value="title">제목</option>
           <option value="body">내용</option>
         </select>
@@ -25,8 +29,12 @@ const Searchbar = ({ onSearch }) => {
         />
         <button onClick={handleSearch}>검색</button>
       </div>
-    </>
+    </div>
   );
 };
 
-export default Searchbar;
+SearchBar.propTypes = {
+  onSearch: PropTypes.func.isRequired,
+};
+
+export default SearchBar;

@@ -28,7 +28,7 @@ function App() {
         {/* <Route path="/complaint" element={<ProtectedRoute><Complaint/></ProtectedRoute>} /> *민원 도우미 */}
         <Route path="/complaint/*" element={<Complaint/>} /> {/*민원 도우미 */}
         <Route path="/official" element={<Official />} /> {/**공무원 도우미 */}
-        <Route path="dataroom" element={<Filepage/>} />
+        <Route path="/dataroom/*" element={<Filepage/>} />
         <Route path="/about" element={<About />} />
         <Route path="/myPage" element={<MyPage/>} />
         <Route path="/login" element={<LoginPage />} />

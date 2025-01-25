@@ -19,18 +19,18 @@
 // };
 
 
-// // (test code) 백엔드 서버 없이 하드코딩으로 로그인 테스트 (이메일, 패스워드 설정 및 fake jwt token 전달)
-// export const loginPost = async (loginParam) => {
-//   return new Promise((resolve, reject) => {
-//     setTimeout(() => {
-//       if (loginParam.email === 'test@example.com' && loginParam.pw === 'password123') {
-//         resolve({
-//           email: 'test@example.com',
-//           accessToken: 'fake-jwt-token',
-//         });
-//       } else {
-//         reject({ message: 'Invalid credentials' });
-//       }
-//     }, 1000); // 1초 딜레이
-//   });
-// };
+// (test code) 백엔드 서버 없이 하드코딩으로 로그인 테스트 (이메일, 패스워드 설정 및 fake jwt token 전달)
+export const loginPost = async (loginParam) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (loginParam.email === 'test@example.com' && loginParam.pw === 'password123') {
+        resolve({
+          email: 'test@example.com',
+          accessToken: 'fake-jwt-token',
+        });
+      } else {
+        reject({ message: 'Invalid credentials' });
+      }
+    }, 1000); // 1초 딜레이
+  });
+};

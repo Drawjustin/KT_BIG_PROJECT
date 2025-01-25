@@ -1,6 +1,9 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
+import styles from '../Answer.module.css'
+
+
 
 /** AI 민원 답변 생성 및 저장 API 호출 컴포넌트 */
 const AnswerForm = ({ complaintSeq, memberSeq = 1, teamSeq = 1, jwtToken }) => {
@@ -64,16 +67,16 @@ const AnswerForm = ({ complaintSeq, memberSeq = 1, teamSeq = 1, jwtToken }) => {
   };
 
   return (
-    <div className="answer-form-section">
+    <div className={styles["answer-form-section"]}>
       <h3>답변</h3>
       <textarea
         rows="5"
         value={answer}
         onChange={(e) => setAnswer(e.target.value)}
         placeholder="답변 내용을 입력하세요"
-        className="answer-textarea"
+        className={styles["answer-textarea"]}
       ></textarea>
-      <div className="answer-actions">
+      <div className={styles["answer-actions"]}>
         {/* AI 답변 생성 버튼 */}
         <button onClick={generateAnswer} disabled={loading}>
           {loading ? "생성 중..." : "답변 자동 생성"}
@@ -83,8 +86,8 @@ const AnswerForm = ({ complaintSeq, memberSeq = 1, teamSeq = 1, jwtToken }) => {
           {loading ? "저장 중..." : "저장"}
         </button>
       </div>
-      {error && <p className="error-message">오류 발생: {error}</p>}
-      {success && <p className="success-message">저장이 완료되었습니다.</p>}
+      {error && <p className={styles["error-message"]}>오류 발생: {error}</p>}
+      {success && <p className={styles["success-message"]}>저장이 완료되었습니다.</p>}
     </div>
   );
 };
