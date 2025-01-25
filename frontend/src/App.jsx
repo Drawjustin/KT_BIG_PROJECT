@@ -12,12 +12,12 @@ import SignupPage from './pages/signup/SignupPage';
 import { Provider } from 'react-redux';
 import store from './store';
 import MyPage from './pages/mypage/myPage';
-import ProtectedRoute from './routes/ProtectedRoute';
+//import ProtectedRoute from './routes/ProtectedRoute';
 
 function App() {
   return (
 
-    <Provider store={store}> {/** redux provider로 어플리케이션 감싸기 */}
+    <Provider store={store}> {/** redux provider로 어플리케이션 감싸기 for 상태관리 */}
       <Router>
       {/* 공통 레이아웃 */}
       <Navbar />
@@ -25,7 +25,8 @@ function App() {
         {/* 라우트 설정 */}
         
         <Route path="/" element={<HomePage />} />
-        <Route path="/complaint" element={<ProtectedRoute><Complaint/></ProtectedRoute>} /> {/**민원 도우미 */}
+        {/* <Route path="/complaint" element={<ProtectedRoute><Complaint/></ProtectedRoute>} /> *민원 도우미 */}
+        <Route path="/complaint/*" element={<Complaint/>} /> {/*민원 도우미 */}
         <Route path="/official" element={<Official />} /> {/**공무원 도우미 */}
         <Route path="dataroom" element={<Filepage/>} />
         <Route path="/about" element={<About />} />

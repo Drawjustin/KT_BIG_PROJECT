@@ -1,5 +1,5 @@
 // import axios from "axios";
-// 서버와 통신하는 비동기 함수 정의 파일
+// 서버와 통신하는 비동기 함수 정의 파일 : 로그인 상태관리를 위한 파일
 
 //const API_SERVER_HOST = 'http://localhost:5173';
 
@@ -20,6 +20,7 @@ export const loginPost = async (loginParam) => {
   return res.data; // 서버 응답 데이터 반환
 };
 */
+
 
 // (test code) 백엔드 서버 없이 하드코딩으로 로그인 테스트 (이메일, 패스워드 설정 및 fake jwt token 전달)
 export const loginPost = async (loginParam) => {
