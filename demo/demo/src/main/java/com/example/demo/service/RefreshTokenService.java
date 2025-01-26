@@ -77,12 +77,4 @@ public class RefreshTokenService {
         return refreshRepository.save(newToken);
     }
 
-    //토큰 삭제 메서드
-    @Transactional
-    public void deleteRefreshToken(UserEntity userEntity) {
-        RefreshEntity existingToken = refreshRepository.findByUserEntity(userEntity);
-        if (existingToken != null) {
-            refreshRepository.delete(existingToken);
-        }
-    }
 }

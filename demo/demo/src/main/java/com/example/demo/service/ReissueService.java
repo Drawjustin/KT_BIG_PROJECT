@@ -45,14 +45,14 @@ public class ReissueService {
         log.debug("Extracted Refresh Token: {}", refreshToken);
 
         if (refreshToken == null) {
-            return ResponseEntity.badRequest().body("refresh token null");
+            return ResponseEntity.badRequest().body("refresh token 없음");
         }
 
         try {
             if (jwtUtil.isExpired(refreshToken)) {
-                log.debug("Refresh Token is expired");
+                log.debug("Refresh Token 만료");
                 return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED)
-                        .body("refresh token expired");
+                        .body("refresh token 만료");
             }
 
             String userEmail = jwtUtil.getUserEmail(refreshToken);
