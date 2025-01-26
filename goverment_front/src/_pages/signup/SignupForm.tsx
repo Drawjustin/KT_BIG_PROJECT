@@ -5,6 +5,7 @@ import Button from '../../_components/button/Button';
 import Checkbox from '../../_components/button/Checkbox';
 import styles from './SignUpForm.module.css';
 import { useNavigate } from 'react-router-dom';
+//유효성검사..추가..해야함.
 
 // Form 상태 타입 정의
 interface FormState {
@@ -78,9 +79,9 @@ const SignupForm: React.FC = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:8080/api/join', //api end point
+        'https://8c21-122-37-19-2.ngrok-free.app/api/join', //api end point
         { // api request
-          userName: form.name,
+          userName: form.name, 
           userEmail: form.email,
           userId: form.username,
           userPassword: form.password,

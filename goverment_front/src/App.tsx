@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Navbar from './_components/navbar/Navbar';
@@ -21,11 +20,11 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/about" element={<ProtectedRoute><About/></ProtectedRoute>} />
-        <Route path="/board" element={<ProtectedRoute><List /></ProtectedRoute>} />
-        <Route path="/board/:id" element={<ProtectedRoute><Detail/></ProtectedRoute>} />
-        <Route path="/board/create" element={<ProtectedRoute><BoardForm isEdit={false} /></ProtectedRoute>} /> {/**게시판 등록 */}
-        <Route path="/board/edit/:id" element={<ProtectedRoute><BoardForm isEdit={true} /></ProtectedRoute>} />{/**게시판 수정 */}
+        <Route path="/about" element={<About/>} />
+        <Route path="/board" element={<List />} />
+        <Route path="/board/:id" element={<Detail/>} />
+        <Route path="/board/create" element={<BoardForm isEdit={false} />} /> {/**게시판 등록 */}
+        <Route path="/board/edit/:id" element={<BoardForm isEdit={true} />} />{/**게시판 수정 */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage/>} />
       </Routes>

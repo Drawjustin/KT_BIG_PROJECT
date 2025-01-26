@@ -9,6 +9,7 @@ export const setCookie = (name: string, value: string, days: number) => {
   cookies.set(name, value, { path: "/", expires });
 };
 
+
 /** 쿠키 가져오기 */
 export const getCookie = (name: string) => {
   return cookies.get(name);
@@ -17,4 +18,17 @@ export const getCookie = (name: string) => {
 /** 쿠키 삭제 */
 export const removeCookie = (name: string, path = "/") => {
   cookies.remove(name, { path });
+};
+
+
+/** 로그인 후 쿠키에 accessToken과 refreshToken 저장 */
+export const setMemberCookie = (accessToken: string, refreshToken: string, days: number = 7) => {
+  const memberData = JSON.stringify({ accessToken, refreshToken });
+  setCookie("member", memberData, days);
+};
+
+/** 로그인 후 쿠키에서 member 정보 가져오기 */
+export const getMemberCookie = () => {
+  const memberData = getCookie("member");
+  return memberData ? JSON.parse(memberData) : null;
 };

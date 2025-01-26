@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { getCookie, setCookie, removeCookie } from "./cookieUtils";
 
 const jwtAxios = axios.create({
-  baseURL: "https://your-api-url.com", // 기본 API URL
+  baseURL: 'https://8c21-122-37-19-2.ngrok-free.app', // 기본 API URL
   withCredentials: true, // 쿠키 전송 활성화
 });
 

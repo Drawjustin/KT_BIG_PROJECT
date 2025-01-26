@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from "react";
+ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "./Pagination";
 import SearchBar from "./Searchbar";
 import jwtAxios from "../../util/jwtUtils";
+//import axios from "axios";
+
+
+
+
 
 interface Post {
   complaintSeq: number;
@@ -39,6 +44,41 @@ const List: React.FC = () => {
       console.error("데이터를 가져오는 중 오류 발생:", error);
     }
   };
+  // const fetchPosts = async (page: number) => {
+  //   try {
+  //     const departmentSeq = 1;
+  //     console.log('요청 시작:', {
+  //       url: '/complaints',
+  //       params: { departmentSeq, page: page - 1, size: postsPerPage }
+  //     });
+  
+  //     const response = await axios.get(`https://8c21-122-37-19-2.ngrok-free.app/complaints`, {
+  //       params: {
+  //         departmentSeq,
+  //         page: page - 1,
+  //         size: postsPerPage,
+  //       },
+  //       headers: {
+  //         'Accept': 'application/json',
+  //         'ngrok-skip-browser-warning': 'true'
+
+  //       }
+  //     });
+      
+  //     // 디버깅용
+  //     console.log('응답 데이터:', response.data);
+  
+  //     console.log('응답:', response);
+  //     const { content, totalElements, totalPages } = response.data;
+  //     setPosts(content);
+  //     setFilteredPosts(content);
+  //     setTotalElements(totalElements);
+  //     setTotalPages(totalPages);
+  //   } catch (error: any) {
+  //     console.log('요청 설정:', error.config);
+  //     console.log('에러 상세:', error);
+  //   }
+  // };
 
   // 페이지 변경 시 데이터 로드
   useEffect(() => {
