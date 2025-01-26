@@ -1,10 +1,11 @@
 import React from 'react';
 
 interface PaginationProps {
-  totalItems: number; // 전체 데이터 수
+  totalItems: number; // 전체 데이터 수 (totalElements)
   itemsPerPage: number; // 한 페이지에 표시할 데이터 수
   currentPage: number; // 현재 페이지
   onPageChange: (page: number) => void; // 페이지 변경 핸들러
+  totalPages: number; // 전체 페이지 수
 }
 /**페이지 이동 컴포넌트 */
 const Pagination: React.FC<PaginationProps> = ({
@@ -12,9 +13,8 @@ const Pagination: React.FC<PaginationProps> = ({
   itemsPerPage,
   currentPage,
   onPageChange,
+  totalPages,
 }) => {
-  const totalPages = Math.ceil(totalItems / itemsPerPage); // 전체 페이지 수 계산
-
   return (
     <div className="pagination">
       {/* 맨 처음 버튼 */}

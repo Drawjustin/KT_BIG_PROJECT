@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import Input from '../../_components/button/Input';
 import Button from '../../_components/button/Button';
 import Checkbox from '../../_components/button/Checkbox';
@@ -17,9 +17,6 @@ interface FormState {
   agreeAll: boolean;
   agreeTerms: boolean;
   agreePrivacy: boolean;
-  agreeLocation: boolean;
-  agreeMarketing: boolean;
-  agreeAge: boolean;
 }
 
 const SignupForm: React.FC = () => {
@@ -33,9 +30,6 @@ const SignupForm: React.FC = () => {
     agreeAll: false,
     agreeTerms: false,
     agreePrivacy: false,
-    agreeLocation: false,
-    agreeMarketing: false,
-    agreeAge: false,
   });
 
   const [loading, setLoading] = useState(false);
@@ -58,9 +52,6 @@ const SignupForm: React.FC = () => {
         agreeAll: checked,
         agreeTerms: checked,
         agreePrivacy: checked,
-        agreeLocation: checked,
-        agreeMarketing: checked,
-        agreeAge: checked,
       }));
     } else {
       setForm((prevForm) => ({
@@ -78,7 +69,7 @@ const SignupForm: React.FC = () => {
       return;
     }
 
-    if (!form.agreeTerms || !form.agreePrivacy || !form.agreeAge) {
+    if (!form.agreeTerms || !form.agreePrivacy) {
       alert('필수 약관에 동의해주세요.');
       return;
     }
@@ -87,21 +78,38 @@ const SignupForm: React.FC = () => {
 
     try {
       const response = await axios.post(
-        'https://72d8028a-efbe-48a4-b90c-c1ab678f9f26.mock.pstmn.io/api/signup',
-        {
-          name: form.name,
-          email: form.email,
-          username: form.username,
-          password: form.password,
-          phone: form.phone,
+        'http://localhost:8080/api/join', //api end point
+        { // api request
+          userName: form.name,
+          userEmail: form.email,
+          userId: form.username,
+          userPassword: form.password,
+          userNumber: form.phone,
+          userRole :'ADMIN',
         }
       );
-      console.log('API Response:', response.data);
-      alert('회원가입이 성공적으로 완료되었습니다!');
-      navigate('/login'); 
+      if (response.status === 201) {
+        console.log('API Response:', response.data);
+        alert('회원가입이 성공적으로 완료되었습니다!');
+        navigate('/login');
+      } else {
+        alert('예상치 못한 오류가 발생했습니다.');
+      }
     } catch (error) {
-      console.error('API Error:', error);
-      alert('오류가 발생했습니다. 다시 시도해주세요.');
+      if (error instanceof AxiosError) {
+        // 이메일 중복 오류 처리 (409)
+        if (error.response && error.response.status === 409) {
+          alert('이미 사용 중인 이메일입니다.');
+        } else {
+          // 기타 Axios 오류 처리
+          console.error('API Error:', error.response?.data || error.message);
+          alert('오류가 발생했습니다. 다시 시도해주세요.');
+        }
+      } else {
+        // Axios가 아닌 다른 오류 처리
+        console.error('Unexpected Error:', error);
+        alert('알 수 없는 오류가 발생했습니다.');
+      }
     } finally {
       setLoading(false);
     }
@@ -175,24 +183,6 @@ const SignupForm: React.FC = () => {
           label="개인정보 처리방침 필수 동의"
           name="agreePrivacy"
           checked={form.agreePrivacy}
-          onChange={handleCheckboxChange}
-        />
-        <Checkbox
-          label="위치정보 이용 약관 필수 동의"
-          name="agreeLocation"
-          checked={form.agreeLocation}
-          onChange={handleCheckboxChange}
-        />
-        <Checkbox
-          label="마케팅 정보 수신 선택 동의"
-          name="agreeMarketing"
-          checked={form.agreeMarketing}
-          onChange={handleCheckboxChange}
-        />
-        <Checkbox
-          label="만 14세 이상에 필수 동의"
-          name="agreeAge"
-          checked={form.agreeAge}
           onChange={handleCheckboxChange}
         />
       </div>

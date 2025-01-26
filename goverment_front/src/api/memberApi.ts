@@ -2,10 +2,8 @@
 // // 서버와 통신하는 비동기 함수 정의 파일
 
 
-// const API_SERVER_HOST = 'http://localhost:5173';
+// const API_SERVER_HOST = 'http://localhost:8080';
 
-// // const host = `${API_SERVER_HOST}/api/member`;
-//  const host = `${API_SERVER_HOST}/api/member`;
 
 // // 로그인 API 호출 함수
 // export const loginPost = async (loginParam: { email: string; pw: string }) => {

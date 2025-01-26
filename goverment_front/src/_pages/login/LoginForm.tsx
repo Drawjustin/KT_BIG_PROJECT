@@ -24,8 +24,8 @@
 //     try {
 //       // loginParam 선언
 //       const loginParam = {
-//         email: form.email,
-//         pw: form.password, // password를 pw로 매핑
+//         userEmail: form.email,
+//         userPassword: form.password, // password를 pw로 매핑
 //       };
 
 //       // 비동기 디스패치 호출
