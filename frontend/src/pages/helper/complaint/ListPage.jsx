@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import styles from './ListPage.module.css'
+import { Link } from "react-router-dom";
 //import axios from "axios";
 
 const ListPage = () => {
@@ -29,6 +30,7 @@ const ListPage = () => {
 //       setLoading(false);
 //     }
 //   };
+
   // 목데이터 (위 JSON 데이터 사용)
   const mockData = {
     items: [
@@ -92,6 +94,7 @@ const ListPage = () => {
   if (error) return <p>오류 발생: {error}</p>;
 
   return (
+    
     <div className={styles.listPageContainer}>
       <h1>민원 목록</h1>
       <table className={styles.listTable}>
@@ -107,7 +110,10 @@ const ListPage = () => {
           {listData.map((item, index) => (
             <tr key={item.id}>
               <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-              <td>{item.title}</td>
+              <td>
+                {/* 제목에 Link 추가 */}
+                <Link to={`complaint/view/${item.id}`}>{item.title}</Link>
+              </td>
               <td>{item.department}</td>
               <td>{new Date(item.date).toLocaleDateString()}</td>
             </tr>

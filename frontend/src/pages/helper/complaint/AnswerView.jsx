@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom"; // useParams 임포트
 import Contents from "./answer/Contents";
 import AnswerSave from "./answer/AnswerSave";
 import styles from './Answer.module.css'
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 /** 민원 답변 상세 페이지 */
 const AnswerView = () => {
@@ -12,6 +14,7 @@ const AnswerView = () => {
   const [loading, setLoading] = useState(true); // 로딩 상태
   const [error, setError] = useState(null); // 에러 상태
   const { id } = useParams(); // URL에서 id 파라미터 추출
+  const navigate = useNavigate();
 
   // 임의 데이터 설정
   useEffect(() => {
@@ -49,14 +52,14 @@ const AnswerView = () => {
   //     setError(null);
 
   //     // 게시물 데이터 가져오기
-  //     const postResponse = await axios.get("http://localhost:5000/api/post-detail"); // 게시물 API
+  //     const postResponse = await axios.get("http://localhost:5000/api/${complaintSeq}"); // 게시물 API
   //     setPostData(postResponse.data);
 
   //     // 답변 데이터 가져오기
   //     const complaintSeq = localStorage.getItem("complaintSeq"); // 저장된 complaintSeq
   //     if (complaintSeq) {
   //       const answerResponse = await axios.get(
-  //         `http://localhost:8080/complaint/detail/${complaintSeq}` // 답변 API
+  //         `http://localhost:8080/complaint/${complaintSeq}` // 답변 API BE
   //       );
   //       setAnswerData(answerResponse.data);
   //     }
@@ -83,6 +86,8 @@ const AnswerView = () => {
       <hr />
       {/* 답변 내용 */}
       <AnswerSave data={answerData} />
+      {/*목록으로 리다이렉트 */}
+      <Button onClick={() => navigate("/complaint")}>목록</Button> 
     </div>
   );
 };

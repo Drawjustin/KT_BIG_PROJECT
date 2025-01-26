@@ -16,14 +16,12 @@ const Complaint = () => {
           {/* 상위 라우트에서 기본적으로 목록 페이지를 렌더링 */}
           <Route index element={<ListPage/>} />
           
-          {/* 민원 목록 */}
-          <Route path="list" element={<ListPage />} />
           
           {/* 민원 조회 */}
-          <Route path="view/:id" element={<AnswerView />} />
+          <Route path="complaint/view/:id" element={<AnswerView />} />
           
           {/* 민원 글쓰기 */}
-          <Route path="write" element={<AnswerWrite />} />
+          <Route path="complaint/write/:id" element={<AnswerWrite />} />
         </Routes>
       </div>
     );

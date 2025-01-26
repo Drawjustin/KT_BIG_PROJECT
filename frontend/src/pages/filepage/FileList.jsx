@@ -41,7 +41,7 @@ const FileList = () => {
         {currentPosts.map((post) => (
           <tr key={post.id}>
             <td>{post.id}</td>
-            <td><Link to={`/view/${post.id}`}>{post.title}</Link></td>
+            <td><Link to={`/dataroom/view/${post.id}`}>{post.title}</Link></td>
             <td>{post.author}</td>
             <td>{post.createdAt}</td>
           </tr>

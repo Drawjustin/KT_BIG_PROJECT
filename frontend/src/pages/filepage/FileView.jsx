@@ -31,20 +31,20 @@ const FileView = () => {
       <button onClick={handleEdit}>수정하기</button>
       <div style={{ marginTop: '20px' }}>
         {prevPost ? (
-          <Link to={`/view/${prevPost.id}`} style={{ marginRight: '10px' }}>
+          <Link to={`/dataroom/view/${prevPost.id}`} style={{ marginRight: '10px' }}>
             이전 글: {prevPost.title}
           </Link>
         ) : (
           <span style={{ marginRight: '10px', color: '#ccc' }}>이전 글 없음</span>
         )}
         {nextPost ? (
-          <Link to={`/view/${nextPost.id}`} style={{ marginRight: '10px' }}>
+          <Link to={`/dataroom/view/${nextPost.id}`} style={{ marginRight: '10px' }}>
             다음 글: {nextPost.title}
           </Link>
         ) : (
           <span style={{ marginRight: '10px', color: '#ccc' }}>다음 글 없음</span>
         )}
-        <button onClick={() => navigate('/')}>목록</button>
+        <button onClick={() => navigate('/dataroom')}>목록</button>
       </div>
     </div>
   );
