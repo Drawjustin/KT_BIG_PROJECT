@@ -9,8 +9,8 @@ interface PaginationProps {
 }
 /**페이지 이동 컴포넌트 */
 const Pagination: React.FC<PaginationProps> = ({
-  totalItems,
-  itemsPerPage,
+  // totalItems,
+  // itemsPerPage,
   currentPage,
   onPageChange,
   totalPages,

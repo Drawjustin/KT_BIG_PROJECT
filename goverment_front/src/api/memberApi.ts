@@ -25,13 +25,11 @@ import axios from "axios";
 // 서버와 통신하는 비동기 함수 정의 파일
 
 
-const API_SERVER_HOST = 'https://8c21-122-37-19-2.ngrok-free.app';
+const API_SERVER_HOST = 'https://c9a3-122-37-19-2.ngrok-free.app';
 
 export const loginPost = async (loginParam: { email: string; pw: string }) => {
   const headers = { headers: { "Content-Type": "application/json" },
-
-
-};
+  };
   
   const data = {
     userEmail: loginParam.email,

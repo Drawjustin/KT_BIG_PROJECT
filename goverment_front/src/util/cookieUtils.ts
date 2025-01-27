@@ -21,9 +21,9 @@ export const removeCookie = (name: string, path = "/") => {
 };
 
 
-/** 로그인 후 쿠키에 accessToken과 refreshToken 저장 */
-export const setMemberCookie = (accessToken: string, refreshToken: string, days: number = 7) => {
-  const memberData = JSON.stringify({ accessToken, refreshToken });
+/** 로그인 후 쿠키에 accessToken저장 */
+export const setMemberCookie = (accessToken: string, days: number = 7) => {
+  const memberData = JSON.stringify({ accessToken});
   setCookie("member", memberData, days);
 };
 

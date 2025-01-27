@@ -1,32 +1,35 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import jwtAxios from "../../util/jwtUtils";
+//import axios from "axios";
 
 interface FormState {
+
   title: string;
-  body: string;
-  userEmail: string;
-  files: File[]; // File 타입으로 수정
+  content: string;
+  file: File | null; // File 타입, 단일 파일만 처리
 }
 
 const BoardForm: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
   const [form, setForm] = useState<FormState>({
     title: "",
-    body: "",
-    userEmail: "",
-    files: [], // 초기값 File[]
+    content: "",
+    file: null 
   });
 
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchPost = async () => {
       if (isEdit && id) {
         try {
-          const response = await jwtAxios.get(`/complaint/${id}`);
-          const { title, body, userEmail } = response.data;
-          setForm({ title, body, userEmail, files: [] }); // files 초기화
+          const response = await jwtAxios.get(`/complaints/${id}`);
+          setForm({
+            title : response.data.title,
+            content : response.data.content,
+            file :null
+          })
         } catch (error) {
           alert("게시글을 불러오는 중 오류가 발생했습니다.");
           console.error(error);
@@ -44,36 +47,42 @@ const BoardForm: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
     }));
   };
 
+  // 파일 처리 수정
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files ? Array.from(e.target.files) : [];
-    setForm((prevForm) => ({
+    const file = e.target.files ? e.target.files[0] : null;
+    setForm(prevForm => ({
       ...prevForm,
-      files, // File[] 타입으로 설정
+      file
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form data being sent:', {
+      title: form.title,
+      content: form.content,
+      file: form.file
+    });
 
     const formData = new FormData();
     formData.append("title", form.title);
-    formData.append("content", form.body);
-    formData.append("memberSeq", form.userEmail);
-    form.files.forEach((file) => formData.append("files", file));
-
+    formData.append("content", form.content);
+    if (form.file) {
+      formData.append("file", form.file);
+    }
     try {
       if (isEdit && id) {
-        await jwtAxios.put(`/complaint/${id}`, formData, {
+        await jwtAxios.put(`/complaints/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         alert("게시글이 수정되었습니다.");
       } else {
-        await jwtAxios.post("/complaint", formData, {
+        await jwtAxios.post("/complaints", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         alert("게시글이 등록되었습니다.");
       }
-      navigate("/board");
+      window.location.href = '/board';
     } catch (error) {
       alert(isEdit ? "게시글 수정 중 오류가 발생했습니다." : "게시글 등록 중 오류가 발생했습니다.");
       console.error(error);
@@ -83,7 +92,7 @@ const BoardForm: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
   const handleDelete = async () => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
       try {
-        await jwtAxios.delete(`/complaint/${id}`);
+        await jwtAxios.delete(`/complaints/${id}`);
         alert("게시글이 삭제되었습니다.");
         navigate("/board");
       } catch (error) {
@@ -109,26 +118,26 @@ const BoardForm: React.FC<{ isEdit: boolean }> = ({ isEdit }) => {
           />
         </div>
         <div>
-          <label htmlFor="body">내용:</label>
+          <label htmlFor="content">내용:</label>
           <textarea
-            id="body"
-            name="body"
-            value={form.body}
+            id="content"
+            name="content"
+            value={form.content}
             onChange={handleChange}
             required
           />
         </div>
-        <div>
-          <label htmlFor="author">작성자:</label>
+        {/* <div>
+          <label htmlFor="memberName">작성자:</label>
           <input
             type="text"
-            id="author"
-            name="author"
-            value={form.userEmail}
+            id="memberName"
+            name="memberName"
+            value={form.memberName}
             onChange={handleChange}
             required
           />
-        </div>
+        </div> */}
         <div>
           <label htmlFor="files">파일 업로드:</label>
           <input

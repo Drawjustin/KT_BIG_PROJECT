@@ -1,13 +1,9 @@
- import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "./Pagination";
 import SearchBar from "./Searchbar";
 import jwtAxios from "../../util/jwtUtils";
-//import axios from "axios";
-
-
-
-
+import axios from "axios";
 
 interface Post {
   complaintSeq: number;
@@ -18,7 +14,7 @@ interface Post {
 
 const List: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]); // 초기값을 빈 배열로 설정
   const [currentPage, setCurrentPage] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -27,23 +23,91 @@ const List: React.FC = () => {
   // 백엔드에서 데이터 가져오기
   const fetchPosts = async (page: number) => {
     try {
-      const departmentSeq = 1; // 필요한 부서 ID 설정
       const response = await jwtAxios.get(`/complaints`, {
         params: {
-          departmentSeq,
           page: page - 1, // 백엔드 페이지는 0부터 시작
           size: postsPerPage,
         },
       });
+      console.log('데이터', response.data);
       const { content, totalElements, totalPages } = response.data;
-      setPosts(content);
-      setFilteredPosts(content);
-      setTotalElements(totalElements);
-      setTotalPages(totalPages);
+      setPosts(content || []); // content가 없으면 빈 배열로 처리
+      setFilteredPosts(content || []); // content가 없으면 빈 배열로 처리
+      setTotalElements(totalElements || 0);
+      setTotalPages(totalPages || 0);
     } catch (error) {
       console.error("데이터를 가져오는 중 오류 발생:", error);
     }
   };
+
+  // 페이지 변경 시 데이터 로드
+  useEffect(() => {
+    fetchPosts(currentPage);
+  }, [currentPage]);
+
+  // 검색 핸들러
+  const handleSearch = (searchTerm: string, filter: string) => {
+    const filtered = posts.filter((post) => {
+      if (filter === "title" && post.title) {
+        return post.title.toLowerCase().includes(searchTerm.toLowerCase());
+      } else if (filter === "memberName") {
+        return post.memberName.toLowerCase().includes(searchTerm.toLowerCase());
+      }
+      return false;
+    });
+    setFilteredPosts(filtered);
+    setCurrentPage(1); // 검색 시 첫 페이지로 이동
+  };
+
+  return (
+    <div>
+      <h1>민원 게시판</h1>
+      <SearchBar onSearch={handleSearch} />
+      <Link to="/board/create">게시글 작성</Link>
+      <table>
+        <thead>
+          <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성일</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredPosts.length > 0 ? (
+            filteredPosts.map((post) => (
+              <tr key={post.complaintSeq}>
+                <td>{post.complaintSeq}</td>
+                <td>
+                  <Link to={`/board/${post.complaintSeq}`}>
+                    {post.title || "(제목 없음)"}
+                  </Link>
+                </td>
+                <td>{post.memberName}</td>
+                <td>{new Date(post.updatedAt).toLocaleString()}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={4}>게시글이 없습니다.</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+      <Pagination
+        totalItems={totalElements}
+        itemsPerPage={postsPerPage}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
+    </div>
+  );
+};
+
+export default List;
+
+ // // 그냥 axios요청
   // const fetchPosts = async (page: number) => {
   //   try {
   //     const departmentSeq = 1;
@@ -80,66 +144,6 @@ const List: React.FC = () => {
   //   }
   // };
 
-  // 페이지 변경 시 데이터 로드
-  useEffect(() => {
-    fetchPosts(currentPage);
-  }, [currentPage]);
-
-  // 검색 핸들러
-  const handleSearch = (searchTerm: string, filter: string) => {
-    const filtered = posts.filter((post) => {
-      if (filter === "title" && post.title) {
-        return post.title.toLowerCase().includes(searchTerm.toLowerCase());
-      } else if (filter === "memberName") {
-        return post.memberName.toLowerCase().includes(searchTerm.toLowerCase());
-      }
-      return false;
-    });
-    setFilteredPosts(filtered);
-    setCurrentPage(1); // 검색 시 첫 페이지로 이동
-  };
-
-  return (
-    <div>
-      <h1>민원 게시판</h1>
-      <SearchBar onSearch={handleSearch} />
-      <Link to="/board/create">게시글 작성</Link>
-      <table>
-        <thead>
-          <tr>
-            <th>번호</th>
-            <th>제목</th>
-            <th>작성자</th>
-            <th>작성일</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredPosts.map((post) => (
-            <tr key={post.complaintSeq}>
-              <td>{post.complaintSeq}</td>
-              <td>
-                <Link to={`/board/${post.complaintSeq}`}>
-                  {post.title || "(제목 없음)"}
-                </Link>
-              </td>
-              <td>{post.memberName}</td>
-              <td>{new Date(post.updatedAt).toLocaleString()}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <Pagination
-        totalItems={totalElements}
-        itemsPerPage={postsPerPage}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
-    </div>
-  );
-};
-
-export default List;
 
 // import React, { useState, useEffect } from "react";
 // import { Link } from "react-router-dom";
