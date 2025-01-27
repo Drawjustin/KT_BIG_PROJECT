@@ -53,7 +53,7 @@ const responseFail = async (error) => {
         // Refresh Token으로 새 Access Token 요청
         const refreshResponse = await axios.post(
           REFRESH_TOKEN_ENDPOINT,
-          { refreshToken: memberInfo.refreshToken },
+          {},
           { withCredentials: true } // 쿠키 포함 요청
         );
 
