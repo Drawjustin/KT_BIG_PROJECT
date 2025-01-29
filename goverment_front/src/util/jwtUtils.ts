@@ -2,7 +2,7 @@ import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "ax
 import { getCookie, setCookie, removeCookie } from "./cookieUtils";
 
 const jwtAxios = axios.create({
-  baseURL: 'https://c9a3-122-37-19-2.ngrok-free.app', // 기본 API URL
+  baseURL: 'https://f5ba-122-37-19-2.ngrok-free.app', // 기본 API URL
   
   withCredentials: true, // 쿠키 전송 활성화
   
@@ -19,8 +19,8 @@ const beforeReq = (config: InternalAxiosRequestConfig): InternalAxiosRequestConf
   const memberInfo = getCookie("member");
 
   if (!memberInfo) {
-    alert('로그인이 만료되었습니다. 로그인 페이지로 이동합니다.');
-    console.log("Member NOT FOUND");
+    //alert('로그인이 만료되었습니다. 로그인 페이지로 이동합니다.');
+    //console.log("Member NOT FOUND");
     // fake token 생성 (테스트용)
     const fakeToken = "fake-token-12345";
 
