@@ -7,6 +7,7 @@ import com.example.demo.jwt.JWTUtil;
 import com.example.demo.repository.RefreshRepository;
 import com.example.demo.service.AccessTokenService;
 import com.example.demo.service.RefreshTokenService;
+import com.example.demo.utils.CookieUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,18 +35,21 @@ public class LoginController {
     private final AuthenticationManager authenticationManager;
     private final RefreshRepository refreshRepository;
     private final RefreshTokenService refreshTokenService;
+    private final CookieUtil cookieUtil;
 
     public LoginController(
             AccessTokenService accessTokenService,
             JWTUtil jwtUtil,
             AuthenticationManager authenticationManager,
             RefreshRepository refreshRepository,
-            RefreshTokenService refreshTokenService) {  // 생성자 주입
+            RefreshTokenService refreshTokenService,
+            CookieUtil cookieUtil) {  // 생성자 주입
         this.accessTokenService = accessTokenService;
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
         this.refreshRepository = refreshRepository;
         this.refreshTokenService=refreshTokenService;
+        this.cookieUtil=cookieUtil;
     }
 
 
@@ -80,7 +84,7 @@ public class LoginController {
             RefreshEntity refreshTokenEntity = refreshTokenService.saveOrReuseRefreshToken(user, refresh);
 
             // 쿠키 설정
-            response.addCookie(createCookie("refresh", refreshTokenEntity.getRefreshTokenContent()));
+            response.addCookie(cookieUtil.createCookie(refresh));
 
             //json에 acess토큰 발급
             return ResponseEntity.ok()
@@ -97,17 +101,5 @@ public class LoginController {
                     .body(Map.of("error", "서버 오류", "message", "로그인 처리 중 오류가 발생했습니다"));
         }
     }
-
-
-    // LoginFilter에서 가져온 쿠키 생성 메서드
-    private Cookie createCookie(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24 * 60 * 60);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);  // HTTPS 환경에서 추가
-        cookie.setPath("/");     // 경로 설정
-        return cookie;
-    }
-
 }
 

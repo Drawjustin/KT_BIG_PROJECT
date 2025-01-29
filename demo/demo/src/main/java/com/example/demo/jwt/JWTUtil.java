@@ -1,5 +1,6 @@
 package com.example.demo.jwt;
 
+import com.example.demo.config.JwtConfig;
 import com.example.demo.dto.CustomUserDetails;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -15,17 +16,15 @@ import java.util.Date;
 @Component
 public class JWTUtil {
 
-    @Value("${jwt.access-token.expiration}")
-    private long accessTokenExpiration;
+    private final JwtConfig jwtConfig;
+    private final SecretKey secretKey;
 
-    @Value("${jwt.refresh-token.expiration}")
-    private long refreshTokenExpiration;
-
-    private SecretKey secretKey;
-
-    public JWTUtil(@Value("${spring.jwt.secret}") String secret) {
-        secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),
-                SignatureAlgorithm.HS256.getJcaName());
+    public JWTUtil(JwtConfig jwtConfig) {
+        this.jwtConfig = jwtConfig;
+        this.secretKey = new SecretKeySpec(
+                jwtConfig.getJwtSecret().getBytes(StandardCharsets.UTF_8),
+                SignatureAlgorithm.HS256.getJcaName()
+        );
     }
 
     // CustomUserDetails 기반으로 JWT 생성 메소드
@@ -33,7 +32,9 @@ public class JWTUtil {
                             String category,
                             Long expiredMs) {
         // 토큰 만료 시간을 동적으로 설정
-        long expirationTime = category.equals("access") ? accessTokenExpiration : refreshTokenExpiration;
+        long expirationTime = category.equals("access")
+                ? jwtConfig.getAccessTokenExpiration()
+                : jwtConfig.getRefreshTokenExpiration();
 
         return Jwts.builder()
                 .claim("category", category)
