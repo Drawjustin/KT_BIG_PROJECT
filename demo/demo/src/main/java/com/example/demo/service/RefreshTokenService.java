@@ -6,6 +6,7 @@ import com.example.demo.jwt.JWTUtil;
 import com.example.demo.repository.RefreshRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -13,6 +14,12 @@ import java.util.Date;
 @Service
 @Slf4j
 public class RefreshTokenService {
+    @Value("${jwt.access-token.expiration}")
+    private long accessTokenExpiration; //액세스토큰
+
+    @Value("${jwt.refresh-token.expiration}")
+    private long refreshTokenExpiration;//리프레시토큰
+
     private final RefreshRepository refreshRepository;
     private final JWTUtil jwtUtil;
 
@@ -35,25 +42,6 @@ public class RefreshTokenService {
     }
 
     @Transactional
-    public RefreshEntity saveRefreshToken(UserEntity userEntity, String newRefreshToken) {
-        // 1. 기존 토큰이 있으면 무조건 삭제
-        RefreshEntity existingToken = refreshRepository.findByUserEntity(userEntity);
-        if (existingToken != null) {
-            refreshRepository.delete(existingToken);
-        }
-
-        // 2. 새 토큰 생성 및 저장
-        RefreshEntity newToken = new RefreshEntity(
-                userEntity,
-                newRefreshToken,
-                new Date(System.currentTimeMillis() + 86400000L)  // 24시간 후 만료
-        );
-
-        // 3. 무조건 새 토큰으로 덮어쓰기
-        return refreshRepository.save(newToken);
-    }
-
-    @Transactional
     public RefreshEntity saveOrReuseRefreshToken(UserEntity userEntity, String newRefreshToken) {
         // 1. 기존 토큰 조회
         RefreshEntity existingToken = refreshRepository.findByUserEntity(userEntity);
@@ -71,7 +59,7 @@ public class RefreshTokenService {
         RefreshEntity newToken = new RefreshEntity(
                 userEntity,
                 newRefreshToken,
-                new Date(System.currentTimeMillis() + 86400000L)
+                new Date(System.currentTimeMillis() + refreshTokenExpiration)
         );
 
         return refreshRepository.save(newToken);

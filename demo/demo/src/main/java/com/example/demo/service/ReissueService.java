@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,12 @@ import java.util.Map;
 @Service
 @Slf4j
 public class ReissueService {
+    @Value("${jwt.access-token.expiration}")
+    private long accessTokenExpiration; //액세스토큰
+
+    @Value("${jwt.refresh-token.expiration}")
+    private long refreshTokenExpiration;//리프레시토큰
+
     private final JWTUtil jwtUtil;
     private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
@@ -61,14 +68,14 @@ public class ReissueService {
 
             CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
 
-            // 기존 토큰 찾아서 업데이트
+            // 기존 리프레시 토큰 찾아서 업데이트
             String newRefreshToken = jwtUtil.createJwt(customUserDetails, "refresh");
             RefreshEntity existingToken = refreshTokenService.findValidRefreshToken(userEntity);
-            existingToken.updateToken(newRefreshToken, new Date(System.currentTimeMillis() + 86400000L));
+            existingToken.updateToken(newRefreshToken, new Date(System.currentTimeMillis() + refreshTokenExpiration));
 
             // 새로운 access 토큰 생성
             String newAccessToken = jwtUtil.createJwt(customUserDetails, "access");
-            accessTokenService.saveAccessToken(userEmail, newAccessToken, 600000L);
+            accessTokenService.saveAccessToken(userEmail, newAccessToken, accessTokenExpiration);
 
             // 둘 다 반환
             response.addCookie(createCookie("refresh", newRefreshToken));
