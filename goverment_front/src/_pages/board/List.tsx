@@ -1,81 +1,78 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Pagination from "./Pagination";
-import SearchBar from "./Searchbar";
+import ReactPaginate from 'react-paginate';
 import jwtAxios from "../../util/jwtUtils";
-import axios from "axios";
 
+// 게시글 타입 정의
 interface Post {
   complaintSeq: number;
   title: string | null;
   memberName: string;
+  departmentName: string;
+  content: string | null;
+  filePath: string | null;
   updatedAt: string;
 }
 
+// 페이지 정보 타입 정의
+interface PageResponse {
+  content: Post[];
+  page: {
+    size: number;
+    number: number;
+    totalElements: number;
+    totalPages: number;
+  };
+}
+
 const List: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]); // 초기값을 빈 배열로 설정
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalElements, setTotalElements] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const [pageData, setPageData] = useState<PageResponse | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
   const postsPerPage = 10;
 
-  // 백엔드에서 데이터 가져오기
   const fetchPosts = async (page: number) => {
     try {
-      const response = await jwtAxios.get(`/complaints`, {
+      const response = await jwtAxios.get<PageResponse>('/complaints', {
         params: {
-          page: page - 1, // 백엔드 페이지는 0부터 시작
+          page : page,
           size: postsPerPage,
         },
       });
-      console.log('데이터', response.data);
-      const { content, totalElements, totalPages } = response.data;
-      setPosts(content || []); // content가 없으면 빈 배열로 처리
-      setFilteredPosts(content || []); // content가 없으면 빈 배열로 처리
-      setTotalElements(totalElements || 0);
-      setTotalPages(totalPages || 0);
+      console.log('응답 데이터:', response.data); // 데이터 확인용
+      setPageData(response.data);
     } catch (error) {
       console.error("데이터를 가져오는 중 오류 발생:", error);
     }
   };
 
-  // 페이지 변경 시 데이터 로드
   useEffect(() => {
     fetchPosts(currentPage);
   }, [currentPage]);
 
-  // 검색 핸들러
-  const handleSearch = (searchTerm: string, filter: string) => {
-    const filtered = posts.filter((post) => {
-      if (filter === "title" && post.title) {
-        return post.title.toLowerCase().includes(searchTerm.toLowerCase());
-      } else if (filter === "memberName") {
-        return post.memberName.toLowerCase().includes(searchTerm.toLowerCase());
-      }
-      return false;
-    });
-    setFilteredPosts(filtered);
-    setCurrentPage(1); // 검색 시 첫 페이지로 이동
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    setCurrentPage(selected);
   };
 
   return (
     <div>
-      <h1>민원 게시판</h1>
-      <SearchBar onSearch={handleSearch} />
-      <Link to="/board/create">게시글 작성</Link>
+      <div>
+        <h1>민원 접수</h1>
+        <Link to="/board/create">접수하기</Link>
+      </div>
+
       <table>
         <thead>
           <tr>
             <th>번호</th>
             <th>제목</th>
             <th>작성자</th>
+            <th>부서</th>
             <th>작성일</th>
           </tr>
         </thead>
         <tbody>
-          {filteredPosts.length > 0 ? (
-            filteredPosts.map((post) => (
+          {pageData?.content?.length ? (
+            pageData.content.map((post) => (
               <tr key={post.complaintSeq}>
                 <td>{post.complaintSeq}</td>
                 <td>
@@ -84,151 +81,30 @@ const List: React.FC = () => {
                   </Link>
                 </td>
                 <td>{post.memberName}</td>
-                <td>{new Date(post.updatedAt).toLocaleString()}</td>
+                <td>{post.departmentName}</td>
+                <td>{new Date(post.updatedAt).toLocaleDateString('ko-KR')}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={4}>게시글이 없습니다.</td>
+              <td colSpan={5}>게시글이 없습니다.</td>
             </tr>
           )}
         </tbody>
       </table>
-      <Pagination
-        totalItems={totalElements}
-        itemsPerPage={postsPerPage}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
+
+      <ReactPaginate
+        previousLabel="<"
+        nextLabel=">"
+        breakLabel="..."
+        pageCount={pageData?.page?.totalPages || 0} // 전체 페이지 수
+        pageRangeDisplayed={5}
+        marginPagesDisplayed={2}
+        onPageChange={handlePageChange}
+        forcePage={pageData?.page?.number || 0} // 현재 페이지 번호
       />
     </div>
   );
 };
 
 export default List;
-
- // // 그냥 axios요청
-  // const fetchPosts = async (page: number) => {
-  //   try {
-  //     const departmentSeq = 1;
-  //     console.log('요청 시작:', {
-  //       url: '/complaints',
-  //       params: { departmentSeq, page: page - 1, size: postsPerPage }
-  //     });
-  
-  //     const response = await axios.get(`https://8c21-122-37-19-2.ngrok-free.app/complaints`, {
-  //       params: {
-  //         departmentSeq,
-  //         page: page - 1,
-  //         size: postsPerPage,
-  //       },
-  //       headers: {
-  //         'Accept': 'application/json',
-  //         'ngrok-skip-browser-warning': 'true'
-
-  //       }
-  //     });
-      
-  //     // 디버깅용
-  //     console.log('응답 데이터:', response.data);
-  
-  //     console.log('응답:', response);
-  //     const { content, totalElements, totalPages } = response.data;
-  //     setPosts(content);
-  //     setFilteredPosts(content);
-  //     setTotalElements(totalElements);
-  //     setTotalPages(totalPages);
-  //   } catch (error: any) {
-  //     console.log('요청 설정:', error.config);
-  //     console.log('에러 상세:', error);
-  //   }
-  // };
-
-
-// import React, { useState, useEffect } from "react";
-// import { Link } from "react-router-dom";
-// //import axios from "axios";
-// import Pagination from "./Pagination";
-// import SearchBar from "./Searchbar";
-// import { mockPosts } from '../../mock/posts';
-
-// interface Post {
-//   id: number;
-//   title: string;
-//   author: string;
-//   createdAt: string;
-// }
-
-// /**게시판 목록 */
-// const List: React.FC = () => {
-//   //   const [posts, setPosts] = useState<Post[]>([]);
-//   const [posts, setPosts] = useState(mockPosts); // 전체 데이터
-//   const [filteredPosts, setFilteredPosts] = useState<Post[]>(mockPosts);
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const postsPerPage = 10;
-
-// //   //백엔드 호출
-// //   useEffect(() => {
-// //     axios.get("/api/posts").then((response) => {
-// //       setPosts(response.data);
-// //       setFilteredPosts(response.data);
-// //     });
-// //   }, []);
-
-//   // 현재 페이지에 표시할 게시글
-//   const indexOfLastPost = currentPage * postsPerPage;
-//   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-//   const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
-
-//   // 검색 핸들러
-//   const handleSearch = (searchTerm: string, filter: string) => {
-//     const filtered = posts.filter((post) => {
-//       if (filter === "title") {
-//         return post.title.toLowerCase().includes(searchTerm.toLowerCase());
-//       } else if (filter === "body") {
-//         return post.body.toLowerCase().includes(searchTerm.toLowerCase());
-//       }
-//       return false;
-//     });
-//     setFilteredPosts(filtered);
-//     setCurrentPage(1); // 검색 시 첫 페이지로 이동
-//   };
-
-//   return (
-//     <div>
-//       <h1>민원 게시판</h1>
-//       <SearchBar onSearch={handleSearch} />
-//       <Link to="/board/create">게시글 작성</Link>
-//       <table>
-//         <thead>
-//           <tr>
-//             <th>번호</th>
-//             <th>제목</th>
-//             <th>작성자</th>
-//             <th>작성일</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {currentPosts.map((post) => (
-//             <tr key={post.id}>
-//               <td>{post.id}</td>
-//               <td>
-//                 <Link to={`/board/${post.id}`}>{post.title}</Link>
-//               </td>
-//               <td>{post.author}</td>
-//               <td>{post.createdAt}</td>
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-//       <Pagination
-//         totalItems={filteredPosts.length}
-//         itemsPerPage={postsPerPage}
-//         currentPage={currentPage}
-//         onPageChange={setCurrentPage}
-//       />
-//     </div>
-//   );
-// };
-
-// export default List;
