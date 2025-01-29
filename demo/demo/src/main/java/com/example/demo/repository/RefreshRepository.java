@@ -10,7 +10,6 @@ public interface RefreshRepository extends JpaRepository<RefreshEntity, Long> {
 
     Boolean existsByRefreshTokenContent(String refreshTokenContent); //refresh토큰이 존재하는지 확인메소드
 
-    @Transactional
     void deleteByRefreshTokenContent(String refreshTokenContent); //만료된 refresh토큰 삭제메소드
 
     void deleteByUserEntity(UserEntity userEntity);

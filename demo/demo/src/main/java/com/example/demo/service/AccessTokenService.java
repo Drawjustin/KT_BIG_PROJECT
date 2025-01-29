@@ -24,6 +24,11 @@ public class AccessTokenService {
         redisTemplate.opsForValue().set(key, accessToken, expireTime, TimeUnit.MILLISECONDS);
     }
 
+    public boolean validateAccessToken(String userEmail, String accessToken) {
+        String storedToken = getAccessToken(userEmail);
+        return storedToken != null && storedToken.equals(accessToken);
+    }
+
     public String getAccessToken(String userEmail) {
         return redisTemplate.opsForValue().get(KEY_PREFIX + userEmail);
     }

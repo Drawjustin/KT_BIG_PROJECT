@@ -83,12 +83,16 @@ public class JWTUtil {
 
     //만료시간 확인
     public Boolean isExpired(String token) {
-        return Jwts.parser()
+        // Jwts.parser()로 토큰을 파싱하면서 만료 여부 확인
+        Date expiration = Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
-                .getExpiration()
-                .before(new Date());
+                .getExpiration();
+
+        // 현재 시간과 만료 시간을 비교
+        // 만료 시간이 현재 시간 이전이면 만료된 것
+        return expiration.before(new Date());
     }
 }

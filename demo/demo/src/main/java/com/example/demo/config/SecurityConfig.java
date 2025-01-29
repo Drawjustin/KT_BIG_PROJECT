@@ -70,7 +70,7 @@ public class SecurityConfig {
 
         // JWT 필터 설정
         http
-                .addFilterBefore(new JWTFilter(jwtUtil),
+                .addFilterBefore(new JWTFilter(jwtUtil, accessTokenService),
                         UsernamePasswordAuthenticationFilter.class);
 
         // 세션 관리 설정

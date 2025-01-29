@@ -23,15 +23,4 @@ public class BaseEntity {
     @Column(name = "is_deleted")
     private Boolean isDeleted=false; // 삭제 여부, 디폴트 false
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
-    }
 }

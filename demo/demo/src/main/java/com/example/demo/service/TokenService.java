@@ -82,10 +82,11 @@ public class TokenService {
         return jwtUtil.getUserEmail(token);
     }
 
+    @Transactional
     public void deleteAccessToken(String userEmail) {
         accessTokenService.deleteAccessToken(userEmail);
     }
-    
+
     @Transactional
     public void deleteRefreshToken(UserEntity userEntity) {
         refreshRepository.deleteByUserEntity(userEntity);

@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.JwtConfig;
 import com.example.demo.dto.CustomUserDetails;
 import com.example.demo.entity.RefreshEntity;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.jwt.JWTUtil;
 import com.example.demo.repository.RefreshRepository;
 import com.example.demo.service.AccessTokenService;
+import com.example.demo.service.TokenService;
 import com.example.demo.utils.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,32 +23,29 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class LoginController {
-    @Value("${jwt.access-token.expiration}")
-    private Long accessTokenExpiration;
-
-    @Value("${jwt.refresh-token.expiration}")
-    private Long refreshTokenExpiration;
-
     private final AccessTokenService accessTokenService;
     private final JWTUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final RefreshRepository refreshRepository;
-    private final RefreshTokenService refreshTokenService;
+    private final TokenService tokenService;
     private final CookieUtil cookieUtil;
+    private final JwtConfig jwtConfig;
 
     public LoginController(
             AccessTokenService accessTokenService,
             JWTUtil jwtUtil,
             AuthenticationManager authenticationManager,
             RefreshRepository refreshRepository,
-            RefreshTokenService refreshTokenService,
-            CookieUtil cookieUtil) {  // 생성자 주입
+            TokenService tokenService,
+            CookieUtil cookieUtil,
+            JwtConfig jwtConfig) {  // 생성자 주입
         this.accessTokenService = accessTokenService;
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
         this.refreshRepository = refreshRepository;
-        this.refreshTokenService=refreshTokenService;
+        this.tokenService=tokenService;
         this.cookieUtil=cookieUtil;
+        this.jwtConfig = jwtConfig;
     }
 
 
@@ -71,14 +70,13 @@ public class LoginController {
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
             UserEntity user = customUserDetails.getUserEntity();
 
-            // 토큰 생성 시 하드코딩 대신 위 변수 사용
-            String access = jwtUtil.createJwt(customUserDetails, "access", accessTokenExpiration);
-            String refresh = jwtUtil.createJwt(customUserDetails, "refresh", refreshTokenExpiration);
-            // Redis에 access 토큰 저장
-            accessTokenService.saveAccessToken(userEmail,access, accessTokenExpiration);
+            // Access Token 생성 및 저장
+            String access = jwtUtil.createJwt(customUserDetails, "access", jwtConfig.getAccessTokenExpiration());
+            accessTokenService.saveAccessToken(userEmail, access, jwtConfig.getAccessTokenExpiration());
 
-            // refres토큰 저장
-            RefreshEntity refreshTokenEntity = refreshTokenService.saveOrReuseRefreshToken(user, refresh);
+            // Refresh Token 생성 및 저장
+            String refresh = jwtUtil.createJwt(customUserDetails, "refresh", jwtConfig.getRefreshTokenExpiration());
+            tokenService.createOrUpdateRefreshToken(user, customUserDetails);
 
             // 쿠키 설정
             response.addCookie(cookieUtil.createCookie(refresh));

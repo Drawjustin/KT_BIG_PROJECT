@@ -2,6 +2,7 @@ package com.example.demo.jwt;
 
 import com.example.demo.dto.CustomUserDetails;
 import com.example.demo.entity.UserEntity;
+import com.example.demo.service.AccessTokenService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,10 +22,12 @@ import java.util.List;
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
+    private final AccessTokenService accessTokenService;
 
-    public JWTFilter(JWTUtil jwtUtil) {
+    public JWTFilter(JWTUtil jwtUtil,AccessTokenService accessTokenService) {
 
         this.jwtUtil = jwtUtil;
+        this.accessTokenService=accessTokenService;
     }
 
     @Override
@@ -59,6 +62,16 @@ public class JWTFilter extends OncePerRequestFilter {
                 response.getWriter().write("invalid access token");
                 return;
             }
+
+            // userEmail 추출
+            String userEmail = jwtUtil.getUserEmail(accessToken);
+
+            // Redis에 저장된 토큰과 비교
+            if (!accessTokenService.validateAccessToken(userEmail, accessToken)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+
             // 사용자 인증
             setAuthentication(jwtUtil.getUserEmail(accessToken), jwtUtil.getRole(accessToken));
             filterChain.doFilter(request, response);
