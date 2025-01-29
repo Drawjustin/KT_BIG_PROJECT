@@ -2,27 +2,30 @@ import PropTypes from "prop-types";
 import styles from '../Answer.module.css'
 
 const Contents = ({ data }) => {
-  const { title, isBad, content, summary, date, department, complaint_seq } = data;
+  const { 
+    title, 
+    bad,              // isBad -> bad
+    content, 
+    summary, 
+    date, 
+    departmentName,   // department -> departmentName
+    complaintSeq,     // complaint_seq -> complaintSeq
+    memberName        // 추가
+  } = data;
 
   return (
     <div className={styles["post-detail"]}>
-      {/* Title */}
       <div className={styles["title-section"]}>
         <h1>{title}</h1>
-        {isBad && (
+        {bad && (                   // isBad -> bad
           <div className={styles["alert-message"]}>
             경고이미지 해당 게시글은 악성으로 판단됩니다.
           </div>
         )}
-        <div>
-          작성일 : {date}
-        </div>
-        <div>
-          부서 : {department}
-        </div>
-        <div>
-          민원 번호 : {complaint_seq}
-        </div>
+        <div>작성일 : {date}</div>
+        <div>부서 : {departmentName}</div>    {/* department -> departmentName */}
+        <div>민원 번호 : {complaintSeq}</div> {/* complaint_seq -> complaintSeq */}
+        <div>작성자 : {memberName}</div>      {/* 추가 */}
       </div>
 
       {/* Content */}
@@ -43,18 +46,24 @@ const Contents = ({ data }) => {
     </div>
   );
 };
-
-/** PropTypes로 props 검증 */
 Contents.propTypes = {
   data: PropTypes.shape({
-    title: PropTypes.string.isRequired, // 제목
-    isBad: PropTypes.bool.isRequired, // 악성 여부
-    content: PropTypes.string.isRequired, // 내용
-    summary: PropTypes.string.isRequired, // 요약
-    date: PropTypes.string.isRequired, // 작성일
-    department: PropTypes.string.isRequired, // 부서 정보
-    complaint_seq: PropTypes.number.isRequired, // 민원 번호
+    title: PropTypes.string.isRequired,
+    bad: PropTypes.bool.isRequired,  // isBad -> bad
+    content: PropTypes.string.isRequired,
+    summary: PropTypes.string.isRequired,
+    date: PropTypes.string.isRequired,
+    departmentName: PropTypes.string.isRequired, // department -> departmentName
+    complaintSeq: PropTypes.number.isRequired,  // complaint_seq -> complaintSeq
+    memberName: PropTypes.string.isRequired,    // 추가
+    filePath: PropTypes.string,                 // 추가 (필요시)
+    commentResponseDTOList: PropTypes.arrayOf(   // 추가
+      PropTypes.shape({
+        complaintCommentSeq: PropTypes.number.isRequired,
+        content: PropTypes.string.isRequired,
+        updatedAt: PropTypes.string.isRequired
+      })
+    )
   }),
 };
-
 export default Contents;
