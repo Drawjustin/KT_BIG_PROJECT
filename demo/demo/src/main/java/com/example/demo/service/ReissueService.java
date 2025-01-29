@@ -26,60 +26,44 @@ import java.util.Map;
 @Service
 @Slf4j
 public class ReissueService {
-    private final JWTUtil jwtUtil;
     private final UserRepository userRepository;
-    private final RefreshTokenService refreshTokenService;
-    private final AccessTokenService accessTokenService;
+    private final TokenService tokenService;
     private final CookieUtil cookieUtil;
-    private final JwtConfig jwtConfig;
 
     public ReissueService(
-            JWTUtil jwtUtil,
             UserRepository userRepository,
-            RefreshTokenService refreshTokenService,
-            AccessTokenService accessTokenService,
-            CookieUtil cookieUtil,
-            JwtConfig jwtConfig) {
-        this.jwtUtil = jwtUtil;
+            TokenService tokenService,
+            CookieUtil cookieUtil) {
         this.userRepository = userRepository;
-        this.refreshTokenService = refreshTokenService;
-        this.accessTokenService = accessTokenService;
-        this.cookieUtil=cookieUtil;
-        this.jwtConfig=jwtConfig;
+        this.tokenService = tokenService;
+        this.cookieUtil = cookieUtil;
     }
 
     @Transactional
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = cookieUtil.extractRefreshToken(request);
-
-        if (refreshToken == null) {
-            return ResponseEntity.badRequest().body("refresh token 없음");
-        }
-
         try {
-            if (jwtUtil.isExpired(refreshToken)) {
-                log.debug("Refresh Token 만료");
+            String refreshToken = cookieUtil.extractRefreshToken(request);
+
+            if (!tokenService.validateRefreshToken(refreshToken)) {
+                log.debug("Invalid or expired refresh token");
                 return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED)
-                        .body("refresh token 만료");
+                        .body("유효하지 않은 refresh token");
             }
 
-            String userEmail = jwtUtil.getUserEmail(refreshToken);
+            String userEmail = tokenService.getUserEmailFromToken(refreshToken);
             UserEntity userEntity = userRepository.findByUserEmail(userEmail)
-                    .orElseThrow(() -> new RuntimeException("유저 없음"));
+                    .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
 
             CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
 
-            // 기존 리프레시 토큰 찾아서 업데이트
-            String newRefreshToken = jwtUtil.createJwt(customUserDetails, "refresh");
-            RefreshEntity existingToken = refreshTokenService.findValidRefreshToken(userEntity);
-            existingToken.updateToken(newRefreshToken, new Date(System.currentTimeMillis() + jwtConfig.getRefreshTokenExpiration()));
+            // Access Token 생성
+            String newAccessToken = tokenService.createNewAccessToken(customUserDetails);
 
-            // 새로운 access 토큰 생성
-            String newAccessToken = jwtUtil.createJwt(customUserDetails, "access");
-            accessTokenService.saveAccessToken(userEmail, newAccessToken, jwtConfig.getAccessTokenExpiration());
+            // Refresh Token 갱신 및 업데이트
+            tokenService.createOrUpdateRefreshToken(userEntity, customUserDetails);
 
-            // 새로운 리프레시 토큰을 쿠키에 설정
-            response.addCookie(cookieUtil.createCookie(newRefreshToken));
+            // 쿠키 갱신
+            response.addCookie(cookieUtil.createCookie(refreshToken));
 
             return ResponseEntity.ok()
                     .body(Map.of("accessToken", newAccessToken));
