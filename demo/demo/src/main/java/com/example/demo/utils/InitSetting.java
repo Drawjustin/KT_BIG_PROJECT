@@ -24,7 +24,7 @@ public class InitSetting {
 
         @Transactional
         public void init(){
-            InitOranization();
+            InitOrganization();
             InitDepartment();
             InitTeam();
             InitAdmin();
@@ -50,7 +50,7 @@ public class InitSetting {
         }
 
 
-        private void InitOranization() {
+        private void InitOrganization() {
             Organization organization = Organization.builder()
                     .organizationName("성남시청")
                     .build();

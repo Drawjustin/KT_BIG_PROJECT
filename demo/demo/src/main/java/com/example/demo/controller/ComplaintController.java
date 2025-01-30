@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.ComplaintCreateRequestDTO;
 import com.example.demo.dto.ComplaintResponseDTO;
+import com.example.demo.dto.ComplaintSearchCondition;
 import com.example.demo.dto.ComplaintUpdateRequestDTO;
 import com.example.demo.service.ComplaintService;
 import org.springframework.data.domain.Page;
@@ -22,14 +23,14 @@ public class ComplaintController {
 
     // TODO : 민원 등록
     @PostMapping("")
-    @ResponseBody
-    public ResponseEntity<?> createComplaint (ComplaintCreateRequestDTO complaintCreateRequestDTO) {
+    public ResponseEntity<?> createComplaint (@ModelAttribute ComplaintCreateRequestDTO complaintCreateRequestDTO) {
         return ResponseEntity.ok().body(complaintService.createComplaint(complaintCreateRequestDTO));
     }
 
     // TODO : 민원 수정
     @PutMapping("/{complaintSeq}")
     public ResponseEntity<String> complaintUpdate(@PathVariable Long complaintSeq, @ModelAttribute ComplaintUpdateRequestDTO updateRequestDTO) {
+        System.out.println("updateRequestDTO = " + updateRequestDTO);
         return ResponseEntity.ok(complaintService.updateComplaint(complaintSeq, updateRequestDTO));
     }
 
@@ -48,8 +49,8 @@ public class ComplaintController {
 
     //  TODO : 민원 페이지 조회
     @GetMapping("")
-    public ResponseEntity<Page<ComplaintResponseDTO>> findComplaintsByConditions(@RequestParam(required = false) Long departmentSeq, Pageable pageable) {
-        return ResponseEntity.ok(complaintService.findComplaintsByConditions(departmentSeq, pageable));
+    public ResponseEntity<Page<ComplaintResponseDTO>> findComplaintsByConditions(@ModelAttribute ComplaintSearchCondition condition, Pageable pageable) {
+        return ResponseEntity.ok(complaintService.findComplaintsByConditions(condition, pageable));
     }
 
 }
