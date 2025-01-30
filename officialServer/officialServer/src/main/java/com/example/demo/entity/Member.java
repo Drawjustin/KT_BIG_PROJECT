@@ -2,23 +2,36 @@ package com.example.demo.entity;
 
 import com.example.demo.entity.baseEntity.baseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
+//@SQLDelete(sql = "UPDATE member SET is_deleted = true WHERE id = ?")
+//@SQLRestriction("is_deleted = false")
+@Builder
 @Table(name = "member")
 public class Member extends baseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_seq")
     private Long memberSeq;
 
+    @Column(name = "member_id", length = 30, nullable = false)
     private String memberId;
+
+    @Column(name = "member_password", length = 512, nullable = false)
     private String memberPassword;
+
+    @Column(name = "member_name", length = 30)
     private String memberName;
+
+    @Column(name = "member_email", length = 30)
     private String memberEmail;
 
     @Builder

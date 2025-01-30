@@ -1,7 +1,7 @@
 package com.example.demo.utils;
 
 import com.example.demo.entity.*;
-import com.example.demo.entity.embeddable.FileDepartmentId;
+import com.example.demo.entity.embeddable.FileTeamId;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -24,35 +24,54 @@ public class InitSetting {
 
         @Transactional
         public void init(){
+            InitOrganization();
+            InitDepartment();
+            InitTeam();
             InitAdmin();
             InitUser();
             InitChatBox();
             InitChat();
             InitFile();
-            InitDepartment();
             InitTelecom();
-            InitFileDepartment();
+            InitFileTeam();
             InitMember();
             InitBlock();
             InitComplaint();
             InitComplaintComment();
         }
 
+        private void InitTeam() {
+            Department department = em.find(Department.class,1L);
+            Team team = Team.builder()
+                    .teamName("BackEnd팀")
+                    .department(department)
+                    .build();
+            em.persist(team);
+        }
+
+
+        private void InitOrganization() {
+            Organization organization = Organization.builder()
+                    .organizationName("성남시청")
+                    .build();
+            em.persist(organization);
+        }
+
         private void InitDepartment() {
+            Organization organization = em.find(Organization.class,1L);
             Department department = Department.builder()
                     .departmentName("KT")
+                    .organization(organization)
                     .build();
             em.persist(department);
         }
 
         private void InitTelecom() {
-            Department department = em.find(Department.class, 1L);
             Telecom teleContent = Telecom.builder()
                     .telecomContent("teleContent")
                     .telecomCount((byte) 2)
                     .telecomFilePath("C:\\HOME\\BACK\\IWANT")
                     .isComplain(false)
-                    .department(department)
                     .build();
             em.persist(teleContent);
         }
@@ -67,20 +86,23 @@ public class InitSetting {
             em.persist(member);
         }
 
-        private void InitFileDepartment() {
+        private void InitFileTeam() {
             File file = em.find(File.class, 1L);
-            Department department = em.find(Department.class, 1L);
+            Team team = em.find(Team.class,1L);
 
-            FileDepartmentId fileDepartmentId = FileDepartmentId.builder()
+            FileTeamId fileTeamId = FileTeamId.builder()
                     .fileSeq(file.getFileSeq())
-                    .departmentSeq(department.getDepartmentSeq())
+                    .teamSeq(team.getTeamSeq())
                     .build();
-            FileDepartment fileDepartment = FileDepartment.builder()
-                    .fileDepartmentId(fileDepartmentId)
+
+            if (em.find(FileTeam.class, fileTeamId) != null) return;
+
+            FileTeam fileTeam = FileTeam.builder()
+                    .fileTeamId(fileTeamId)
                     .file(file)
-                    .department(department)
+                    .team(team)
                     .build();
-            em.persist(fileDepartment);
+            em.persist(fileTeam);
         }
 
         private void InitFile() {
@@ -105,15 +127,14 @@ public class InitSetting {
         }
 
         private void InitComplaint() {
-            User user = em.find(User.class, 1L);
-            Department department = em.find(Department.class, 1L);
+            Team team = em.find(Team.class,1L);
             Member member = em.find(Member.class, 1L);
             Complaint complaint = Complaint.builder()
                     .complaintContent("complaintContent")
                     .complaintTitle("complainTitle")
                     .complaintFilePath("complainFilePath")
-                    .user(user)
-                    .department(department)
+                    .isAnswered(false)
+                    .team(team)
                     .member(member)
                     .build();
             em.persist(complaint);
@@ -141,10 +162,10 @@ public class InitSetting {
 
         private void InitBlock() {
             Member member = em.find(Member.class, 1L);
-            Department department = em.find(Department.class, 1L);
+            Team team = em.find(Team.class,1L);
             Block build = Block.builder()
                     .member(member)
-                    .department(department)
+                    .team(team)
                     .build();
             em.persist(build);
         }
@@ -152,18 +173,24 @@ public class InitSetting {
 
         private void InitAdmin() {
             Admin admin1 = Admin.builder()
-                    .userId("adminID")
-                    .userEmail("guswhd903@naver.com")
-                    .userPassword("1234")
-                    .userName("현종")
-                    .userNumber("010-1234-5678")
+                    .adminId("adminID")
+                    .adminPassword("1234")
                     .build();
             em.persist(admin1);
         }
 
 
         public void InitUser(){
-            User user = new User("guswhd903", "1234", "현종", "010-1234-5678", "guswhd903@naver.com");
+            Team team = em.find(Team.class,1L);
+            User user = User.builder()
+                    .userPassword("1234")
+                    .userId("guswhd903@naver.com")
+                    .team(team)
+                    .userRole("test")
+                    .userNumber("010-1234-5678")
+                    .userName("guswhd")
+                    .userEmail("guswhd903@naver.com")
+                    .build();
             em.persist(user);
         }
 

@@ -2,37 +2,38 @@ package com.example.demo.entity.embeddable;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.MapsId;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class FileDepartmentId implements Serializable {
+@NoArgsConstructor
+public class FileTeamId implements Serializable {
 
     @Column(name = "file_seq")
     private Long fileSeq;
 
     @Column(name = "department_seq")
-    private Long departmentSeq;
+    private Long teamSeq;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FileDepartmentId that = (FileDepartmentId) o;
+        FileTeamId that = (FileTeamId) o;
         return Objects.equals(fileSeq, that.fileSeq) &&
-                Objects.equals(departmentSeq, that.departmentSeq);
+                Objects.equals(teamSeq, that.teamSeq);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fileSeq, departmentSeq);
+        return Objects.hash(fileSeq, teamSeq);
     }
     @Builder
-    public FileDepartmentId(Long fileSeq, Long departmentSeq) {
+    public FileTeamId(Long fileSeq, Long teamSeq) {
         this.fileSeq = fileSeq;
-        this.departmentSeq = departmentSeq;
+        this.teamSeq = teamSeq;
     }
 }

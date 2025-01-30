@@ -2,40 +2,66 @@ package com.example.demo.entity;
 
 import com.example.demo.entity.baseEntity.baseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+import java.util.List;
+
+
 @Getter
+@Entity
+@Builder
 @NoArgsConstructor
+//@SQLDelete(sql = "UPDATE complaint SET is_deleted = true WHERE id = ?")
+//@SQLRestriction("is_deleted = false")
+@AllArgsConstructor
 @Table(name = "complaint")
 public class Complaint extends baseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Primary Key, AUTO_INCREMENT
+    @Column(name = "complaint_seq")
     private Long complaintSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "departmentSeq")
-    private Department department;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberSeq")
+    @JoinColumn(name = "member_seq", nullable = false)
     private Member member;
-    @JoinColumn(name = "userSeq")
+
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    @JoinColumn(name = "team_seq",nullable = false)
+    private Team team;
+
+    @OneToMany(mappedBy = "complaint")
+    private List<ComplaintComment> complaintComment;
+
+    @Column(name = "complaint_title", length = 256)
     private String complaintTitle;
+
+    @Column(name = "complaint_content", columnDefinition = "TEXT")
     private String complaintContent;
+
+    @Column(name = "complaint_file_path", length = 256)
     private String complaintFilePath;
 
+    @Column(name = "is_answered")
+    private Boolean isAnswered;
+
     @Builder
-    public Complaint(Department department, Member member, User user, String complaintTitle, String complaintContent, String complaintFilePath) {
-        this.department = department;
+    public Complaint(Member member, Team team, String complaintTitle, String complaintContent, String complaintFilePath) {
         this.member = member;
-        this.user = user;
+        this.team = team;
         this.complaintTitle = complaintTitle;
         this.complaintContent = complaintContent;
         this.complaintFilePath = complaintFilePath;
     }
+
+    public void updateComplaint(String title, String content, String newFilePath) {
+        complaintTitle = title;
+        complaintContent = content;
+        complaintFilePath = newFilePath;
+    }
+
+
 }

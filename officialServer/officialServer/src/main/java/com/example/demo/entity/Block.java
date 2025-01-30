@@ -5,26 +5,30 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-@Entity
 @Getter
+@Entity
 @NoArgsConstructor
+//@SQLDelete(sql = "UPDATE block SET is_deleted = true WHERE id = ?")
+//@SQLRestriction("is_deleted = false")
 @Table(name = "block")
 public class Block extends baseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "block_seq")
     private Long blockSeq;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "departmentSeq")
-    private Department department;
+    @JoinColumn(name = "team_seq", nullable = false)
+    private Team team;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberSeq")
+    @JoinColumn(name = "member_seq", nullable = false)
     private Member member;
 
+
     @Builder
-    public Block(Department department, Member member) {
-        this.department = department;
+    public Block(Team team, Member member) {
+        this.team = team;
         this.member = member;
     }
 }

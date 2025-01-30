@@ -15,6 +15,7 @@ public class baseEntity {
     @Column(updatable = false)
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
     private Boolean isDeleted;
     @PrePersist
     public void prePersist() {
@@ -26,5 +27,9 @@ public class baseEntity {
     @PreUpdate
     public void preUpdate(){
         updatedAt = LocalDateTime.now();
+    }
+
+    public void markAsDeleted() {
+        this.isDeleted = true;
     }
 }

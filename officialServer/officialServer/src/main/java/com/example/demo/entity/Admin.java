@@ -6,28 +6,28 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
-@Entity
 @Getter
 @NoArgsConstructor
+@Entity
+//@SQLDelete(sql = "UPDATE admin SET is_deleted = true WHERE id = ?")
+//@SQLRestriction("is_deleted = false")
 @Table(name = "admin")
-public class Admin extends baseEntity{
+public class Admin extends baseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userSeq;
-    private String userId;
-    private String userPassword;
-    private String userName;
-    private String userNumber;
-    private String userEmail;
+    @Column(name = "admin_seq")
+    private Long adminSeq;
+
+    @Column(name = "admin_id", nullable = false, length = 20)
+    private String adminId;
+
+    @Column(name = "admin_password", nullable = false, length = 512)
+    private String adminPassword;
 
     @Builder
-    public Admin(String userId, String userPassword, String userName, String userNumber, String userEmail) {
-        this.userId = userId;
-        this.userPassword = userPassword;
-        this.userName = userName;
-        this.userNumber = userNumber;
-        this.userEmail = userEmail;
+    public Admin(String adminId, String adminPassword) {
+        this.adminId = adminId;
+        this.adminPassword = adminPassword;
     }
 }
