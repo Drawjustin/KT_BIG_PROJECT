@@ -27,6 +27,39 @@
   background: var(--AIVLE-02-secondary_navy-navy-04, #2A5C96);
   }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin-top: 2rem;
+}
+
+.pagination li {
+  margin: 0 0.5rem;
+}
+
+.pagination li a {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #f5f5f5;
+}
+
+.pagination li.active a {
+  background-color: #2A5C96;
+  color: white;
+}
+
+.previousButton, .nextButton {
+  /* 이전/다음 버튼 스타일 */
+}
+
+.disabledButton {
+  opacity: 0.5;
+  cursor: not-allowed;
+}  
 /* 페이지네이션 */
 .pagination {
   display: flex;
