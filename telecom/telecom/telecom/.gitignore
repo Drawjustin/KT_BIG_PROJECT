@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Sensitive files
+src/main/resources/application-dev.yml
+src/main/resources/ktaivle-449323-2e589bffb918.json

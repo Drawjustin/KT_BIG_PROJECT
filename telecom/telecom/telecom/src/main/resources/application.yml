@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: InitialSetting
+
+twilio:
+  account-sid: ${TWILIO_ACCOUNT_SID}
+  auth-token: ${TWILIO_AUTH_TOKEN}
+  caller-id: ${TWILIO_CALLER_ID}
+
+google:
+  project-id: ${GOOGLE_PROJECT_ID}
+  credentials-path: ${GOOGLE_APPLICATION_CREDENTIALS}
+
+aws:
+  s3:
+    bucket: ${AWS_S3_BUCKET}
