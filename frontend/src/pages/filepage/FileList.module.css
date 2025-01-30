@@ -1,0 +1,90 @@
+/* 민원 목록 페이지 전체 컨테이너 */
+.listPageContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  /* 민원 목록 테이블 */
+  .listTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  
+  /* 테이블 헤더 및 셀 스타일 */
+  .listTable th,
+  .listTable td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* 테이블 헤더 배경색 */
+  .listTable th {
+    color : #fff;
+    border-bottom: 1px solid var(--AIVLE-02-secondary_navy-navy-03, #99B0CB);
+    background: var(--AIVLE-02-secondary_navy-navy-04, #2A5C96);
+    }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin-top: 2rem;
+  }
+  
+  .pagination li {
+    margin: 0 0.5rem;
+  }
+  
+  .pagination li a {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #f5f5f5;
+  }
+  
+  .pagination li.active a {
+    background-color: #2A5C96;
+    color: white;
+  }
+  
+  .previousButton, .nextButton {
+    /* 이전/다음 버튼 스타일 */
+  }
+  
+  .disabledButton {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }  
+  /* 페이지네이션 */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  
+  /* 페이지네이션 버튼 */
+  .pagination button {
+    margin: 0 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #f5f5f5;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  /* 현재 페이지 버튼 스타일 */
+  .pagination button.active {
+    background-color: var(--AIVLE-02-secondary_navy-navy-04, #2A5C96);
+    color: #fff;
+  }
+  
+  /* 비활성화된 페이지네이션 버튼 스타일 */
+  .pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
