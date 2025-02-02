@@ -67,3 +67,4 @@ public class CustomUserDetails implements UserDetails {
         return !userEntity.getIsDeleted();  // BaseEntity의 삭제 상태 활용
     }
 }
+

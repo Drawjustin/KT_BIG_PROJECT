@@ -1,8 +1,9 @@
 package com.example.demo.jwt;
 
+import com.example.demo.config.JwtConfig;
 import com.example.demo.dto.CustomUserDetails;
 import com.example.demo.entity.UserEntity;
-import com.example.demo.service.AccessTokenService;
+import com.example.demo.service.AuthService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,22 +13,22 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 //JWT 검증 필터
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
-    private final AccessTokenService accessTokenService;
+    private final AuthService authService;
 
-    public JWTFilter(JWTUtil jwtUtil,AccessTokenService accessTokenService) {
+    public JWTFilter(JWTUtil jwtUtil, AuthService authService) {
 
         this.jwtUtil = jwtUtil;
-        this.accessTokenService=accessTokenService;
+        this.authService=authService;
     }
 
     @Override
@@ -44,38 +45,35 @@ public class JWTFilter extends OncePerRequestFilter {
         //헤더에서 access키에 담긴 토큰을 꺼냄
         String accessToken = request.getHeader("access");
 
-        //토큰이 없으면 다음 필터로 넘김
         if (accessToken == null) {
             filterChain.doFilter(request, response);
-            //그다음 필터로 넘김
             return;
         }
 
-        //토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
         try {
+            // 토큰 만료 확인
             jwtUtil.isExpired(accessToken);
 
-            // 토큰 검증
+            // 토큰 카테고리 확인
             String category = jwtUtil.getCategory(accessToken);
             if (!category.equals("access")) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("invalid access token");
+                response.getWriter().write("Invalid access token");
                 return;
             }
 
-            // userEmail 추출
+            // 이메일 추출 및 토큰 검증
             String userEmail = jwtUtil.getUserEmail(accessToken);
 
             // Redis에 저장된 토큰과 비교
-            if (!accessTokenService.validateAccessToken(userEmail, accessToken)) {
+            if (!authService.validateAccessToken(userEmail, accessToken)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
 
-            // 사용자 인증
+            // 인증 정보 설정
             setAuthentication(jwtUtil.getUserEmail(accessToken), jwtUtil.getRole(accessToken));
             filterChain.doFilter(request, response);
-
         } catch (ExpiredJwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("access token expired");

@@ -4,9 +4,11 @@ import com.example.demo.jwt.JWTFilter;
 import com.example.demo.jwt.JWTUtil;
 import com.example.demo.repository.RefreshRepository;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.service.AccessTokenService;
+import com.example.demo.service.AuthService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,43 +21,48 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Arrays;
-import java.util.Collections;
-import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    private final AccessTokenService accessTokenService;
+    private final AuthService authService;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
     private final UserRepository userRepository;
+    private final JwtConfig jwtConfig;
 
     public SecurityConfig(
-            AccessTokenService accessTokenService,
+            @Lazy AuthService authService,
             AuthenticationConfiguration authenticationConfiguration,
             JWTUtil jwtUtil,
             UserRepository userRepository,
-            RefreshRepository refreshRepository) {
-        this.accessTokenService = accessTokenService;
+            RefreshRepository refreshRepository,
+            JwtConfig jwtConfig) {
+        this.authService = authService;
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.refreshRepository = refreshRepository;
+        this.jwtConfig=jwtConfig;
     }
 
-    //AuthenticationManager Bean 등록, 이메일과 비밀번호 검증->유효 시 authentication객체 리턴
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
+    public AuthenticationManager authenticationManager() throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public JWTFilter jwtFilter() {
+        return new JWTFilter(jwtUtil, authService);
     }
 
     @Bean
@@ -74,7 +81,7 @@ public class SecurityConfig {
 
         // JWT 필터 설정
         http
-                .addFilterBefore(new JWTFilter(jwtUtil, accessTokenService),
+                .addFilterBefore(jwtFilter(),
                         UsernamePasswordAuthenticationFilter.class);
 
         // 세션 관리 설정

@@ -1,11 +1,9 @@
 package com.example.demo.config;
 
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@Getter
 public class JwtConfig {
     @Value("${jwt.access-token.expiration}")
     private Long accessTokenExpiration;
@@ -15,4 +13,16 @@ public class JwtConfig {
 
     @Value("${spring.jwt.secret}")
     private String jwtSecret;
+
+    public Long getAccessTokenExpiration() {
+        return accessTokenExpiration;
+    }
+
+    public Long getRefreshTokenExpiration() {
+        return refreshTokenExpiration;
+    }
+
+    public String getJwtSecret() {
+        return jwtSecret;
+    }
 }
