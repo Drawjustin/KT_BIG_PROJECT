@@ -10,14 +10,15 @@
     min-height: 90px;
     max-height: 1440px;
     align-items: center;
-    padding: 1rem 3rem;
+    padding: 1rem 2rem; /* 패딩 살짝 줄임 */
     border-bottom: 1px solid #ddd;
   }
 
   .logo {
-    font-size: 2rem;
+    font-size: 1.8rem; /* 살짝 줄임 */
     font-weight: bold;
     color: var(--AIVLE-02-secondary_navy-navy-06, #002B5E); /* 진한 파란색 */
+    white-space: nowrap; /* 로고 줄바꿈 방지 */
   }
 
   .logoLink {
@@ -27,17 +28,21 @@
 
   .menu {
     display: flex;
-    gap: 2rem;
+    gap: 1rem; /* gap 줄임 */
     list-style: none;
+    flex-wrap: nowrap; /* 메뉴 줄바꿈 방지 */
+    align-items: center;
   }
 
   .menuLink {
     text-decoration: none;
-    font-size: 1.25rem;
-    color: #333; /* 검은색 */
+    font-size: 1.1rem; /* 폰트 사이즈 조절 */
+    color: #333;
     font-weight: bold;
-    margin: 0px 0px 0px 50px;
+    margin: 0 0 0 30px; /* 마진 조절 */
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
   }
+
   .menuLink:hover{
     color:var(--AIVLE-02-secondary_navy-navy-04, #2A5C96);
     
@@ -62,3 +67,34 @@
   .logoutButton:hover {
     color: #333;
   }
+  
+/* 반응형 디자인 추가 */
+@media screen and (max-width: 768px) {
+  .navbar {
+    padding: 1rem;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+  }
+  
+  .menuLink {
+    font-size: 1rem;
+    margin: 0 0 0 15px;
+  }
+  
+  .loginButtonContainer {
+    gap: 0.5rem;
+  }
+}
+
+/* 매우 작은 화면에서의 처리 */
+@media screen and (max-width: 480px) {
+  .menu {
+    gap: 0.5rem;
+  }
+  
+  .menuLink {
+    margin: 0 0 0 10px;
+  }
+}
