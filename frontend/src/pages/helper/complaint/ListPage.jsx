@@ -52,8 +52,10 @@ const ListPage = () => {
 
   if (loading) return <p>로딩 중...</p>;
   if (error) return <p>오류 발생: {error}</p>;
+  
 
   return (
+    <>
     <div className={styles.listPageContainer}>
       <h1>민원 목록</h1>
       <div className={styles.searchContainer}>
@@ -125,6 +127,7 @@ const ListPage = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };
 

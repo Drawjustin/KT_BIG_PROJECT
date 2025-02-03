@@ -1,3 +1,4 @@
+// 로그인 상태 관리를 위한 Redux 슬라이스 파일
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { setCookie, removeCookie } from "../util/cookieUtils";
 import { loginPost } from "../api/memberApi";

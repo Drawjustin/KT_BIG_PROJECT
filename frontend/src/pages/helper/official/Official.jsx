@@ -1,5 +1,5 @@
 // import { useState } from 'react';
-import DocumentAssistantComponent from './Assistent';
+import DocumentAssistantComponent from './DocumentAssistantComponent';
 // import Sidebar from './Sidebar';
 import styled from 'styled-components';
 

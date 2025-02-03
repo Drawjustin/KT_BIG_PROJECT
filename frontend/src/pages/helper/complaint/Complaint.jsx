@@ -1,6 +1,6 @@
 import ListPage from "./ListPage";
-import AnswerView from "./AnswerView";
-import AnswerWrite from "./Answerwrite";
+//import AnswerView from "./AnswerView";
+import AnswerWrite from "./AnswerWrite";
 //import { Link } from "react-router-dom";
 import { Route, Routes } from "react-router-dom";
 
@@ -18,10 +18,10 @@ const Complaint = () => {
           
           
           {/* 민원 조회 */}
-          <Route path="complaint/view/:id" element={<AnswerView />} />
+          {/* <Route path="complaint/view/:id" element={<AnswerView />} /> */}
           
           {/* 민원 글쓰기 */}
-          <Route path="complaint/write/:id" element={<AnswerWrite />} />
+          <Route path="write/:id" element={<AnswerWrite />} />
         </Routes>
       </div>
     );

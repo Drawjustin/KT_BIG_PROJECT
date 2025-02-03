@@ -1,3 +1,4 @@
+// 쿠키 관리를 위한 유틸리티 함수 모음 파일
 import { Cookies } from "react-cookie";
 
 const cookies = new Cookies();

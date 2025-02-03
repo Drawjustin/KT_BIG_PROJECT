@@ -50,6 +50,8 @@ const FileList = () => {
       }
   
       const response = await jwtAxios.get("/files", { params });
+      console.log("API 응답 데이터:", response.data);
+
       setPageData(response.data);
       setTotalPages(response.data.page.totalPages);
     } catch (error) {
