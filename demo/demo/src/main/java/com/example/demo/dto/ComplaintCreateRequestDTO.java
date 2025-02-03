@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Builder
 @ToString
 public class ComplaintCreateRequestDTO {

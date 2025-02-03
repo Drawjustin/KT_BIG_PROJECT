@@ -1,15 +1,14 @@
 package com.example.demo.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Builder
+@Setter
+@ToString
 public class ComplaintUpdateRequestDTO {
     private String title;          // 수정할 제목
     private String content;        // 수정할 내용

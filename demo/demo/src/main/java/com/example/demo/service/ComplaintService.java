@@ -1,14 +1,10 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.ComplaintCreateRequestDTO;
-import com.example.demo.dto.ComplaintCreateResponseDTO;
-import com.example.demo.dto.ComplaintUpdateRequestDTO;
-import com.example.demo.dto.ComplaintResponseDTO;
+import com.example.demo.dto.*;
 import com.example.demo.entity.Team;
 import com.example.demo.entity.Complaint;
 import com.example.demo.entity.Member;
 import com.example.demo.exception.RestApiException;
-import com.example.demo.repository.ComplaintCondition;
 import com.example.demo.repository.ComplaintRepository;
 import com.example.demo.repository.MemberRepository;
 import com.example.demo.repository.TeamRepository;
@@ -63,16 +59,17 @@ public class ComplaintService {
 
     // 민원 페이지 조회 (여러건)
     @Transactional
-    public Page<ComplaintResponseDTO> findComplaintsByConditions(Long complaintSeq, Pageable pageable){
-        ComplaintCondition complaintCondition = new ComplaintCondition(complaintSeq);
+    public Page<ComplaintResponseDTO> findComplaintsByConditions(ComplaintSearchCondition condition, Pageable pageable){
         PageRequest page = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-        return complaintRepository.getComplaints(complaintCondition,page);
+        return complaintRepository.getComplaints(condition,page);
     }
 
     private Complaint buildComplaint(ComplaintCreateRequestDTO request) {
         return Complaint.builder()
-                .member(findMemberOrThrow(request.getMemberSeq()))
-                .team(findTeamOrThrow(request.getTeamSeq()))
+//                .member(findMemberOrThrow(request.getMemberSeq()))
+//                .team(findTeamOrThrow(request.getTeamSeq()))
+                .member(findMemberOrThrow(1L))
+                .team(findTeamOrThrow(1L))
                 .complaintTitle(request.getTitle())
                 .complaintContent(request.getContent())
                 .complaintFilePath(saveFile(request.getFile()))
@@ -101,9 +98,13 @@ public class ComplaintService {
             return null;
         }
         return ExceptionHandlerUtil.executeWithCustomException(
-                () -> saveFile(file),
+                () -> saveAWSFile(file),
                 new RestApiException(FAIL_SAVED_FILE)
         );
+    }
+
+    private String saveAWSFile(MultipartFile file) {
+        return file.getOriginalFilename();
     }
 
     private Complaint findComplaintOrThrow(Long id) {
