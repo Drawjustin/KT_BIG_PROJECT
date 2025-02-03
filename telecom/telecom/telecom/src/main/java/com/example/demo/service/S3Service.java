@@ -50,6 +50,6 @@ public class S3Service {
 //        } catch (Exception e) {
 //            throw new RuntimeException("Failed to upload text to S3", e);
 //        }
-        return "업로드 완료";
+        return "URL 주소";
     }
 }
