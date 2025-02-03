@@ -50,36 +50,46 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        try {
-            // 토큰 만료 확인
-            jwtUtil.isExpired(accessToken);
-
-            // 토큰 카테고리 확인
-            String category = jwtUtil.getCategory(accessToken);
-            if (!category.equals("access")) {
+        if (accessToken != null) {
+            //블랙리스트 토큰인지 확인
+            if (authService.isTokenBlacklisted(accessToken)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Invalid access token");
+                response.getWriter().write("Token has been invalidated");
                 return;
             }
 
-            // 이메일 추출 및 토큰 검증
-            String userEmail = jwtUtil.getUserEmail(accessToken);
+            try {
+                // 토큰 만료 확인
+                jwtUtil.isExpired(accessToken);
 
-            // Redis에 저장된 토큰과 비교
-            if (!authService.validateAccessToken(userEmail, accessToken)) {
+                // 토큰 카테고리 확인
+                String category = jwtUtil.getCategory(accessToken);
+                if (!category.equals("access")) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Invalid access token");
+                    return;
+                }
+
+                // 이메일 추출 및 토큰 검증
+                String userEmail = jwtUtil.getUserEmail(accessToken);
+
+                // Redis에 저장된 토큰과 비교
+                if (!authService.validateAccessToken(userEmail, accessToken)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
+
+                // 인증 정보 설정
+                setAuthentication(jwtUtil.getUserEmail(accessToken), jwtUtil.getRole(accessToken));
+                filterChain.doFilter(request, response);
+            } catch (ExpiredJwtException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
+                response.getWriter().write("access token expired");
             }
-
-            // 인증 정보 설정
-            setAuthentication(jwtUtil.getUserEmail(accessToken), jwtUtil.getRole(accessToken));
-            filterChain.doFilter(request, response);
-        } catch (ExpiredJwtException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("access token expired");
         }
+
     }
-    private void setAuthentication(String userEmail, String userRole) {
+    private void setAuthentication (String userEmail, String userRole){
         UserEntity userEntity = new UserEntity();
         userEntity.setUserEmail(userEmail);
         userEntity.setUserRole(userRole);
@@ -91,5 +101,4 @@ public class JWTFilter extends OncePerRequestFilter {
         );
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
-
 }

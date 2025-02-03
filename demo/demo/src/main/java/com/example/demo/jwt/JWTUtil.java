@@ -45,10 +45,6 @@ public class JWTUtil {
                 .compact();
     }
 
-    public String createJwt(CustomUserDetails customUserDetails, String category) {
-        return createJwt(customUserDetails, category, 0L);
-    }
-
     //email 가져와서 나의 토큰 키인지 확인
     public String getUserEmail(String token) {
         return Jwts.parser()
@@ -93,5 +89,22 @@ public class JWTUtil {
         // 현재 시간과 만료 시간을 비교
         // 만료 시간이 현재 시간 이전이면 만료된 것
         return expiration.before(new Date());
+    }
+
+    public long getRemainingTime(String token) {
+        try {
+            Date expiration = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .getExpiration();
+
+            long remainingTime = expiration.getTime() - System.currentTimeMillis();
+            return Math.max(remainingTime, 0); // 음수 시간 방지
+        } catch (Exception e) {
+            // 토큰 파싱 중 오류 발생 시 0 또는 예외 처리
+            return 0;
+        }
     }
 }

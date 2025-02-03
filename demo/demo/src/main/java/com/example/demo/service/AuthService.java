@@ -25,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -49,7 +50,8 @@ public class AuthService {
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             @Lazy AuthenticationManager authenticationManager,
-            JwtConfig jwtConfig) {
+            JwtConfig jwtConfig
+            ) {
         this.jwtUtil = jwtUtil;
         this.redisTemplate = redisTemplate;
         this.refreshRepository = refreshRepository;
@@ -99,9 +101,12 @@ public class AuthService {
     }
 
     // 로그아웃 처리
-    public void logout(String userEmail) {
+    public void logout(String userEmail, String accessToken) {
         // Access Token 삭제
         deleteAccessToken(userEmail);
+
+        // 블랙리스트에 Access Token 추가
+        blacklistToken(accessToken);
 
         // Refresh Token 삭제
         UserEntity user = userRepository.findByUserEmail(userEmail)
@@ -178,4 +183,25 @@ public class AuthService {
         return token != null && !jwtUtil.isExpired(token) &&
                 jwtUtil.getCategory(token).equals("refresh");
     }
+
+    // 토큰을 블랙리스트에 추가
+    public void blacklistToken(String token) {
+        // 토큰의 남은 유효 시간 동안 블랙리스트에 보관
+        long remainingTime = jwtUtil.getRemainingTime(token);
+
+        redisTemplate.opsForValue().set(
+                "blacklist:" + token,
+                "true",
+                Duration.ofMillis(remainingTime)
+        );
+    }
+
+    // 토큰이 블랙리스트에 있는지 확인
+    public boolean isTokenBlacklisted(String token) {
+        return Boolean.TRUE.equals(
+                redisTemplate.hasKey("blacklist:" + token)
+        );
+    }
+
+
 }
