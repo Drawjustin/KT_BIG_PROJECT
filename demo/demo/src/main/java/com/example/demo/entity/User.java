@@ -50,4 +50,12 @@ public class User {
         this.userEmail = userEmail;
         this.userRole = userRole;
     }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
 }
