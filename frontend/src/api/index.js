@@ -1,37 +1,48 @@
 // src/api/index.js
-import apiClient from './apiClient';
+import jwtAxios from '../util/jwtUtils';
+import axios from 'axios';
 
-/**회원관련 api registar, login */
+// 공통 axios
+const apiClient = axios.create({
+    baseURL: import.meta.env.VITE_API_BASE_URL,
+    timeout: 5000,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+/**axois 회원관련 api registar,  */
 export const memberApi = {
   // 회원가입
   register: (userData) => 
     apiClient.post('/api/join', userData),
   
-  // 로그인
-  login: (loginData) => 
-    apiClient.post('/api/login', loginData),
 };
 
+
+// jwt 인증 필요한 api
 /** 민원 도우미 관련 api */
 export const complaintApi = {
   // 민원 목록 조회
   getList: (departmentSeq,pageNumber, pageSize) => 
-    apiClient.get(`/complaint-comments/departmentSeq=${departmentSeq}&page=${pageNumber}&size=${pageSize}`),
+    jwtAxios.get('/complaint-comments', {
+        params: { departmentSeq, page: pageNumber, size: pageSize }
+      }),  
   
   // 민원 상세 조회
   getDetail: (complaintSeq) => 
-    apiClient.get(`/complaint-comments/${complaintSeq}`),
+    jwtAxios.get(`/complaint-comments/${complaintSeq}`),
   
   // 답변 등록
   create: (postData) => 
-    apiClient.post('/complaints', postData),
+    jwtAxios.post('/complaints', postData),
 
   //민원 수정
-  modified: (complaintSeq,postData) => 
-    apiClient.put(`/complaint-comments/${complaintSeq}`, postData),
+  update: (complaintSeq,postData) => 
+    jwtAxios.put(`/complaint-comments/${complaintSeq}`, postData),
   //민원 삭제
-  delete: (complaintSeq) =>
-    apiClient.delete(`/complaint-comments/${complaintSeq}`),
+  remove: (complaintSeq) =>
+    jwtAxios.delete(`/complaint-comments/${complaintSeq}`),
 
 };
 
@@ -39,21 +50,23 @@ export const complaintApi = {
 export const documentApi = {
   // 공문서 검색
   search: (params) => 
-    apiClient.get('/api/documents/search', { params }),
+    jwtAxios.get('/api/documents/search', { params }),
   
   // 공문서 상세 조회
   getDetail: (id) => 
-    apiClient.get(`/api/documents/${id}`)
+    jwtAxios.get(`/api/documents/${id}`)
 };
 
 /**자료실 관련 api */
 export const dataroomApi = {
     // 자료실 목록 조회
     getList: (departmentSeq,pageNumber, pageSize) => 
-      apiClient.get(`files/departmentSeq=${departmentSeq}&page=${pageNumber}&size=${pageSize}`),
-    
+      jwtAxios.get(`files/departmentSeq=${departmentSeq}&page=${pageNumber}&size=${pageSize}`,{
+        params: { departmentSeq, page: pageNumber, size: pageSize }
+      }),  
+
     // 자료실 단건 조회
     getDetail: (fileSeq) => 
-      apiClient.get(`files/${fileSeq}}`),
+      jwtAxios.get(`files/${fileSeq}}`),
   };
   
