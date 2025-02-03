@@ -12,6 +12,8 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 @Slf4j
 @RestController
@@ -22,12 +24,9 @@ public class TwilioControllerV1 {
     private final TwilioConfig twilioConfig;
 
     @PostMapping(value = "/incoming", produces = MediaType.APPLICATION_XML_VALUE)
-    public String handleIncomingCall() {
+    public String handleIncomingCall(@RequestParam("From") String fromNumber) {
         return """
         <Response>
-       <Play digits="9"/>
-        <Pause length="0.5"/>
-        <Play digits="1"/>
             <Say language="ko-KR">안녕하세요 창원시 민원 콜센터입니다.
             민원을 넣으시려면 1번을 눌러주세요.</Say>
             <Gather action="/twilio/record" method="POST" numDigits="1"/>
@@ -36,9 +35,9 @@ public class TwilioControllerV1 {
     }
 
     @PostMapping(value = "/record", produces = MediaType.APPLICATION_XML_VALUE)
-    public String startRecording(@RequestParam("Digits") String digits) {
+    public String startRecording(@RequestParam("From") String fromNumber,@RequestParam("Digits") String digits) {
         if (!"1".equals(digits)) {
-            return handleIncomingCall();
+            return handleIncomingCall(fromNumber);
         }
 
         return """
@@ -63,6 +62,7 @@ public class TwilioControllerV1 {
 
     @PostMapping(value = "/confirm-recording", produces = MediaType.APPLICATION_XML_VALUE)
     public String confirmRecording(
+            @RequestParam("From") String fromNumber,
             @RequestParam(value = "SpeechResult", required = false) String speechResult,
             @RequestParam("CallSid") String callSid
     ) {
@@ -80,7 +80,14 @@ public class TwilioControllerV1 {
         // URL 인코딩
         String encodedDepartment =  URLEncoder.encode(department, StandardCharsets.UTF_8);
 
-        s3Service.uploadText(speechResult, "transcripts/" + callSid + ".txt");
+        String fileName = String.format(
+                "%s/%s_%s.txt",
+                new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+                new SimpleDateFormat("HHmmss").format(new Date()),
+                fromNumber
+        );
+
+        s3Service.uploadText(speechResult, fileName);
         log.info("민원 내용: {}, 배정 부서: {}", speechResult, department);
 
         return """
