@@ -1,49 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { mockPosts } from '../mocks/posts';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import jwtAxios from '../../util/jwtUtils';
 
 const FileView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const foundPost = mockPosts.find((p) => p.id === Number(id));
-    setPost(foundPost || null);
+    const fetchFileDetail = async () => {
+      try {
+        setLoading(true);
+        const response = await jwtAxios.get(`/files/${id}`);
+        setPost(response.data);
+      } catch (err) {
+        console.error("파일 상세 정보 불러오기 실패:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFileDetail();
   }, [id]);
 
-  if (!post) return <div>Loading...</div>;
+  if (loading) return <div>로딩 중...</div>;
+  if (error) return <div>오류 발생: {error}</div>;
+  if (!post) return <div>파일을 찾을 수 없습니다.</div>;
 
-  const handleEdit = () => {
-    navigate(`/board/edit/${id}`);
-  };
-
-  const currentIndex = mockPosts.findIndex((p) => p.id === Number(id));
-  const prevPost = mockPosts[currentIndex - 1] || null;
-  const nextPost = mockPosts[currentIndex + 1] || null;
 
   return (
     <div>
-      <h1>{post.title}</h1>
-      <p>작성자: {post.author}</p>
-      <p>작성일: {post.createdAt}</p>
-      <p>{post.body}</p>
-      <button onClick={handleEdit}>수정하기</button>
+      <h1>{post.fileTitle || '제목 없음'}</h1>
+      <p>작성자 : {post.adminId}</p>
+      <p>
+        작성일 : {new Date(post.updatedAt).toLocaleDateString('ko-KR', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        })}
+      </p>
+      <p>첨부파일 : {post.fileContent || '내용 없음'}</p>
+      {/* <button onClick={handleEdit}>수정하기</button> */}
       <div style={{ marginTop: '20px' }}>
-        {prevPost ? (
-          <Link to={`/dataroom/view/${prevPost.id}`} style={{ marginRight: '10px' }}>
-            이전 글: {prevPost.title}
-          </Link>
-        ) : (
-          <span style={{ marginRight: '10px', color: '#ccc' }}>이전 글 없음</span>
-        )}
-        {nextPost ? (
-          <Link to={`/dataroom/view/${nextPost.id}`} style={{ marginRight: '10px' }}>
-            다음 글: {nextPost.title}
-          </Link>
-        ) : (
-          <span style={{ marginRight: '10px', color: '#ccc' }}>다음 글 없음</span>
-        )}
         <button onClick={() => navigate('/dataroom')}>목록</button>
       </div>
     </div>

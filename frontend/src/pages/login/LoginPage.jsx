@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './LoginPage.module.css';
 import LoginForm from './LoginForm';
 import { Link } from 'react-router-dom';

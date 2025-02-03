@@ -1,4 +1,3 @@
-import React, { children } from 'react';
 import PropTypes from 'prop-types';
 import styles from './Button.module.css';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './SignupPage.module.css';
 import SignupForm from './SignupForm';
 function SignupPage() {
