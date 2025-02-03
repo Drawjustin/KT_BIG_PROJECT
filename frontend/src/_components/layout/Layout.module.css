@@ -1,0 +1,24 @@
+/* components/layout/Layout.module.css */
+.wrapper {
+    width: 100%;
+    background: #fff;
+    min-height: 100vh;
+  }
+  
+  .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 80px;
+  }
+  
+  @media (max-width: 1024px) {
+    .container {
+      padding: 0 40px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 20px;
+    }
+  }
