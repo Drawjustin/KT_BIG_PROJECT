@@ -70,7 +70,7 @@ public class AuthController {
                     new AuthResponse(
                             authResponse.userEmail(),
                             authResponse.accessToken(),
-                            null  // refreshToken은 쿠키로 전송되므로 응답에서 제외
+                            null
                     )));
 
         } catch (BadCredentialsException e) {
@@ -155,7 +155,7 @@ public class AuthController {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(", "));
 
-        ErrorResponse errorResponse = ErrorResponse.of("Validation Error", errorMessage);
+        ErrorResponse errorResponse = ErrorResponse.of("유효성 검사 오류: ", errorMessage);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errorResponse);

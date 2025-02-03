@@ -65,6 +65,7 @@ public class AuthService {
             throw new EmailAlreadyExistsException("이미 사용 중인 이메일입니다.");
         }
 
+        // JoinRequest의 toEntity 메서드를 사용하도록 수정
         UserEntity user = new UserEntity(
                 request.userEmail(),
                 request.userId(),
