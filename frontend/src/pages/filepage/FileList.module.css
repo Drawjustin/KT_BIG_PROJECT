@@ -11,6 +11,15 @@
     border-collapse: collapse;
     font-size: 0.9rem;
   }
+  .listTable a{
+    text-decoration: none;
+    color: inherit; /* 기본 텍스트 색상 유지 */
+    transition: color 0.2s ease; /* 색상 변화에 대한 트랜지션 추가 */
+  }
+  .listTable a:hover{
+    color: var(--AIVLE-02-secondary_navy-navy-04, #2A5C96);
+  }
+  
   
   /* 테이블 헤더 및 셀 스타일 */
   .listTable th,

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import styles from "./ListPage.module.css";
 import { Link } from "react-router-dom";
 import jwtAxios from "../../../util/jwtUtils";
+import { complaintApi } from "../../../api";
 
 const ListPage = () => {
   const [pageData, setPageData] = useState([]); // 공백 제거
@@ -27,7 +28,11 @@ const ListPage = () => {
       if (searchKeyword) {
         params[searchType] = searchKeyword;
       }
-      const response = await jwtAxios.get("/complaint-comments", { params }); // api 호출 엔드포인트
+      // const response = await jwtAxios.get("/complaint-comments", { params }); // api 호출 엔드포인트
+      const response = await complaintApi.getList(params);// api 호출 엔드포인트
+      console.log("목록조회 response:", response.data);
+
+
       setPageData(response.data);
       setTotalPages(response.data.page.totalPages);
     } catch (error) {
@@ -84,8 +89,10 @@ const ListPage = () => {
         <thead>
           <tr>
             <th>번호</th>
+            <th>악성여부</th>
             <th>제목</th>
             <th>부서</th>
+            <th>답변여부</th>
             <th>날짜</th>
           </tr>
         </thead>
@@ -93,14 +100,18 @@ const ListPage = () => {
           {pageData?.content?.map((item, index) => (
             <tr key={`complaint-${item.complaintSeq}`}>
               <td>{(currentPage - 1) * postsPerPage + index + 1}</td>
+              <td>{item.bad ? '⚠️':'' } </td>
               <td>
-                <Link to={`write/${item.complaintSeq}`}>
+                <Link to={`write/${item.complaintSeq}?answered=${item.answered}`}>
                   {item.title && item.title.trim() !== ""
                     ? item.title
                     : "제목 없음"}
                 </Link>
               </td>
               <td>{item.departmentName}</td>
+              <td style={{ color: item.answered ? 'green' : 'red' }}>
+                {item.answered ? '답변완료' : '답변대기'}
+              </td>
               <td>
                 {item.updatedAt
                   ? new Date(item.updatedAt).toLocaleDateString("ko-KR", {
