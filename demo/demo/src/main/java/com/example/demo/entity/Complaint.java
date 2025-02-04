@@ -40,13 +40,21 @@ public class Complaint extends baseEntity {
     @Column(name = "complaint_file_path", length = 256)
     private String complaintFilePath;
 
+    @Column(name="is_answered")
+    private Boolean isAnswered;
+
+    @Column(name="is_bad")
+    private Boolean isBad;
+
     @Builder
-    public Complaint(Member member, Team team, String complaintTitle, String complaintContent, String complaintFilePath) {
+    public Complaint(Member member, Team team, String complaintTitle, String complaintContent, String complaintFilePath,Boolean isAnswered,Boolean isBad) {
         this.member = member;
         this.team = team;
         this.complaintTitle = complaintTitle;
         this.complaintContent = complaintContent;
         this.complaintFilePath = complaintFilePath;
+        this.isAnswered=isAnswered;
+        this.isBad=isBad;
     }
 
     public void updateComplaint(String title, String content, String newFilePath) {
