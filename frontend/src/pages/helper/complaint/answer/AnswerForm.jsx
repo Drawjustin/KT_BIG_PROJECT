@@ -2,11 +2,11 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 import styles from '../Answer.module.css'
-
+import { complaintApi } from "../../../../api";
 
 
 /** AI 민원 답변 생성 및 저장 API 호출 컴포넌트 */
-const AnswerForm = ({ complaintSeq, memberSeq = 1, teamSeq = 1, jwtToken }) => {
+const AnswerForm = ({ complaintSeq, memberSeq = 1, teamSeq = 1 }) => {
   const [answer, setAnswer] = useState(""); // 답변 내용
   const [loading, setLoading] = useState(false); // 로딩 상태
   const [error, setError] = useState(null); // 에러 상태
@@ -46,13 +46,14 @@ const AnswerForm = ({ complaintSeq, memberSeq = 1, teamSeq = 1, jwtToken }) => {
       formData.append("content", answer); // 답변 내용
       formData.append("complaintSeq", complaintSeq); // 민원 번호 (외부에서 전달)
 
+      const response = await complaintApi.create(formData);
       // 저장 API 호출
-      const response = await axios.post("http://localhost:8080/complaint/create", formData, {
-        headers: {
-          Authorization: `Bearer ${jwtToken}`, // JWT 토큰
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      // const response = await axios.post("http://localhost:8080/complaint/create", formData, {
+      //   headers: {
+      //     Authorization: `Bearer ${jwtToken}`, // JWT 토큰
+      //     "Content-Type": "multipart/form-data",
+      //   },
+      // });
 
       if (response.status === 200) {
         setSuccess(true);

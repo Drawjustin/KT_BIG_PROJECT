@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import styles from '../Answer.module.css'
+
 /** 저장된 답변 데이터 렌더링 */
 const AnswerSave = ({ data }) => {
   if (!data) return <p>저장된 답변이 없습니다.</p>;

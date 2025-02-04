@@ -6,8 +6,7 @@ import AnswerSave from "./answer/AnswerSave";
 import styles from './Answer.module.css'
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import jwtAxios from "../../../util/jwtUtils";
-
+import { complaintApi } from "../../../api";
 /** 민원 답변 상세 페이지 */
 const AnswerView = () => {
   const [postData, setPostData] = useState(null); // 게시물 데이터
@@ -53,8 +52,9 @@ const AnswerView = () => {
       setError(null);
 
       // 게시물 데이터 가져오기
-      const postResponse = await jwtAxios.get(`/complaint/${complaintSeq}`); // 게시물 API
-      setPostData(postResponse.data);
+      const response = await complaintApi.getDetail(complaintSeq);
+      // const postResponse = await jwtAxios.get(`/complaint/${complaintSeq}`); // 게시물 API
+      setPostData(response.data);
 
       // 답변 데이터 가져오기
       const complaintSeq = localStorage.getItem("complaintSeq"); // 저장된 complaintSeq
