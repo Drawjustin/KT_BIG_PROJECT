@@ -1,9 +1,9 @@
-// JWT 인증을 위한 Axios 인스턴스 및 인터셉터 설정 파일
+// JWT 인증을 위한 Axios 인스턴스 및 인터셉터 설정 파일 jwtAxios는 인증 토큰 관리
 import axios from "axios";
 import { getCookie, setCookie, removeCookie } from "./cookieUtils";
 
 const jwtAxios = axios.create({
-  baseURL: 'http://98.84.14.117:8080',
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true, // 쿠키 전송 활성화
   
 });

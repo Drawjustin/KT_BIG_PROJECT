@@ -1,7 +1,7 @@
-// 로그인 상태 관리를 위한 Redux 슬라이스 파일
+// 로그인 상태 관리를 위한 Redux 슬라이스 파일(비동기액션, 로그인정보, 에러상태)
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { setCookie, removeCookie } from "../util/cookieUtils";
-import { loginPost } from "../api/memberApi";
+import { setCookie, removeCookie, getCookie } from "../util/cookieUtils";
+import { loginPost, logoutPost } from "../api/memberApi";
 import axios from "axios"; // AxiosError를 가져옵니다.
 
 // 초기 상태
@@ -12,7 +12,7 @@ const initialState = {
   error: null,
 };
 
-// 비동기 로그인 요청
+/** 로그인 비동기 요청 */
 export const loginPostAsync = createAsyncThunk(
   "loginPostAsync",
   async (loginParam, { rejectWithValue }) => {
@@ -35,19 +35,29 @@ export const loginPostAsync = createAsyncThunk(
     }
   }
 );
-
+/**로그아웃 비동기요청 */
+export const logoutAsync = createAsyncThunk(
+  "logoutAsync",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { email } = getState().login;
+      const { accessToken } = JSON.parse(getCookie("member"));
+      const response = await logoutPost(email, accessToken);
+      if (response.status === "success") {
+        removeCookie("member");
+        return response;
+      }
+      return rejectWithValue(response.message || "로그아웃 실패");
+    } catch (error) {
+      console.log("logout fail",error)
+      return rejectWithValue("로그아웃 중 오류가 발생했습니다.");
+    }
+  }
+);
 const loginSlice = createSlice({
   name: "loginSlice",
   initialState,
-  reducers: {
-    logout(state) {
-      state.email = "";
-      state.isLoggedIn = false;
-
-      // 쿠키에서 로그인 정보 제거
-      removeCookie("member");
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(loginPostAsync.pending, (state) => {
@@ -62,7 +72,22 @@ const loginSlice = createSlice({
       .addCase(loginPostAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "로그인 실패";
-      });
+      })
+      //로그아웃 비동기 호출을 위한 케이스 
+      .addCase(logoutAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(logoutAsync.fulfilled, (state) => {
+        state.loading = false;
+        state.isLoggedIn = false;
+        state.email = "";
+        state.error = null;
+      })
+      .addCase(logoutAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "로그아웃 실패";
+      })
   },
 });
 
