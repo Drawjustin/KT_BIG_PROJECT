@@ -3,11 +3,10 @@ package com.example.demo.jwt;
 import com.example.demo.config.JwtConfig;
 import com.example.demo.dto.CustomUserDetails;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
@@ -20,9 +19,8 @@ public class JWTUtil {
 
     public JWTUtil(JwtConfig jwtConfig) {
         this.jwtConfig = jwtConfig;
-        this.secretKey = new SecretKeySpec(
-                jwtConfig.getJwtSecret().getBytes(StandardCharsets.UTF_8),
-                SignatureAlgorithm.HS256.getJcaName()
+        this.secretKey = Keys.hmacShaKeyFor(
+                jwtConfig.getJwtSecret().getBytes(StandardCharsets.UTF_8)
         );
     }
 

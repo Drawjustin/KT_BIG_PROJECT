@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.CustomUserDetails;
-import com.example.demo.entity.UserEntity;
+import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,11 +27,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername (String userEmail) throws UsernameNotFoundException{
 
         //DB에 userEmail 조회
-        Optional<UserEntity> userOptional = userRepository.findByUserEmail(userEmail);
+        Optional<User> userOptional = userRepository.findByUserEmail(userEmail);
         if (!userOptional.isPresent()) {
             throw new UsernameNotFoundException("User not found with email: " + userEmail);
         }
-        UserEntity userData = userOptional.get();
+        User userData = userOptional.get();
 
         // UserDetails에 담아서 반환
         return new CustomUserDetails(userData);

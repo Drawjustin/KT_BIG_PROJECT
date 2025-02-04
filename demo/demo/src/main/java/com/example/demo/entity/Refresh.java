@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +13,7 @@ import java.util.Date;
 @Getter
 @Setter // RefreshEntity의 필드 수정 가능하도록 추가
 @Table(name = "refresh_token")
-public class RefreshEntity {
+public class Refresh {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,11 +29,11 @@ public class RefreshEntity {
 
     @OneToOne
     @JoinColumn(name = "user_seq", nullable = false, unique = true) // UserEntity의 PK를 FK로 사용
-    private UserEntity userEntity;
+    private User user;
 
 
-    public RefreshEntity(UserEntity userEntity, String refreshTokenContent, Date refreshTokenExpiration) {
-        this.userEntity = userEntity;
+    public Refresh(User user, String refreshTokenContent, Date refreshTokenExpiration) {
+        this.user = user;
         this.refreshTokenContent = refreshTokenContent;
         this.refreshTokenExpiration = refreshTokenExpiration;
     }

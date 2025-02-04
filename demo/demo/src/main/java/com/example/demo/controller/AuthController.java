@@ -90,7 +90,7 @@ public class AuthController {
             @RequestBody @Valid LogoutRequest request,
             HttpServletResponse response) {
         try {
-            authService.logout(request.userEmail());
+            authService.logout(request.userEmail(), request.accessToken());
 
             // Refresh Token 쿠키 만료
             Cookie cookie = cookieUtil.createCookie("");

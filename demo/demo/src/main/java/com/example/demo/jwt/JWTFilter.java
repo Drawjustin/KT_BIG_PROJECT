@@ -1,8 +1,7 @@
 package com.example.demo.jwt;
 
-import com.example.demo.config.JwtConfig;
 import com.example.demo.dto.CustomUserDetails;
-import com.example.demo.entity.UserEntity;
+import com.example.demo.entity.User;
 import com.example.demo.service.AuthService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -13,7 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -90,12 +88,12 @@ public class JWTFilter extends OncePerRequestFilter {
 
     }
     private void setAuthentication (String userEmail, String userRole){
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUserEmail(userEmail);
-        userEntity.setUserRole(userRole);
+        User user = new User();
+        user.setUserEmail(userEmail);
+        user.setUserRole(userRole);
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
-                new CustomUserDetails(userEntity),
+                new CustomUserDetails(user),
                 null,
                 List.of(new SimpleGrantedAuthority(userRole))
         );

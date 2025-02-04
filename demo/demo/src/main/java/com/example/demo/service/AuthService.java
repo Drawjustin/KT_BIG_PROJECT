@@ -1,19 +1,21 @@
 package com.example.demo.service;
 
 import com.example.demo.config.JwtConfig;
-import com.example.demo.config.SecurityConfig;
 import com.example.demo.dto.CustomUserDetails;
 import com.example.demo.dto.request.JoinRequest;
 import com.example.demo.dto.request.LoginRequest;
 import com.example.demo.dto.response.AuthResponse;
 import com.example.demo.dto.response.TokenResponse;
-import com.example.demo.entity.RefreshEntity;
-import com.example.demo.entity.UserEntity;
+import com.example.demo.entity.Refresh;
+import com.example.demo.entity.Team;
+import com.example.demo.entity.User;
 import com.example.demo.exception.EmailAlreadyExistsException;
 import com.example.demo.exception.InvalidTokenException;
+import com.example.demo.exception.TeamNotFoundException;
 import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.jwt.JWTUtil;
 import com.example.demo.repository.RefreshRepository;
+import com.example.demo.repository.TeamRepository;
 import com.example.demo.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +42,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtConfig jwtConfig;
+    private final TeamRepository teamRepository;
 
     private static final String ACCESS_TOKEN_PREFIX = "access_token:";
 
@@ -50,7 +53,8 @@ public class AuthService {
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             @Lazy AuthenticationManager authenticationManager,
-            JwtConfig jwtConfig
+            JwtConfig jwtConfig,
+            TeamRepository teamRepository
             ) {
         this.jwtUtil = jwtUtil;
         this.redisTemplate = redisTemplate;
@@ -59,6 +63,7 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtConfig=jwtConfig;
+        this.teamRepository=teamRepository;
     }
 
     // 회원가입 처리
@@ -67,15 +72,14 @@ public class AuthService {
             throw new EmailAlreadyExistsException("이미 사용 중인 이메일입니다.");
         }
 
-        // JoinRequest의 toEntity 메서드를 사용하도록 수정
-        UserEntity user = new UserEntity(
-                request.userEmail(),
-                request.userId(),
-                passwordEncoder.encode(request.userPassword()),
-                request.userName(),
-                request.userNumber(),
-                "USER"
-        );
+        // 팀 존재 여부 확인
+        Team team = teamRepository.findById(request.teamSeq())
+                .orElseThrow(() -> new TeamNotFoundException("존재하지 않는 팀입니다."));
+
+
+        // 사용자 생성 및 저장
+        User user = request.toEntity(passwordEncoder, team);
+        userRepository.save(user);
 
         userRepository.save(user);
     }
@@ -88,7 +92,7 @@ public class AuthService {
         );
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        UserEntity user = userDetails.getUserEntity();
+        User user = userDetails.getUserEntity();
 
         // Access Token 생성
         String accessToken = createAccessToken(userDetails);
@@ -109,9 +113,9 @@ public class AuthService {
         blacklistToken(accessToken);
 
         // Refresh Token 삭제
-        UserEntity user = userRepository.findByUserEmail(userEmail)
+        User user = userRepository.findByUserEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
-        refreshRepository.deleteByUserEntity(user);
+        refreshRepository.deleteByUser(user);
     }
 
     // 토큰 재발급
@@ -121,7 +125,7 @@ public class AuthService {
         }
 
         String userEmail = jwtUtil.getUserEmail(refreshToken);
-        UserEntity user = userRepository.findByUserEmail(userEmail)
+        User user = userRepository.findByUserEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
 
         CustomUserDetails userDetails = new CustomUserDetails(user);
@@ -158,13 +162,13 @@ public class AuthService {
         return jwtUtil.createJwt(userDetails, "refresh", jwtConfig.getRefreshTokenExpiration());
     }
 
-    private void saveRefreshToken(UserEntity user, String token) {
-        RefreshEntity refreshToken = refreshRepository.findByUserEntity(user);
+    private void saveRefreshToken(User user, String token) {
+        Refresh refreshToken = refreshRepository.findByUser(user);
         if (refreshToken != null) {
             refreshToken.updateToken(token,
                     new Date(System.currentTimeMillis() + jwtConfig.getRefreshTokenExpiration()));
         } else {
-            refreshToken = new RefreshEntity(
+            refreshToken = new Refresh(
                     user,
                     token,
                     new Date(System.currentTimeMillis() + jwtConfig.getRefreshTokenExpiration())
