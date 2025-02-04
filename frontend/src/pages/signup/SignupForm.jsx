@@ -18,15 +18,107 @@ const SignupForm = () => {
     agreeTerms: false,
     agreePrivacy: false,
   });
+  const [errors, setErrors] = useState({
+    userName: '',
+    userEmail: '',
+    userId: '',
+    userPassword: '',
+    confirmPassword: '',
+    userNumber: '',
+  });
+
+  
+
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); //navigate함수 초기화
+  const [serverError, setServerError] = useState('');
+  const navigate = useNavigate();
+
+  const validateField = (name, value) => {
+    switch (name) {
+      case 'userName':
+        return value.length < 2 ? '이름은 2자 이상이어야 합니다.' : '';
+      case 'userEmail':
+        return !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) 
+          ? '올바른 이메일 형식이 아닙니다.' : '';
+      case 'userId':
+        return !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/.test(value)
+          ? '아이디는 영문, 숫자 조합 8-20자로 입력해주세요.' : '';
+      case 'userPassword':
+        if (value.length < 8 || value.length > 20) {
+          return '비밀번호는 8-20자로 입력해주세요.';
+        }
+        if (!/[A-Za-z]/.test(value)) {
+          return '비밀번호에 영문이 포함되어야 합니다.';
+        }
+        if (!/\d/.test(value)) {
+          return '비밀번호에 숫자가 포함되어야 합니다.';
+        }
+        if (!/[@$!%*#?&]/.test(value)) {
+          return '비밀번호에 특수문자(@$!%*#?&)가 포함되어야 합니다.';
+        }
+        if (/\s/.test(value)) {
+          return '비밀번호에 공백이 포함될 수 없습니다.';
+        }
+        // 연속된 문자/숫자 체크 (예: 123, abc)
+        if (/012|123|234|345|456|567|678|789/.test(value) || 
+            /abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz/.test(value.toLowerCase())) {
+          return '연속된 문자나 숫자는 사용할 수 없습니다.';
+        }
+        return '';
+      case 'confirmPassword':
+        return value !== form.userPassword ? '비밀번호가 일치하지 않습니다.' : '';
+      case 'userNumber':
+        return !/^\d{2,3}-\d{3,4}-\d{4}$/.test(value) 
+          ? '올바른 전화번호 형식이 아닙니다.' : '';
+      default:
+        return '';
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setForm((prevForm) => ({
-      ...prevForm,
-      [name]: value,
-    }));
+
+    if (name === 'userNumber') {
+      // 숫자만 추출
+      const numbers = value.replace(/[^0-9]/g, '');
+      
+      // 전화번호 형식으로 변환
+      let formattedNumber = '';
+      if (numbers.length <= 3) {
+        formattedNumber = numbers;
+      } else if (numbers.length <= 7) {
+        formattedNumber = `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+      } else {
+        formattedNumber = `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
+      }
+      
+      setForm(prevForm => ({
+        ...prevForm,
+        [name]: formattedNumber
+      }));
+
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [name]: validateField(name, formattedNumber)
+      }));
+    } else {
+      setForm(prevForm => ({
+        ...prevForm,
+        [name]: value
+      }));
+
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [name]: validateField(name, value)
+      }));
+      // 비밀번호 확인 필드 에러 업데이트
+      if (name === 'userPassword' && form.confirmPassword) {
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          confirmPassword: validateField('confirmPassword', form.confirmPassword)
+        }));
+      }
+    }
   };
 
   const handleCheckboxChange = (e) => {
@@ -43,14 +135,33 @@ const SignupForm = () => {
       setForm((prevForm) => ({
         ...prevForm,
         [name]: checked,
+        agreeAll: name !== 'agreeAll' && checked && 
+          (name === 'agreeTerms' ? form.agreePrivacy : form.agreeTerms),
       }));
     }
   };
+
+  const validateForm = () => {
+    const newErrors = {};
+    Object.keys(form).forEach(key => {
+      if (key in errors) {
+        newErrors[key] = validateField(key, form[key]);
+      }
+    });
+    setErrors(newErrors);
+
+    return !Object.values(newErrors).some(error => error !== '');
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validate form
+    if (!validateForm()) {
+      return;
+    }
+    
     if (form.userPassword !== form.confirmPassword) {
       alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.');
       return;
@@ -62,6 +173,7 @@ const SignupForm = () => {
     }
 
     setLoading(true);
+    setServerError(''); // 서버 에러 초기화
 
     try {
       const response = await axios.post(
@@ -72,7 +184,7 @@ const SignupForm = () => {
           userId: form.userId,
           userPassword: form.userPassword,
           userNumber: form.userNumber,
-          userRole: 'ADMIN',
+          userRole: 'USER',
         }
       );
 
@@ -98,6 +210,7 @@ const SignupForm = () => {
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
+      {serverError && <p className={styles.serverError}>{serverError}</p>}
       <Input
         type="text"
         name="userName"
@@ -105,6 +218,7 @@ const SignupForm = () => {
         label="이름*"
         value={form.userName}
         onChange={handleInputChange}
+        error={errors.userName}
       />
       <Input
         type="email"
@@ -113,22 +227,25 @@ const SignupForm = () => {
         label="이메일*"
         value={form.userEmail}
         onChange={handleInputChange}
+        error={errors.userEmail}
       />
       <Input
         type="text"
         name="userId"
-        placeholder="영문,숫자 조합 8-16자"
+        placeholder="영문,숫자 조합 8-20자"
         label="아이디*"
         value={form.userId}
         onChange={handleInputChange}
+        error={errors.userId}
       />
       <Input
         type="password"
         name="userPassword"
-        placeholder="영문,숫자 조합 8-16자"
+        placeholder="영문,숫자,특수문자 조합 8-20자"
         label="비밀번호*"
         value={form.userPassword}
         onChange={handleInputChange}
+        error={errors.userPassword}
       />
       <Input
         type="password"
@@ -137,14 +254,17 @@ const SignupForm = () => {
         label="비밀번호 확인*"
         value={form.confirmPassword}
         onChange={handleInputChange}
+        error={errors.confirmPassword}
       />
       <Input
-        type="text"
+        type="tel"  // type을 tel로 변경
         name="userNumber"
-        placeholder="휴대폰 번호 입력"
+        placeholder="예) 010-1234-5678"  // placeholder 수정
         label="휴대폰번호*"
         value={form.userNumber}
         onChange={handleInputChange}
+        maxLength={13}  // 최대 길이 지정 (하이픈 포함)
+        error={errors.userNumber}
       />
 
       <div className={styles.checkboxes}>
