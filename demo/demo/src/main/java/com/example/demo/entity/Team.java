@@ -15,12 +15,14 @@ import lombok.NoArgsConstructor;
 public class Team extends baseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "team_seq")
     private Long teamSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_seq")
     private Department department;
 
+    @Column(name = "team_name")
     private String teamName;
 
     @Builder

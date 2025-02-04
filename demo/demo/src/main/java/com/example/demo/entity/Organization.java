@@ -22,5 +22,6 @@ public class Organization extends baseEntity {
     @Column(name = "organization_seq")
     private Long organizationSeq; // 기관 고유번호
 
+    @Column(name = "organization_name")
     private String organizationName;
 }

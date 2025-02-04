@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.entity.baseEntity.baseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 //@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
 //@SQLRestriction("is_deleted = false")
 @Table(name="users")
-public class User {
+public class User extends baseEntity  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,23 +23,24 @@ public class User {
     @JoinColumn(name = "team_seq", nullable = false)
     private Team team;
 
+    @Column(name = "user_email", unique = true, nullable = false, length = 255)
+    private String userEmail; // 사용자의 이메일
+
     @Column(name = "user_id", length = 30, nullable = false)
     private String userId;
 
-    @Column(name = "user_password", length = 512, nullable = false)
+    @Column(name = "user_password", nullable = false, length = 255)
     private String userPassword;
 
-    @Column(name = "user_name", length = 30)
+    @Column(name = "user_name", nullable = false, length = 30)
     private String userName;
 
     @Column(name = "user_number", length = 13)
     private String userNumber;
 
-    @Column(name = "user_email", length = 30)
-    private String userEmail;
-
     @Column(name = "user_role", length = 50)
     private String userRole;
+
 
     @Builder
     public User(Team team, String userId, String userPassword, String userName, String userNumber, String userEmail, String userRole) {
@@ -48,7 +50,7 @@ public class User {
         this.userName = userName;
         this.userNumber = userNumber;
         this.userEmail = userEmail;
-        this.userRole = userRole;
+        this.userRole = (userRole != null) ? userRole : "USER";
     }
 
     public void setUserEmail(String userEmail) {
