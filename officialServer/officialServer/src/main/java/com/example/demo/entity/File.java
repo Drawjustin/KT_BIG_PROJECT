@@ -42,7 +42,6 @@ public class File extends baseEntity {
 
 
     @Builder
-
     public File(Admin admin, String fileTitle, String fileContent, String filePath, String fileType) {
         this.admin = admin;
         this.fileTitle = fileTitle;
