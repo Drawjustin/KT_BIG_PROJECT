@@ -29,7 +29,6 @@
 .banner {
   color: #0F4C85;
   font-size: clamp(2rem, 3vw, 2.58rem); /* 41.34px */
-  font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
   line-height: 1.15;
 }

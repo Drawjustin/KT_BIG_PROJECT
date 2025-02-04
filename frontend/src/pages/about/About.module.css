@@ -1,0 +1,118 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #2A5C96;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .servicesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .serviceCard {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .serviceCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .serviceIcon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: #2A5C96;
+  }
+  
+  .serviceTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2A5C96;
+    margin-bottom: 1rem;
+  }
+  
+  .serviceDescription {
+    color: #666;
+    line-height: 1.6;
+    font-size: 1rem;
+  }
+  
+  .contactCard {
+    background: #f8f9fa;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 3rem;
+  }
+  
+  .contactTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2A5C96;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .contactInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .contactItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .contactLabel {
+    font-weight: bold;
+    color: #2A5C96;
+  }
+  
+  .contactValue {
+    color: #666;
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      padding: 2rem 1rem;
+    }
+  
+    .title {
+      font-size: 2rem;
+    }
+  
+    .servicesGrid {
+      grid-template-columns: 1fr;
+    }
+  
+    .contactItem {
+      flex-direction: column;
+      gap: 0.5rem;
+      text-align: center;
+    }
+  }
