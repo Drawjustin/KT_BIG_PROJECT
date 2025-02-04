@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import jwtAxios from "../../util/jwtUtils";
 import styles from "./FileList.module.css"; // CSS 모듈 import 추가
-
+import {dataroomApi} from "../../api"
 /**
  * @typedef {Object} Post
  * @property {number} fileSeq
@@ -49,7 +48,7 @@ const FileList = () => {
         params[searchType] = searchKeyword;
       }
   
-      const response = await jwtAxios.get("/files", { params });
+      const response = await dataroomApi.getList(params);
       console.log("API 응답 데이터:", response.data);
 
       setPageData(response.data);

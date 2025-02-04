@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import jwtAxios from '../../util/jwtUtils';
+import { dataroomApi } from '../../api';
 
 const FileView = () => {
   const { id } = useParams();
@@ -13,7 +13,7 @@ const FileView = () => {
     const fetchFileDetail = async () => {
       try {
         setLoading(true);
-        const response = await jwtAxios.get(`/files/${id}`);
+        const response = await dataroomApi.getDetail(id);
         setPost(response.data);
       } catch (err) {
         console.error("파일 상세 정보 불러오기 실패:", err);

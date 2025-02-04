@@ -12,11 +12,10 @@ const apiClient = axios.create({
   });
 
 /**axois 회원관련 api registar,  */
-export const memberApi = {
+export const signApi = {
   // 회원가입
   register: (userData) => 
     apiClient.post('/api/join', userData),
-  
 };
 
 
@@ -35,7 +34,7 @@ export const complaintApi = {
   
   // 답변 등록
   create: (postData) => 
-    jwtAxios.post('/complaints', postData),
+    jwtAxios.post('/complaint-comments', postData),
 
   //민원 수정
   update: (complaintSeq,postData) => 
@@ -43,6 +42,11 @@ export const complaintApi = {
   //민원 삭제
   remove: (complaintSeq) =>
     jwtAxios.delete(`/complaint-comments/${complaintSeq}`),
+
+};
+/** ai 답변생성 api */
+export const commentsApi = {
+  
 
 };
 
@@ -59,11 +63,9 @@ export const documentApi = {
 
 /**자료실 관련 api */
 export const dataroomApi = {
-    // 자료실 목록 조회
-    getList: (departmentSeq,pageNumber, pageSize) => 
-      jwtAxios.get(`files/departmentSeq=${departmentSeq}&page=${pageNumber}&size=${pageSize}`,{
-        params: { departmentSeq, page: pageNumber, size: pageSize }
-      }),  
+    // 자료실 목록 조회 (검색 포함)
+  getList: (params) => 
+    jwtAxios.get('/files', { params }), 
 
     // 자료실 단건 조회
     getDetail: (fileSeq) => 

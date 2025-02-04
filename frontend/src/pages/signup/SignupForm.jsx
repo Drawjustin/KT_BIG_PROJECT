@@ -1,10 +1,11 @@
+// src/components/auth/SignUpForm.js
 import { useState } from 'react';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { signApi } from '../../api';  // API import
 import Input from '../../_components/button/Input';
 import Button from '../../_components/button/Button';
 import Checkbox from '../../_components/checkbox/Checkbox';
 import styles from './SignUpForm.module.css';
-import { useNavigate } from 'react-router-dom';
 
 const SignupForm = () => {
   const [form, setForm] = useState({
@@ -19,73 +20,74 @@ const SignupForm = () => {
     agreePrivacy: false,
   });
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); //navigate함수 초기화
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setForm((prevForm) => ({
-      ...prevForm,
+    setForm(prev => ({
+      ...prev,
       [name]: value,
     }));
   };
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
-
     if (name === 'agreeAll') {
-      setForm((prevForm) => ({
-        ...prevForm,
+      setForm(prev => ({
+        ...prev,
         agreeAll: checked,
         agreeTerms: checked,
         agreePrivacy: checked,
       }));
     } else {
-      setForm((prevForm) => ({
-        ...prevForm,
+      setForm(prev => ({
+        ...prev,
         [name]: checked,
+        // 개별 약관 체크 해제시 전체 동의도 해제
+        ...(checked === false && { agreeAll: false })
       }));
     }
+  };
+
+  const validateForm = () => {
+    if (form.userPassword !== form.confirmPassword) {
+      alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.');
+      return false;
+    }
+
+    if (!form.agreeTerms || !form.agreePrivacy) {
+      alert('필수 약관에 동의해주세요.');
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate form
-    if (form.userPassword !== form.confirmPassword) {
-      alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.');
-      return;
-    }
-
-    if (!form.agreeTerms || !form.agreePrivacy ) {
-      alert('필수 약관에 동의해주세요.');
-      return;
-    }
+    if (!validateForm()) return;
 
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/join', // api end point
-        { // api request
-          userName: form.userName,
-          userEmail: form.userEmail,
-          userId: form.userId,
-          userPassword: form.userPassword,
-          userNumber: form.userNumber,
-          userRole: 'ADMIN',
-        }
-      );
-
+      const userData = {
+        userName: form.userName,
+        userEmail: form.userEmail,
+        userId: form.userId,
+        userPassword: form.userPassword,
+        userNumber: form.userNumber,
+        userRole: 'ADMIN',
+      };
+      
+      const response = await signApi.register(userData);
+      
       if (response.status === 201) {
-        console.log('API Response:', response.data);
         alert('회원가입이 성공적으로 완료되었습니다!');
         navigate('/login');
-      } else {
-        alert('예상치 못한 오류가 발생했습니다.');
       }
     } catch (error) {
-      // 이메일 중복 오류 처리
-      if (error.response && error.response.status === 409) {
+      if (error.response?.status === 409) {
         alert('이미 사용 중인 이메일입니다.');
       } else {
         console.error('API Error:', error);
@@ -170,7 +172,7 @@ const SignupForm = () => {
 
       <Button
         type="submit"
-        onClick={loading ? null : handleSubmit}
+        disabled={loading}
       >
         {loading ? '처리 중...' : '회원가입'}
       </Button>
