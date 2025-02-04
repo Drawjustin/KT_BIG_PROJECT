@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'; // Redux 훅
-import { logout } from '../../slices/loginSlice'; // 로그아웃 액션
+import { logoutAsync } from '../../slices/loginSlice';
 import styles from './Navbar.module.css';
 
 const Navbar = () => {
@@ -10,9 +10,15 @@ const Navbar = () => {
   // 로그인 상태를 Redux에서 가져오기
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
 
-  const handleLogout = () => {
-    dispatch(logout()); // 로그아웃 액션 디스패치
-    navigate('/'); // 로그아웃 후 홈으로 이동
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutAsync()).unwrap(); // logoutAsync 액션 디스패치
+      navigate('/'); // 로그아웃 성공 시 홈으로 이동
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+      // 사용자에게 오류 메시지 표시
+      alert('로그아웃 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    }
   };
 
   return (
