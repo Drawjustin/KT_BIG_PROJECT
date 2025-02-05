@@ -79,16 +79,36 @@ const SignupForm: React.FC = () => {
 
     try {
       const response = await axios.post(
-        'https://8c21-122-37-19-2.ngrok-free.app/api/join', //api end point
-        { // api request
+          '/api/join', // URL을 상대 경로로 변경
+        { // JSON.stringify 제거, 객체 직접 전달
           userName: form.name, 
           userEmail: form.email,
           userId: form.username,
           userPassword: form.password,
-          userNumber: form.phone,
-          userRole :'ADMIN',
+          userNumber: form.phone
+          
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
         }
-      );
+        // 'http://98.84.14.117:8080/api/join', //api end point
+        // JSON.stringify({ // JSON 문자열로 변환
+        //   userName: form.name, 
+        //   userEmail: form.email,
+        //   userId: form.username,
+        //   userPassword: form.password,
+        //   userNumber: form.phone,
+        // }),
+        // {
+        //   headers: {
+        //     'Content-Type': 'application/json', // Content-Type 헤더 추가
+        //     'Access-Control-Allow-Origin': '*'  // CORS 헤더 추가
+        //     },
+        //     withCredentials: false  // CORS 관련 설정
+        //   }
+        );
       if (response.status === 201) {
         console.log('API Response:', response.data);
         alert('회원가입이 성공적으로 완료되었습니다!');
@@ -96,8 +116,34 @@ const SignupForm: React.FC = () => {
       } else {
         alert('예상치 못한 오류가 발생했습니다.');
       }
-    } catch (error) {
+    }catch (error) {
       if (error instanceof AxiosError) {
+        // 상세 에러 로깅 추가
+        if (error.response) {
+          console.error('Response Error Details:', {
+            status: error.response.status,
+            headers: error.response.headers,
+            data: error.response.data
+          });
+        } else if (error.request) {
+          console.error('Request Error Details:', {
+            method: error.config?.method,
+            url: error.config?.url,
+            headers: error.config?.headers,
+            data: error.config?.data
+          });
+        }
+        
+        // CORS 에러 확인
+        if (error.message.includes('Network Error')) {
+          console.error('CORS Error Details:', {
+            message: error.message,
+            config: error.config
+          });
+          alert('CORS 에러가 발생했습니다. 서버 설정을 확인해주세요.');
+          return;
+        }
+    
         // 이메일 중복 오류 처리 (409)
         if (error.response && error.response.status === 409) {
           alert('이미 사용 중인 이메일입니다.');
@@ -114,7 +160,7 @@ const SignupForm: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>

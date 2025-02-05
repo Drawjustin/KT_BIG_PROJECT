@@ -2,7 +2,7 @@ import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "ax
 import { getCookie, setCookie, removeCookie } from "./cookieUtils";
 
 const jwtAxios = axios.create({
-  baseURL: 'https://f5ba-122-37-19-2.ngrok-free.app', // 기본 API URL
+  baseURL: 'http://98.84.14.117:8080', // 기본 API URL
   
   withCredentials: true, // 쿠키 전송 활성화
   
@@ -19,27 +19,27 @@ const beforeReq = (config: InternalAxiosRequestConfig): InternalAxiosRequestConf
   const memberInfo = getCookie("member");
 
   if (!memberInfo) {
-    //alert('로그인이 만료되었습니다. 로그인 페이지로 이동합니다.');
-    //console.log("Member NOT FOUND");
-    // fake token 생성 (테스트용)
-    const fakeToken = "fake-token-12345";
+    alert('로그인이 만료되었습니다. 로그인 페이지로 이동합니다.');
+    console.log("Member NOT FOUND");
+    // // fake token 생성 (테스트용)
+    // const fakeToken = "fake-token-12345";
 
-    // fake token을 헤더에 추가
-    if (config.headers) {
-      config.headers.Authorization = `Bearer ${fakeToken}`;
-    }
+    // // fake token을 헤더에 추가
+    // if (config.headers) {
+    //   config.headers.Authorization = `Bearer ${fakeToken}`;
+    // }
 
-    // 리디렉션은 하지 않지만 fake token으로 요청을 보냄
-    return config;
+    // // 리디렉션은 하지 않지만 fake token으로 요청을 보냄
+    // return config;
+    // 로그인 페이지로 리디렉션
+    window.location.href = "/login";
+    return Promise.reject({
+      response: {
+        data: { error: "REQUIRE_LOGIN" },
+      },
+    });    
   }
-  //   // 로그인 페이지로 리디렉션
-  //   window.location.href = "/login";
-  //   return Promise.reject({
-  //     response: {
-  //       data: { error: "REQUIRE_LOGIN" },
-  //     },
-  //   });
-  // }
+
 
   const { accessToken } = memberInfo;
 
