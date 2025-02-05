@@ -2,10 +2,17 @@ import styles from "./HomePage.module.css";
 import searchIcon from "../../assets/images/search.png";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useSelector} from 'react-redux'; // Redux 훅, 로그인 상태 확인을 위한(로그인/로그아웃 버튼)
+
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const isLoggedIn = useSelector((state) => state.login.isLoggedIn); // 로그인 상태 확인
+  const userEmail = useSelector((state) => state.login.email); // userEmail로드하기 위한 상태 저장
+
+  // const isLoggedIn = 1; // 로그인 후 상태 테스트를 위한 하드코딩
+
 
   const handleSearch = () => {
     if (searchTerm.trim()) {
@@ -53,26 +60,47 @@ const HomePage = () => {
 
           <section className={styles.rightSection}>
             <div className={styles.loginCard}>
-              <div className={styles.loginHeader}>
-                <h2 className={styles.loginTitle}>
-                  공무원SOS의
-                  <br />
-                  다양한 서비스를 확인하세요.
-                </h2>
-              </div>
+              {isLoggedIn ? (
+                <>
+                  <div className={styles.loginHeader}>
+                    <h2 className={styles.loginTitle}>
+                      {userEmail}님,
+                      <br />
+                      환영합니다!
+                    </h2>
+                  </div>
+                  
+                  <button
+                    className={styles.loginButton}
+                    onClick={() => navigate("/mypage")}
+                  >
+                    마이페이지
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div className={styles.loginHeader}>
+                    <h2 className={styles.loginTitle}>
+                      공무원SOS의
+                      <br />
+                      다양한 서비스를 확인하세요.
+                    </h2>
+                  </div>
+                
+                  <button
+                    className={styles.loginButton}
+                    onClick={() => navigate("/login")}
+                  >
+                    로그인
+                  </button>
 
-              <button
-                className={styles.loginButton}
-                onClick={() => navigate("/login")}
-              >
-                로그인
-              </button>
-
-              <div className={styles.loginLinks}>
-                <button onClick={() => navigate("/signup")}>
-                  회원가입
-                </button>
-              </div>
+                  <div className={styles.loginLinks}>
+                    <button onClick={() => navigate("/signup")}>
+                      회원가입
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </section>
         </div>
