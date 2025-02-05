@@ -18,12 +18,8 @@ export const loginPostAsync = createAsyncThunk(
   async (loginParam, { rejectWithValue }) => {
     try {
       const response = await loginPost(loginParam); // memberApi에서 가져온 loginPost 호출
-      console.log("Login Response in Slice:", response); // 응답 확인
-      
-      // const { userEmail, accessToken } = response;
-      // API 응답 구조에 맞게 수정
-      const userEmail = response.userEmail || loginParam.userEmail;
-      const accessToken = response.accessToken;
+      console.log("login response",response.data);
+      const { userEmail, accessToken } = response.data;
 
       // 쿠키에 이메일과 토큰 저장
       setCookie("member", JSON.stringify({ userEmail, accessToken }), 7); // 토큰 저장 (유효기간 7일)
@@ -70,7 +66,6 @@ const loginSlice = createSlice({
         state.error = null;
       })
       .addCase(loginPostAsync.fulfilled, (state, action) => {
-        console.log("Fulfilled Action Payload:", action.payload); // 페이로드 확인
         state.loading = false;
         state.isLoggedIn = true;
         state.userEmail = action.payload.userEmail;

@@ -8,6 +8,7 @@ export const setCookie = (name, value, days) => {
   const expires = new Date();
   expires.setUTCDate(expires.getUTCDate() + days); // 만료일 설정
   cookies.set(name, value, { path: "/", expires });
+  
 };
 
 /** 쿠키 가져오기 */
