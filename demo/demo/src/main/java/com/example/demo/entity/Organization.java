@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-//@SQLDelete(sql = "UPDATE organization SET is_deleted = true WHERE id = ?")
-//@SQLRestriction("is_deleted = false")
 @Builder // Lombok Builder 추가
 @Table(name = "organization")
 public class Organization extends baseEntity {

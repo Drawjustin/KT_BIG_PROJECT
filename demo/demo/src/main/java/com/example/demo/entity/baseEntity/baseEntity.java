@@ -27,6 +27,10 @@ public class baseEntity {
     @Column(name = "is_deleted")
     private Boolean isDeleted=false; // 삭제 여부, 디폴트 false
 
+    public void markAsDeleted() {
+        this.isDeleted = true;
+    }
+
 //    @Column(updatable = false)
 //    private LocalDateTime createdAt;
 //    private LocalDateTime updatedAt;
@@ -44,7 +48,5 @@ public class baseEntity {
 //        updatedAt = LocalDateTime.now();
 //    }
 //
-//    public void markAsDeleted() {
-//        this.isDeleted = true;
-//    }
+
 }

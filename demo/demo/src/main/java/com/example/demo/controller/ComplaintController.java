@@ -50,6 +50,7 @@ public class ComplaintController {
     //  TODO : 민원 페이지 조회
     @GetMapping("")
     public ResponseEntity<Page<ComplaintResponseDTO>> findComplaintsByConditions(@ModelAttribute ComplaintSearchCondition condition, Pageable pageable) {
+        System.out.println("condition = " + condition);
         return ResponseEntity.ok(complaintService.findComplaintsByConditions(condition, pageable));
     }
 

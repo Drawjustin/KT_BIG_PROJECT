@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 //@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
 //@SQLRestriction("is_deleted = false")
-@Table(name="users")
+@Table(name="user")
 public class User extends baseEntity  {
 
     @Id

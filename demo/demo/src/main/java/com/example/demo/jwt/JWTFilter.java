@@ -32,62 +32,76 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.startsWith("/complaints/public");
+        return path.startsWith("/complaints/public/") || // 공개 엔드포인트
+                path.equals("/api/login") ||
+                path.equals("/api/join") ||
+                path.equals("/api/logout") ||
+                path.equals("/api/reissue");
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        //헤더에서 access키에 담긴 토큰을 꺼냄
-        String accessToken = request.getHeader("access");
+        try{//Authorization 헤더에 Bearer로 토큰 전송
+        String accessToken = request.getHeader("Authorization");
 
-        if (accessToken == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Access token이 필요합니다");
-            return;
+        if (accessToken != null && accessToken.startsWith("Bearer ")) {
+            accessToken = accessToken.substring(7);
+        } else {
+            accessToken = null;
         }
 
-        // 블랙리스트 토큰 체크 로직 추가
-        if (authService.isTokenBlacklisted(accessToken)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("유효하지 않는 토큰입니다");
-            return;
-        }
-
-        try {
-            // 토큰 만료 확인 (현재 메서드는 예외를 던지므로 수정 필요)
-            if (jwtUtil.isExpired(accessToken)) {
+        if (accessToken != null) {
+            //블랙리스트 토큰인지 확인
+            if (authService.isTokenBlacklisted(accessToken)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Access token 만료입니다");
+                response.getWriter().write("Token has been invalidated");
                 return;
             }
 
-            String userEmail = jwtUtil.getUserEmail(accessToken);
+            try {
+                // 토큰 만료 확인
+                jwtUtil.isExpired(accessToken);
 
-            if (!authService.validateAccessToken(userEmail, accessToken)) {
+                // 토큰 카테고리 확인
+                String category = jwtUtil.getCategory(accessToken);
+                if (!category.equals("access")) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Invalid access token");
+                    return;
+                }
+
+                // 이메일 추출 및 토큰 검증
+                String userEmail = jwtUtil.getUserEmail(accessToken);
+
+                // Redis에 저장된 토큰과 비교
+                if (!authService.validateAccessToken(userEmail, accessToken)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
+
+                // 인증 정보 설정
+                setAuthentication(jwtUtil.getUserEmail(accessToken), jwtUtil.getRole(accessToken));
+                filterChain.doFilter(request, response);
+            } catch (ExpiredJwtException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("유효하지 않거나 만료된 토큰입니다");
-                return;
+                response.getWriter().write("access token expired");
             }
-
-            setAuthentication(userEmail, jwtUtil.getRole(accessToken));
-            filterChain.doFilter(request, response);
-
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("인증 실패: " + e.getMessage());
         }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
-    private void setAuthentication(String userEmail, String userRole) {
-        User userEntity = new User();
-        userEntity.setUserEmail(userEmail);
-        userEntity.setUserRole(userRole);
+    private void setAuthentication (String userEmail, String userRole){
+        User user = new User();
+        user.setUserEmail(userEmail);
+        user.setUserRole(userRole);
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
-                new CustomUserDetails(userEntity),
+                new CustomUserDetails(user),
                 null,
                 List.of(new SimpleGrantedAuthority(userRole))
         );
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
-
 }

@@ -14,12 +14,12 @@ public class CustomUserDetails implements UserDetails {
 
     private final User user; //userEntity 초기화
 
-    public User getUser() {
+    public User getUserEntity() {
         return user;
     }
 
     public CustomUserDetails(User user){
-        this.user=user;
+        this.user = user;
     }
 
     //userEmail 리턴
@@ -42,4 +42,28 @@ public class CustomUserDetails implements UserDetails {
         return List.of(new SimpleGrantedAuthority(user.getUserRole()));
     }
 
+    //계정이 만료되지 않았는지 확인
+    @Override
+    public boolean isAccountNonExpired() {
+        return !user.getIsDeleted();  // BaseEntity의 삭제 상태 활용
+    }
+
+    //계정이 잠기지 않았는지 확인
+    @Override
+    public boolean isAccountNonLocked() {
+        return !user.getIsDeleted();  // BaseEntity의 삭제 상태 활용
+    }
+
+    //자격 증명이 만료되지 않았는지 확인
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;  // 필요에 따라 비밀번호 만료 정책 구현
+    }
+
+    // 계정이 활성 상태인지 확인
+    @Override
+    public boolean isEnabled() {
+        return !user.getIsDeleted();  // BaseEntity의 삭제 상태 활용
+    }
 }
+
