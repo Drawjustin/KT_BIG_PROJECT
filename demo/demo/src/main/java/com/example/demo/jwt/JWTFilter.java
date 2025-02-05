@@ -35,7 +35,10 @@ public class JWTFilter extends OncePerRequestFilter {
         return path.equals("/api/login") ||
                 path.equals("/api/join") ||
                 path.equals("/api/logout") ||
-                path.equals("/api/reissue");
+                path.equals("/api/reissue") ||
+                path.equals("/api/departments") ||
+                path.startsWith("/api/teams");  // "/api/teams?departmentSeq=1" 같은 요청도 포함하기 위해 startsWith 사용
+
     }
 
     @Override

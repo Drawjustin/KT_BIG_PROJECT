@@ -74,6 +74,8 @@ public class SecurityConfig {
                 .httpBasic((auth)-> auth.disable())
                 .authorizeHttpRequests((auth)-> auth
                         .requestMatchers("/api/login","/api/join","/api/reissue","/api/logout").permitAll()
+                        .requestMatchers("/api/departments", "/api/teams").permitAll()
+                        .requestMatchers("/db-test").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")//관리자만 접근가능
                         .requestMatchers("/user/**").hasRole("USER")  // 사용자만 접근 가능
                         .requestMatchers("/reissue").permitAll() //토큰 refresh 발급

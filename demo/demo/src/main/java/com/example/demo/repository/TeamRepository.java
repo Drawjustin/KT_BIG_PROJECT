@@ -14,4 +14,6 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     //부서 검색
     List<Team> findByDepartment(Department department);
+
+
 }

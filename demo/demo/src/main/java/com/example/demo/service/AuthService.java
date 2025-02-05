@@ -73,23 +73,41 @@ public class AuthService {
         this.jwtConfig=jwtConfig;
         this.teamRepository=teamRepository;
         this.departmentRepository=departmentRepository;
+
     }
 
     // 회원가입 처리
     public void join(JoinRequest request) {
+        log.info("Join Request - TeamSeq: {}", request.teamSeq());
+
+        List<Team> allTeams = teamRepository.findAll();
+        log.info("Total Teams Count: {}", allTeams.size());
+        allTeams.forEach(team ->
+                log.info("Team - ID: {}, Name: {}, Department: {}",
+                        team.getTeamSeq(),
+                        team.getTeamName(),
+                        team.getDepartment() != null ? team.getDepartment().getDepartmentName() : "No Department")
+        );
+
+        // null 체크 추가
+        if (request.teamSeq() == null) {
+            throw new IllegalArgumentException("Team ID is required");
+        }
+
         if (userRepository.existsByUserEmail(request.userEmail())) {
             throw new EmailAlreadyExistsException("이미 사용 중인 이메일입니다.");
         }
 
         // 팀 존재 여부 확인
         Team team = teamRepository.findById(request.teamSeq())
-                .orElseThrow(() -> new TeamNotFoundException("존재하지 않는 팀입니다."));
+                .orElseThrow(() -> {
+                    log.error("Team not found - TeamSeq: {}", request.teamSeq());
+                    return new TeamNotFoundException("존재하지 않는 팀입니다.");
+                });
 
-
+        log.info("Found Team - TeamName: {}", team.getTeamName());
         // 사용자 생성 및 저장
         User user = request.toEntity(passwordEncoder, team);
-        userRepository.save(user);
-
         userRepository.save(user);
     }
 
