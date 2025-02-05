@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import axios from 'axios';
 import Input from '../../_components/button/Input';
 import Button from '../../_components/button/Button';
 import Checkbox from '../../_components/checkbox/Checkbox';
@@ -184,6 +183,7 @@ const SignupForm = () => {
                 userPassword: form.userPassword,
                 userNumber: form.userNumber,
                 userRole: 'USER',
+                teamSeq: 1,
               };
               
       const response = await signApi.register(userData);
