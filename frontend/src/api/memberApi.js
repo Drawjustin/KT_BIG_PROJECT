@@ -13,8 +13,8 @@ export const loginPost = async (loginParam) => {
   };
 
   const requestBody = {
-    userEmail: loginParam.email,
-    userPassword: loginParam.pw
+    userEmail: loginParam.userEmail,
+    userPassword: loginParam.userPassword
   };
 
   try {

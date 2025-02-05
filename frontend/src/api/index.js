@@ -23,11 +23,8 @@ export const signApi = {
 /** 민원 도우미 관련 api */
 export const complaintApi = {
   // 민원 목록 조회
-  getList: (departmentSeq,pageNumber, pageSize) => 
-    jwtAxios.get('/complaint-comments', {
-        params: { departmentSeq, page: pageNumber, size: pageSize }
-      }),  
-  
+  getList: (params) => jwtAxios.get('/complaint-comments', { params }),
+ 
   // 민원 상세 조회
   getDetail: (complaintSeq) => 
     jwtAxios.get(`/complaint-comments/${complaintSeq}`),
@@ -69,6 +66,6 @@ export const dataroomApi = {
 
     // 자료실 단건 조회
     getDetail: (fileSeq) => 
-      jwtAxios.get(`files/${fileSeq}}`),
+      jwtAxios.get(`files/${fileSeq}`),
   };
   
