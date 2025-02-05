@@ -11,8 +11,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-//@SQLDelete(sql = "UPDATE file SET is_deleted = true WHERE id = ?")
-//@SQLRestriction("is_deleted = false")
 @Table(name = "file")
 public class File extends baseEntity {
 

@@ -24,12 +24,17 @@ public class Department extends baseEntity {
     @Column(name = "department_name", nullable = false, length = 50)
     private String departmentName; // 부서 이름
 
+    @Column(name="department_number",nullable = false, length=30)
+    private String departmentNumber; //부서 전화번호
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "organization_seq", nullable = false)
-    private Organization organization; // Organization 관계 설정
+    @JoinColumn(name = "district_seq", nullable = false)
+    private District district;
+
     @Builder
-    public Department(String departmentName, Organization organization) {
+    public Department(String departmentName, String departmentNumber, District district) {
         this.departmentName = departmentName;
-        this.organization = organization;
+        this.departmentNumber=departmentNumber;
+        this.district = district;
     }
 }

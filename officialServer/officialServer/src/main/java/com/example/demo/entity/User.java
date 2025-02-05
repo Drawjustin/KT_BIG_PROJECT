@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.entity.baseEntity.baseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 //@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
 //@SQLRestriction("is_deleted = false")
 @Table(name="users")
-public class User {
+public class User extends baseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,6 +49,14 @@ public class User {
         this.userName = userName;
         this.userNumber = userNumber;
         this.userEmail = userEmail;
+        this.userRole = userRole;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public void setUserRole(String userRole) {
         this.userRole = userRole;
     }
 }
