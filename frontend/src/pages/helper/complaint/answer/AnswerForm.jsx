@@ -69,7 +69,7 @@ const AnswerForm = ({ complaintSeq, memberSeq = 1, teamSeq = 1 }) => {
 
   return (
     <div className={styles["answer-form-section"]}>
-      <h3>답변</h3>
+      <h2>답변</h2>
       <textarea
         rows="5"
         value={answer}

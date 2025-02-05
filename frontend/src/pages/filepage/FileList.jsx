@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "./FileList.module.css"; // CSS 모듈 import 추가
 import {dataroomApi} from "../../api"
+// import axios from "axios"; // for axios
 /**
  * @typedef {Object} Post
  * @property {number} fileSeq
@@ -34,6 +35,7 @@ const FileList = () => {
   const postsPerPage = 10;
   const [searchType, setSearchType] = useState("title"); // 검색 유형
   const [searchKeyword, setSearchKeyword] = useState(""); // 검색어
+  // const url = import.meta.env.VITE_API_BASE_URL; // for axios
 
   const fetchPosts = async (page) => {
     try {
@@ -47,14 +49,30 @@ const FileList = () => {
       if (searchKeyword) {
         params[searchType] = searchKeyword;
       }
-  
       const response = await dataroomApi.getList(params);
+      // const response = await axios.get(`${url}/files`, { params }); // for axios
+
+      console.log("request data", params);
       console.log("API 응답 데이터:", response.data);
 
       setPageData(response.data);
       setTotalPages(response.data.page.totalPages);
     } catch (error) {
       console.error("데이터를 가져오는 중 오류 발생:", error);
+      console.error("Error Name:", error.name);
+      console.error("Error Message:", error.message);
+      if (error.response) {
+        // 서버 응답이 있는 경우
+        console.error("Error Response Status:", error.response.status);
+        console.error("Error Response Data:", error.response.data);
+        console.error("Error Response Headers:", error.response.headers);
+      }
+      
+      if (error.request) {
+        // 요청은 보내졌지만 응답을 받지 못한 경우
+        console.error("Error Request:", error.request);
+      }
+  
       setError(error.message);
     } finally {
       setLoading(false);
@@ -78,7 +96,6 @@ const FileList = () => {
 
   return (
     <div className={styles.listPageContainer}>
-      <h1>자료실 목록</h1>
       <div className={styles.searchContainer}>
         <form onSubmit={handleSearch} className={styles.searchForm}>
           <select 

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import styles from "./ListPage.module.css";
 import { Link } from "react-router-dom";
-import jwtAxios from "../../../util/jwtUtils";
 import { complaintApi } from "../../../api";
 
 const ListPage = () => {
@@ -62,7 +61,6 @@ const ListPage = () => {
   return (
     <>
     <div className={styles.listPageContainer}>
-      <h1>민원 목록</h1>
       <div className={styles.searchContainer}>
         <form onSubmit={handleSearch} className={styles.searchForm}>
           <select
@@ -89,7 +87,6 @@ const ListPage = () => {
         <thead>
           <tr>
             <th>번호</th>
-            <th>악성여부</th>
             <th>제목</th>
             <th>부서</th>
             <th>답변여부</th>
@@ -100,9 +97,9 @@ const ListPage = () => {
           {pageData?.content?.map((item, index) => (
             <tr key={`complaint-${item.complaintSeq}`}>
               <td>{(currentPage - 1) * postsPerPage + index + 1}</td>
-              <td>{item.bad ? '⚠️':'' } </td>
               <td>
-                <Link to={`write/${item.complaintSeq}?answered=${item.answered}`}>
+                <Link to={`write/${item.complaintSeq}`}>
+                  {item.bad ? '⚠️':'' }
                   {item.title && item.title.trim() !== ""
                     ? item.title
                     : "제목 없음"}
