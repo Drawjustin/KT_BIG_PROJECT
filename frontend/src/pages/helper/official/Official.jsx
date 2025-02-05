@@ -2,10 +2,7 @@
 import DocumentAssistantComponent from './DocumentAssistantComponent';
 // import Sidebar from './Sidebar';
 import styled from 'styled-components';
-
-const PageContainer = styled.div`
-  display: flex;
-`;
+import styles from '../../filepage/page.module.css'
 
 const MainContent = styled.div`
   margin-left: ${props => props.sidebarOpen ? '250px' : '0'};
@@ -14,11 +11,6 @@ const MainContent = styled.div`
   padding: 90px;
 `;
 
-const Title = styled.h1`
-  color: #2A5C96;
-  font-size: 24px;
-  margin-bottom: 20px;
-`;
 
 const Official = () => {
   // const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
@@ -35,14 +27,14 @@ const Official = () => {
   // };
 
   return (
-    <PageContainer>
-      {/* <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} /> */}
-      {/* <MainContent sidebarOpen={isSidebarOpen}> */}
-      <MainContent>
-        <Title>공문서 도우미</Title>
-        <DocumentAssistantComponent />
-      </MainContent>
-    </PageContainer>
+    <div className={styles.pageContainer}>
+      <div className={styles.titleArea}>
+        <h1>공문서 도우미</h1>
+          </div>
+          <MainContent>
+            <DocumentAssistantComponent />
+          </MainContent>
+      </div>
   );
 };
 

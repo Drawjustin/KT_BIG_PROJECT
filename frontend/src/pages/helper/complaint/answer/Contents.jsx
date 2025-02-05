@@ -16,7 +16,9 @@ const Contents = ({ data }) => {
   return (
     <div className={styles["post-detail"]}>
       <div className={styles["title-section"]}>
-        <h1>{title}</h1>
+      <div className={styles["case-title"]}>
+          <h2>사례: {title}</h2>
+        </div>
         {bad && (                   // isBad -> bad
           <div className={styles["alert-message"]}>
             경고이미지 해당 게시글은 악성으로 판단됩니다.
@@ -30,10 +32,8 @@ const Contents = ({ data }) => {
 
       {/* Content */}
       <div className={styles["content-section"]}>
-        <div className={styles["case-title"]}>
-          <h2>사례: {title}</h2>
-        </div>
         <div className={styles["case-content"]}>
+          <h3>민원 내용</h3>
           <p>{content}</p>
         </div>
       </div>

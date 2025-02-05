@@ -2,7 +2,7 @@
 .listPageContainer {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 /* 민원 목록 테이블 */
@@ -23,8 +23,8 @@
 /* 테이블 헤더 및 셀 스타일 */
 .listTable th,
 .listTable td {
-  padding: 1rem;
-  text-align: left;
+  padding: 22px 0;
+  text-align: center;
   border-bottom: 1px solid #ddd;
 }
 
@@ -33,6 +33,7 @@
   color : #fff;
   border-bottom: 1px solid var(--AIVLE-02-secondary_navy-navy-03, #99B0CB);
   background: var(--AIVLE-02-secondary_navy-navy-04, #2A5C96);
+  font-weight: normal;
   }
 
 .pagination {

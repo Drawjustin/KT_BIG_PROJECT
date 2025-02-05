@@ -9,7 +9,7 @@ const AnswerSave = ({ data }) => {
 
   return (
     <div className={styles["answer-view-container"]}>
-      <h3>저장된 답변</h3>
+      <h2>저장된 답변</h2>
       <p>
         <strong>제목:</strong> {title}
       </p>

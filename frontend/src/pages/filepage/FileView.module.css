@@ -1,0 +1,233 @@
+/* 기본 스타일 */
+.container {
+  max-width: 983px;
+  margin: 2rem auto 0;
+  position: relative;
+  border-top: 2px solid #2A5C96;
+  overflow: hidden; /* 추가: 요소들이 컨테이너를 벗어나지 않도록 */
+
+}
+
+.header {
+  width: 100%;
+  height: 112px;
+  position: relative;
+  background: #EDF1F5;
+  border-bottom: 1px solid #CDD7E4;
+  margin-top: 2px;
+}
+
+.headerContent {
+  width: calc(100% - 60px);
+  max-width: 848.95px;
+  height: 34.50px;
+  position: absolute;
+  left: 30px;
+  top: 20px;
+}
+
+.title {
+  width: 100%;
+  color: black;
+  font-size: 23px;
+  font-weight: 400;
+  line-height: 34.50px;
+  word-wrap: break-word;
+}
+
+.authorInfo {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 30px;
+  top: 66px;
+  color: #666666;
+  font-size: 15px;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.verticalDivider {
+  width: 1px;
+  height: 10px;
+  background: #D7D7D7;
+  margin: 0 10px;
+}
+
+.content {
+  position: relative;
+  width: calc(100% - 60px);
+  max-width: 952.08px;
+  margin: 30px auto;
+  padding: 0 30px;
+  color: #666666;
+  font-size: 15px;
+  line-height: 17.25px;
+}
+
+.contentSection {
+  margin-bottom: 20px;
+  min-height: 200px;
+}
+
+.attachmentSection {
+  position: relative;
+  width: calc(100% - 60px); /* 수정: 패딩을 고려한 너비 계산 */
+  margin: 30px auto; /* 수정: 중앙 정렬을 위해 auto 마진 사용 */
+  padding: 0 30px;
+  border-top: 1px solid #CDD7E4;
+  border-bottom: 1px solid #CDD7E4;
+}
+
+.attachmentTitle {
+  color: #333333;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 15px;
+  padding-top: 20px;
+  margin-left: 25px;
+}
+
+.attachmentItem {
+  display: flex;
+  align-items: center;
+  height: 24.50px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.attachmentName {
+  color: #666666;
+  font-size: 15px;
+  margin-left: 25px;
+}
+
+.viewButton {
+  position: absolute;
+  right: 30px;
+  width: 42.28px;
+  height: 22.50px;
+  background: linear-gradient(0deg, #1F9BDE 0%, #1F9BDE 100%);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.viewButtonText {
+  color: white;
+  font-size: 11px;
+}
+
+.listButton {
+  width: 105px;
+  height: 42px;
+  background: var(--AIVLE-02-secondary_navy-navy-04, #2A5C96);
+  border-radius: 3px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  line-height: 42px;
+  margin: 30px 30px 30px auto;
+  display: block;
+}
+.listButton:hover{
+  background-color:#1f4571; 
+}
+
+/* 태블릿 반응형 */
+@media screen and (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: 0 15px;
+  }
+
+  .header {
+    height: auto;
+    padding: 15px 0;
+  }
+
+  .headerContent {
+    position: relative;
+    left: 15px;
+    width: calc(100% - 30px);
+  }
+
+  .title {
+    font-size: 20px;
+    line-height: 1.4;
+  }
+
+  .authorInfo {
+    position: relative;
+    left: 15px;
+    top: 10px;
+  }
+
+  .content {
+    width: calc(100% - 30px); /* 수정: 여백 조정 */
+    padding: 0;
+    margin: 30px auto;
+  }
+
+  .attachmentSection {
+    width: calc(100% - 30px); /* 수정: 여백 조정 */
+    padding: 0;
+    margin: 30px auto;
+  }
+
+  .attachmentTitle {
+    margin-left: 15px;
+  }
+
+  .attachmentName {
+    margin-left: 15px;
+  }
+
+  .viewButton {
+    right: 0;
+  }
+
+  .listButton {
+    margin-right: 15px;
+  }
+}
+
+/* 모바일 반응형 */
+@media screen and (max-width: 480px) {
+  .title {
+    font-size: 18px;
+  }
+
+  .authorInfo {
+    font-size: 14px;
+  }
+
+  .content {
+    font-size: 14px;
+  }
+
+  .attachmentItem {
+    flex-direction: column;
+    height: auto;
+    align-items: flex-start;
+  }
+
+  .attachmentName {
+    margin-bottom: 10px;
+  }
+
+  .viewButton {
+    position: relative;
+    right: 0;
+    margin-left: 15px;
+  }
+
+  .listButton {
+    width: 90px;
+    height: 36px;
+    font-size: 14px;
+    line-height: 36px;
+  }
+}

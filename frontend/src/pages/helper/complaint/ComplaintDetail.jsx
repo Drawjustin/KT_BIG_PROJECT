@@ -13,6 +13,13 @@ const ComplaintDetail = () => {
   const [postData, setPostData] = useState(null); // 백엔드 데이터 저장
   const [loading, setLoading] = useState(true); // 로딩 상태
   const [error, setError] = useState(null); // 에러 상태
+  const [answered, setAnswered] = useState(false); // ansered
+
+  // const location = useLocation();
+  // const answered = new URLSearchParams(location.search).get('answered') === 'true';
+  // const answered = new URLSearchParams(location.search).get('commentResponseDTOList').length > 0;
+  // if 0보다 크면 true false로 
+  
   
 
   // 백엔드 api 호출 : title, isBad, content, summary, date -> 어떤 타입으로 주는지 확인 필요, prop-type validation변경 필요
@@ -20,8 +27,13 @@ const ComplaintDetail = () => {
     try {
       setLoading(true);
       const response = await complaintApi.getDetail(complainSeq);
+      console.log(response);
       // const response = await jwtAxios.get(`/complaint-comments/${complainSeq}`);
-      
+      console.log("단건 조회 response",response.data);
+      // commentResponseDTOList 길이 체크하여 answered 설정
+      const hasComments = response.data.commentResponseDTOList && 
+      response.data.commentResponseDTOList.length > 0;
+      setAnswered(hasComments); // answered state 추가 필요
       const formattedData = {
         ...response.data,
         date: new Date(response.data.date).toLocaleDateString('ko-KR', {
@@ -31,6 +43,7 @@ const ComplaintDetail = () => {
         }).replace(/\. /g, '-').replace('.', '') // YYYY-MM-DD 형식으로 변환
       };
       setPostData(formattedData);
+      // console.log(answered);
 
       
     } catch (err) {
@@ -55,7 +68,7 @@ const ComplaintDetail = () => {
       <div className={styles["main-content"]}>
         {/* Title, Content, Summary */}
         <Contents data={postData} />
-        {postData.isAnswered ? (
+        { answered ? (
           <AnswerSave data={postData.complaintSeq} />
         ) : (
           <AnswerForm 

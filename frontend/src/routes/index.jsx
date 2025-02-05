@@ -16,7 +16,8 @@ const AppRoutes = () => {
       
       {/* 보호된 라우트 */}
       {/* <Route element={<ProtectedRoute />}> */}
-      <Route>
+      {/* 위에 라우트 풀면 밑에꺼 삭제 */}
+      <Route> 
         <Route path="/complaint/*" element={<Complaint />} />
         <Route path="/official" element={<Official />} />
         <Route path="/dataroom/*" element={<Filepage />} />
