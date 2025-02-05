@@ -6,7 +6,7 @@ import axios from "axios"; // AxiosError를 가져옵니다.
 
 // 초기 상태
 const initialState = {
-  email: "",
+  userEmail: "",
   isLoggedIn: false,
   loading: false,
   error: null,
@@ -18,12 +18,17 @@ export const loginPostAsync = createAsyncThunk(
   async (loginParam, { rejectWithValue }) => {
     try {
       const response = await loginPost(loginParam); // memberApi에서 가져온 loginPost 호출
-      const { email, accessToken } = response;
+      console.log("Login Response in Slice:", response); // 응답 확인
+      
+      // const { userEmail, accessToken } = response;
+      // API 응답 구조에 맞게 수정
+      const userEmail = response.userEmail || loginParam.userEmail;
+      const accessToken = response.accessToken;
 
       // 쿠키에 이메일과 토큰 저장
-      setCookie("member", JSON.stringify({ email, accessToken }), 7); // 토큰 저장 (유효기간 7일)
+      setCookie("member", JSON.stringify({ userEmail, accessToken }), 7); // 토큰 저장 (유효기간 7일)
 
-      return { email, accessToken };
+      return { userEmail, accessToken };
     } catch (error) {
       // AxiosError 타입으로 명시했던 부분을 일반적인 조건문으로 처리
       if (axios.isAxiosError(error)) {
@@ -40,9 +45,9 @@ export const logoutAsync = createAsyncThunk(
   "logoutAsync",
   async (_, { getState, rejectWithValue }) => {
     try {
-      const { email } = getState().login;
+      const { userEmail } = getState().login;
       const { accessToken } = JSON.parse(getCookie("member"));
-      const response = await logoutPost(email, accessToken);
+      const response = await logoutPost(userEmail, accessToken);
       if (response.status === "success") {
         removeCookie("member");
         return response;
@@ -65,9 +70,10 @@ const loginSlice = createSlice({
         state.error = null;
       })
       .addCase(loginPostAsync.fulfilled, (state, action) => {
+        console.log("Fulfilled Action Payload:", action.payload); // 페이로드 확인
         state.loading = false;
         state.isLoggedIn = true;
-        state.email = action.payload.email;
+        state.userEmail = action.payload.userEmail;
       })
       .addCase(loginPostAsync.rejected, (state, action) => {
         state.loading = false;
@@ -81,7 +87,7 @@ const loginSlice = createSlice({
       .addCase(logoutAsync.fulfilled, (state) => {
         state.loading = false;
         state.isLoggedIn = false;
-        state.email = "";
+        state.userEmail = "";
         state.error = null;
       })
       .addCase(logoutAsync.rejected, (state, action) => {

@@ -27,6 +27,7 @@ export const loginPost = async (loginParam) => {
       timeout: 5000, // 5초 타임아웃
       withCredentials: true // 크로스 오리진 요청 시 필요
     });
+    console.log("Login API Response:", res.data); // 응답 구조 확인
     return res.data;
   } catch (error) {
     console.error("Detailed Error:", {

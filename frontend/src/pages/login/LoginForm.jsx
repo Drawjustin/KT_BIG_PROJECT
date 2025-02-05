@@ -7,7 +7,7 @@ import styles from './LoginForm.module.css';
 import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ userEmail: '', password: '' });
   const dispatch = useDispatch(); // Redux 디스패치 훅 사용
   const navigate = useNavigate(); // useNavigate 훅 사용
 
@@ -23,7 +23,7 @@ const LoginForm = () => {
     try {
       // loginParam 수정: userEmail, userPassword로 매핑
       const loginParam = {
-        userEmail: form.email,
+        userEmail: form.userEmail,
         userPassword: form.password, // password -> userPassword로 변경
       };
 
@@ -54,10 +54,10 @@ const LoginForm = () => {
     <div className={styles.form}>
       <Input
         type="email"
-        name="email"
+        name="userEmail"
         placeholder="이메일 입력"
         label="이메일"
-        value={form.email}
+        value={form.userEmail}
         onChange={handleInputChange}
       />
       <Input
