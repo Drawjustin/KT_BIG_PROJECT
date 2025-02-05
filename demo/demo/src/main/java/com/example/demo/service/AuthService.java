@@ -5,7 +5,10 @@ import com.example.demo.dto.CustomUserDetails;
 import com.example.demo.dto.request.JoinRequest;
 import com.example.demo.dto.request.LoginRequest;
 import com.example.demo.dto.response.AuthResponse;
+import com.example.demo.dto.response.DepartmentResponse;
+import com.example.demo.dto.response.TeamResponse;
 import com.example.demo.dto.response.TokenResponse;
+import com.example.demo.entity.Department;
 import com.example.demo.entity.Refresh;
 import com.example.demo.entity.Team;
 import com.example.demo.entity.User;
@@ -26,10 +29,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.example.demo.repository.DepartmentRepository;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -43,6 +49,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtConfig jwtConfig;
     private final TeamRepository teamRepository;
+    private final DepartmentRepository departmentRepository;
 
     private static final String ACCESS_TOKEN_PREFIX = "access_token:";
 
@@ -54,7 +61,8 @@ public class AuthService {
             PasswordEncoder passwordEncoder,
             @Lazy AuthenticationManager authenticationManager,
             JwtConfig jwtConfig,
-            TeamRepository teamRepository
+            TeamRepository teamRepository,
+            DepartmentRepository departmentRepository
             ) {
         this.jwtUtil = jwtUtil;
         this.redisTemplate = redisTemplate;
@@ -64,6 +72,7 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
         this.jwtConfig=jwtConfig;
         this.teamRepository=teamRepository;
+        this.departmentRepository=departmentRepository;
     }
 
     // 회원가입 처리
@@ -198,6 +207,30 @@ public class AuthService {
                 "true",
                 Duration.ofMillis(remainingTime)
         );
+    }
+
+    // 부서 목록 조회 메서드 추가
+    public List<DepartmentResponse> getAllDepartments() {
+        return departmentRepository.findAll().stream()
+                .map(dept -> new DepartmentResponse(
+                        dept.getDepartmentSeq(),
+                        dept.getDepartmentName()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    // 특정 부서의 팀 목록 조회 메서드 추가
+    public List<TeamResponse> getTeamsByDepartment(Long departmentSeq) {
+        Department department = departmentRepository.findById(departmentSeq)
+                .orElseThrow(() -> new TeamNotFoundException("존재하지 않는 팀입니다."));
+
+        return teamRepository.findByDepartment(department).stream()
+                .map(team -> new TeamResponse(
+                        team.getTeamSeq(),
+                        team.getTeamName(),
+                        department.getDepartmentSeq()
+                ))
+                .collect(Collectors.toList());
     }
 
     // 토큰이 블랙리스트에 있는지 확인

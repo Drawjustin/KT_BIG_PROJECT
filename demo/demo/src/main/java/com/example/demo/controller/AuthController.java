@@ -3,10 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.request.JoinRequest;
 import com.example.demo.dto.request.LoginRequest;
 import com.example.demo.dto.request.LogoutRequest;
-import com.example.demo.dto.response.AuthResponse;
-import com.example.demo.dto.response.CommonResponse;
-import com.example.demo.dto.response.ErrorResponse;
-import com.example.demo.dto.response.TokenResponse;
+import com.example.demo.dto.response.*;
 import com.example.demo.exception.EmailAlreadyExistsException;
 import com.example.demo.exception.InvalidTokenException;
 import com.example.demo.exception.UserNotFoundException;
@@ -25,6 +22,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -144,6 +142,22 @@ public class AuthController {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(CommonResponse.error("토큰 재발급 중 오류가 발생했습니다"));
         }
+    }
+
+    // 부서 목록 엔드포인트 추가
+    @GetMapping("/departments")
+    public ResponseEntity<CommonResponse<List<DepartmentResponse>>> getAllDepartments() {
+        List<DepartmentResponse> departments = authService.getAllDepartments();
+        return ResponseEntity.ok(CommonResponse.success("부서 목록 조회 성공", departments));
+    }
+
+    // 팀 목록 엔드포인트 추가
+    @GetMapping("/teams")
+    public ResponseEntity<CommonResponse<List<TeamResponse>>> getTeamsByDepartment(
+            @RequestParam(name = "departmentSeq") Long departmentSeq
+    ) {
+        List<TeamResponse> teams = authService.getTeamsByDepartment(departmentSeq);
+        return ResponseEntity.ok(CommonResponse.success("팀 목록 조회 성공", teams));
     }
 
     // 예외 처리
