@@ -1,7 +1,7 @@
 import styles from "./HomePage.module.css";
 import searchIcon from "../../assets/images/search.png";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector} from 'react-redux'; // Redux 훅, 로그인 상태 확인을 위한(로그인/로그아웃 버튼)
 
 
@@ -9,10 +9,18 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn); // 로그인 상태 확인
-  const userEmail = useSelector((state) => state.login.email); // userEmail로드하기 위한 상태 저장
+  const userEmail = useSelector((state) => state.login.userEmail); // userEmail로드하기 위한 상태 저장
+  console.log('Login State:', { isLoggedIn, userEmail });
 
   // const isLoggedIn = 1; // 로그인 후 상태 테스트를 위한 하드코딩
+  const fullReduxState = useSelector((state) => state);
+  
+  useEffect(() => {
+    console.log('Full Redux State:', fullReduxState);
+    console.log('Login Slice State:', fullReduxState.login);
+  }, [fullReduxState]);
 
+  console.log('Login State:', { isLoggedIn, userEmail });
 
   const handleSearch = () => {
     if (searchTerm.trim()) {
