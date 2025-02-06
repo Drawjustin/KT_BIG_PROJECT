@@ -1,45 +1,39 @@
-import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+import axios, { 
+  AxiosInstance, 
+  InternalAxiosRequestConfig, 
+  AxiosResponse, 
+  AxiosError 
+} from "axios";
 import { getCookie, setCookie, removeCookie } from "./cookieUtils";
 
-const jwtAxios = axios.create({
-  baseURL: 'http://98.84.14.117:8080', // 기본 API URL
-  
+// 쿠키 정보 인터페이스
+interface MemberInfo {
+  accessToken: string;
+}
+
+// Axios 인스턴스 생성
+const jwtAxios: AxiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL, // .env파일에서 url 가져옴
   withCredentials: true, // 쿠키 전송 활성화
-  
 });
 
 // Refresh Token 갱신 API 경로
-const REFRESH_TOKEN_ENDPOINT = "/auth/refresh";
+const REFRESH_TOKEN_ENDPOINT = "/api/reissue";
 
-
-
-// 요청시 액세스 토큰이 없으면 로그인페이지로 리디렉션. 
+/** 요청 전 처리 */
 const beforeReq = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig | Promise<InternalAxiosRequestConfig> => {
   console.log("before request...");
-  const memberInfo = getCookie("member");
+  const memberInfo: MemberInfo | undefined = getCookie("member");
 
   if (!memberInfo) {
-    alert('로그인이 만료되었습니다. 로그인 페이지로 이동합니다.');
     console.log("Member NOT FOUND");
-    // // fake token 생성 (테스트용)
-    // const fakeToken = "fake-token-12345";
-
-    // // fake token을 헤더에 추가
-    // if (config.headers) {
-    //   config.headers.Authorization = `Bearer ${fakeToken}`;
-    // }
-
-    // // 리디렉션은 하지 않지만 fake token으로 요청을 보냄
-    // return config;
-    // 로그인 페이지로 리디렉션
     window.location.href = "/login";
     return Promise.reject({
       response: {
         data: { error: "REQUIRE_LOGIN" },
       },
-    });    
+    });
   }
-
 
   const { accessToken } = memberInfo;
 
@@ -51,12 +45,12 @@ const beforeReq = (config: InternalAxiosRequestConfig): InternalAxiosRequestConf
 };
 
 /** 요청 실패 처리 */
-const requestFail = (err: AxiosError): Promise<never> => {
+const requestFail = (err: AxiosError): Promise<AxiosError> => {
   console.log("request error...");
   return Promise.reject(err);
 };
 
-// jwtAxios의 responseFail 수정
+/** 응답 실패 처리 */
 const responseFail = async (error: AxiosError): Promise<AxiosResponse | never> => {
   const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
@@ -65,23 +59,29 @@ const responseFail = async (error: AxiosError): Promise<AxiosResponse | never> =
 
     try {
       const refreshResponse = await axios.post(
-        REFRESH_TOKEN_ENDPOINT,
+        `${jwtAxios.defaults.baseURL}${REFRESH_TOKEN_ENDPOINT}`,
         {},
         { withCredentials: true }
       );
 
       const { accessToken } = refreshResponse.data;
+      
+      // 새로운 토큰으로 쿠키 업데이트
       setCookie("member", JSON.stringify({ accessToken }), 7);
 
       if (originalRequest.headers) {
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
       }
+      
       return jwtAxios(originalRequest);
-    } catch (err) {
+    } catch (refreshError) {
+      console.error("Token refresh failed:", refreshError);
       removeCookie("member");
       window.location.href = "/login";
+      return Promise.reject(refreshError);
     }
   }
+
   return Promise.reject(error);
 };
 
@@ -96,6 +96,106 @@ jwtAxios.interceptors.request.use(beforeReq, requestFail);
 jwtAxios.interceptors.response.use(beforeRes, responseFail);
 
 export default jwtAxios;
+
+
+// import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+// import { getCookie, setCookie, removeCookie } from "./cookieUtils";
+
+// const jwtAxios = axios.create({
+//   baseURL: 'http://98.84.14.117:8080', // 기본 API URL
+  
+//   withCredentials: true, // 쿠키 전송 활성화
+  
+// });
+
+// // Refresh Token 갱신 API 경로
+// const REFRESH_TOKEN_ENDPOINT = "/auth/refresh";
+
+
+
+// // 요청시 액세스 토큰이 없으면 로그인페이지로 리디렉션. 
+// const beforeReq = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig | Promise<InternalAxiosRequestConfig> => {
+//   console.log("before request...");
+//   const memberInfo = getCookie("member");
+
+//   if (!memberInfo) {
+//     alert('로그인이 만료되었습니다. 로그인 페이지로 이동합니다.');
+//     console.log("Member NOT FOUND");
+//     // // fake token 생성 (테스트용)
+//     // const fakeToken = "fake-token-12345";
+
+//     // // fake token을 헤더에 추가
+//     // if (config.headers) {
+//     //   config.headers.Authorization = `Bearer ${fakeToken}`;
+//     // }
+
+//     // // 리디렉션은 하지 않지만 fake token으로 요청을 보냄
+//     // return config;
+//     // 로그인 페이지로 리디렉션
+//     window.location.href = "/login";
+//     return Promise.reject({
+//       response: {
+//         data: { error: "REQUIRE_LOGIN" },
+//       },
+//     });    
+//   }
+
+
+//   const { accessToken } = memberInfo;
+
+//   if (config.headers) {
+//     config.headers.Authorization = `Bearer ${accessToken}`; // Authorization 헤더 추가
+//   }
+
+//   return config;
+// };
+
+// /** 요청 실패 처리 */
+// const requestFail = (err: AxiosError): Promise<never> => {
+//   console.log("request error...");
+//   return Promise.reject(err);
+// };
+
+// // jwtAxios의 responseFail 수정
+// const responseFail = async (error: AxiosError): Promise<AxiosResponse | never> => {
+//   const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+
+//   if (error.response?.status === 401 && !originalRequest._retry) {
+//     originalRequest._retry = true;
+
+//     try {
+//       const refreshResponse = await axios.post(
+//         REFRESH_TOKEN_ENDPOINT,
+//         {},
+//         { withCredentials: true }
+//       );
+
+//       const { accessToken } = refreshResponse.data;
+//       setCookie("member", JSON.stringify({ accessToken }), 7);
+
+//       if (originalRequest.headers) {
+//         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+//       }
+//       return jwtAxios(originalRequest);
+//     } catch (err) {
+//       removeCookie("member");
+//       window.location.href = "/login";
+//     }
+//   }
+//   return Promise.reject(error);
+// };
+
+// /** 응답 성공 처리 */
+// const beforeRes = (res: AxiosResponse): AxiosResponse => {
+//   console.log("before return response...");
+//   return res;
+// };
+
+// // 인터셉터 설정
+// jwtAxios.interceptors.request.use(beforeReq, requestFail);
+// jwtAxios.interceptors.response.use(beforeRes, responseFail);
+
+// export default jwtAxios;
 
 
 

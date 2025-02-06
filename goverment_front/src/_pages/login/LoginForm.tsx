@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { setCookie } from '../../util/cookieUtils';
 
 const LoginForm: React.FC = () => {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ userEmail: '', userPassword: '' });
   const dispatch = useAppDispatch();
   const navigate = useNavigate(); // useNavigate 훅 사용
 
@@ -22,8 +22,8 @@ const LoginForm: React.FC = () => {
   const handleLogin = async () => {
     try {
       const loginParam = {
-        email: form.email,
-        pw: form.password,
+        userEmail: form.userEmail,
+        userPassword: form.userPassword,
       };
   
       console.log('로그인 요청 데이터:', loginParam); // 요청 데이터 확인
@@ -60,18 +60,18 @@ const LoginForm: React.FC = () => {
     <div className={styles.form}>
       <Input
         type="email"
-        name="email"
+        name="userEmail"
         placeholder="이메일 입력"
         label="이메일"
-        value={form.email}
+        value={form.userEmail}
         onChange={handleInputChange}
       />
       <Input
         type="password"
-        name="password"
+        name="userPassword"
         placeholder="비밀번호 입력"
         label="비밀번호"
-        value={form.password}
+        value={form.userPassword}
         onChange={handleInputChange}
       />
       <Button onClick={handleLogin}>로그인</Button>

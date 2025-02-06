@@ -11,13 +11,13 @@
 
   // 로그인 요청에 필요한 데이터 타입
   interface LoginCredentials {
-    email: string;
-    pw: string;
+    userEmail: string;
+    userPassword: string;
   }
 
   // 상태 타입
   interface LoginState {
-    email: string;
+    userEmail: string;
     isLoggedIn: boolean;
     loading: boolean;
     error: string | null;
@@ -25,7 +25,7 @@
 
   // 초기 상태
   const initialState: LoginState = {
-    email: "",
+    userEmail: "",
     isLoggedIn: false,
     loading: false,
     error: null,
@@ -41,7 +41,7 @@
     async (loginParam, { rejectWithValue }) => {
       try {
         const response = await loginPost(loginParam); // memberApi에서 가져온 loginPost 호출
-        const { userEmail, accessToken } = response;
+        const { userEmail, accessToken } = response.data;
 
         // 쿠키에 이메일과 토큰 저장
         setCookie("member", JSON.stringify({ userEmail, accessToken }), 7); // 토큰 저장 (유효기간 7일)
@@ -64,7 +64,7 @@
     initialState,
     reducers: {
       logout(state) {
-        state.email = "";
+        state.userEmail = "";
         state.isLoggedIn = false;
 
         // 쿠키에서 로그인 정보 제거
@@ -80,7 +80,7 @@
         .addCase(loginPostAsync.fulfilled, (state, action: PayloadAction<LoginResponse>) => {
           state.loading = false;
           state.isLoggedIn = true;
-          state.email = action.payload.userEmail;
+          state.userEmail = action.payload.userEmail;
         })
         .addCase(loginPostAsync.rejected, (state, action: PayloadAction<string | undefined>) => {
           state.loading = false;
