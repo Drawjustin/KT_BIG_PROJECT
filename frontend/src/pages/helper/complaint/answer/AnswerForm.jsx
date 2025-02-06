@@ -4,6 +4,7 @@ import axios from "axios";
 import styles from "../Answer.module.css";
 import { complaintApi } from "../../../../api";
 
+
 /** AI 민원 답변 생성 및 저장 API 호출 컴포넌트 */
 const AnswerForm = ({ complaintSeq, memberSeq = 1, teamSeq = 1 }) => {
   const [answer, setAnswer] = useState(""); // 답변 내용
@@ -72,7 +73,7 @@ const AnswerForm = ({ complaintSeq, memberSeq = 1, teamSeq = 1 }) => {
 
   return (
     <div className={styles["answer-form-section"]}>
-      <h2>답변하기 |</h2>
+      <h2>답변하기</h2>
       <textarea
         rows="5"
         value={answer}
@@ -81,17 +82,16 @@ const AnswerForm = ({ complaintSeq, memberSeq = 1, teamSeq = 1 }) => {
         className={styles["answer-textarea"]}
       ></textarea>
       <div className={styles["answer-actions"]}>
-        {/* AI 답변 생성 버튼 */}
+        <p>오른쪽 버튼을 눌러 AI 답변 생성 서비스를 이용해보세요</p>
         <button
           onClick={generateAnswer}
           disabled={isGenerating}
-          className={`${styles["answer-actions button"]} ${styles["generate-button"]}`}
+          className={styles["generate-button"]}
         >
-          {isGenerating ? "생성 중..." : "답변 자동 생성"}
+          {isGenerating ? "생성 중..." : "AI 답변 생성  "}
         </button>
-        {/* 답변 저장 버튼 */}
         <button onClick={saveAnswer} disabled={isSaving || !answer}>
-          {isSaving ? "저장 중..." : "답변 저장"}
+          {isSaving ? "저장 중..." : "저장"}
         </button>
       </div>
       {error && <p className={styles["error-message"]}>오류 발생: {error}</p>}

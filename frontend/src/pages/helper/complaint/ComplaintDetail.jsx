@@ -5,6 +5,8 @@ import styles from './Answer.module.css'
 import { useParams, useNavigate } from "react-router-dom";
 import { complaintApi } from "../../../api";
 import AnswerSave from "./answer/AnswerSave";
+import styled from "styled-components";
+
 
 //** 민원 답변 글쓰기 페이지 : 백엔드 호출, 레이아웃 구성 담당 */
 const ComplaintDetail = () => {
@@ -20,7 +22,18 @@ const ComplaintDetail = () => {
   // const answered = new URLSearchParams(location.search).get('commentResponseDTOList').length > 0;
   // if 0보다 크면 true false로 
   
-  
+  const WarningMessage = styled.div`
+  width: 917px;
+  margin: 0 auto 15px auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #DC2626;
+  font-size: 16px;
+  justify-content: flex-end;  // 오른쪽 정렬
+  text-align: left;  // 텍스트는 왼쪽 정렬
+  padding-right: 30px;  // 오른쪽 여백 추가
+`;
 
   // 백엔드 api 호출 : title, isBad, content, summary, date -> 어떤 타입으로 주는지 확인 필요, prop-type validation변경 필요
   const fetchPostData = async () => {
@@ -64,17 +77,26 @@ const ComplaintDetail = () => {
   if (error) return <p>오류 발생: {error}</p>;
 
   return (
+    <>
+    {postData?.bad && (
+      <WarningMessage>
+        해당 게시글은 특이민원으로 추정되는 게시글입니다!
+      </WarningMessage>
+    )}
+      {/* <WarningMessage>
+      해당 게시글은 특이민원으로 추정되는 게시글입니다!      </WarningMessage> */}
     <div className={styles["answer-detail-container"]}>
       <div className={styles["main-content"]}>
         {/* Title, Content, Summary */}
         <Contents data={postData} />
-        { answered ? (
+        <AnswerSave/>
+        {/* { answered ? (
           <AnswerSave data={postData.complaintSeq} />
         ) : (
           <AnswerForm 
             complaintSeq={postData.complaintSeq}
           />
-        )}
+        )} */}
         {/* Answer Form ......>  1. DTO list사이즈로 내가 계산해서 조건을 나눈다. 2. isCompleted = true 조건에 따라 AnswerForm 혹은 AnswerSave 뜨도록. 
         <AnswerForm complaintSeq={postData.complaint_seq} jwtToken="your-jwt-token" /> */}
       </div>
@@ -85,6 +107,7 @@ const ComplaintDetail = () => {
               목록
             </div>
     </div>
+    </>
   );
 };
 

@@ -81,7 +81,7 @@ const Contents = ({ data }) => {
             <div className={styles.infoValue}>{memberName}</div>
           </div>
           <div className={styles.infoRow}>
-            <div className={styles.infoLabel}>작성일</div>
+            <div className={styles.infoLabel}>민원 작성일</div>
             <div className={styles.infoValue}>{formatDate(date)}</div>
           </div>
           <div className={styles.infoRow}>
@@ -91,7 +91,6 @@ const Contents = ({ data }) => {
         </div>
       
       <div className={styles.section}>
-        
         <div className={styles.sectionHeader}>
           <h2>민원 제목  |  {title}</h2>
         </div>
@@ -109,7 +108,7 @@ const Contents = ({ data }) => {
       {/* 요약 섹션 */}
       <div className={styles.section}>
         <div className={styles.summaryHeader}>
-          <h3>민원 요약</h3>
+          <h3>AI 요약 서비스</h3>
         </div>
         <div className={styles.sectionContent}>
           <p>{summary}</p>
