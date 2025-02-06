@@ -31,7 +31,7 @@ const LoginForm = () => {
       await dispatch(loginPostAsync(loginParam)).unwrap();
 
       // 성공 메시지
-      alert('로그인 성공!');
+      // alert('로그인 성공!');
       navigate('/'); // 리다이렉트 경로
     } catch (error) {
       const status = error.response?.status;

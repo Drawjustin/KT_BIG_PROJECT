@@ -1,21 +1,22 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import styles from '../Answer.module.css'
+import styles from "../Answer.module.css";
 import { complaintApi } from "../../../../api";
-
 
 /** AI 민원 답변 생성 및 저장 API 호출 컴포넌트 */
 const AnswerForm = ({ complaintSeq, memberSeq = 1, teamSeq = 1 }) => {
   const [answer, setAnswer] = useState(""); // 답변 내용
-  const [loading, setLoading] = useState(false); // 로딩 상태
+  const [isGenerating, setIsGenerating] = useState(false); // 생성 중 상태
+  const [isSaving, setIsSaving] = useState(false); // 저장 중 상태
   const [error, setError] = useState(null); // 에러 상태
   const [success, setSuccess] = useState(false); // 저장 성공 여부
 
   // AI API 호출하여 답변 자동 생성
   const generateAnswer = async () => {
     try {
-      setLoading(true);
+      setIsGenerating(true); // 생성 중 상태로 변경
+
       const response = await axios.post(
         "http://localhost:5000/api/generate-answer", // ai 응답 api
         {
@@ -27,14 +28,14 @@ const AnswerForm = ({ complaintSeq, memberSeq = 1, teamSeq = 1 }) => {
       console.error("답변 생성 중 오류 발생:", err);
       setError(err.message);
     } finally {
-      setLoading(false);
+      setIsGenerating(false); // 생성 완료
     }
   };
 
   // 답변 저장 API 호출
   const saveAnswer = async () => {
     try {
-      setLoading(true);
+      setIsSaving(true); // 저장 중 상태로 변경
       setError(null);
       setSuccess(false);
 
@@ -57,19 +58,21 @@ const AnswerForm = ({ complaintSeq, memberSeq = 1, teamSeq = 1 }) => {
 
       if (response.status === 200) {
         setSuccess(true);
-        alert(`답변이 성공적으로 저장되었습니다! Complaint Seq: ${response.data.complaintSeq}`);
+        alert(
+          `답변이 성공적으로 저장되었습니다! Complaint Seq: ${response.data.complaintSeq}`
+        );
       }
     } catch (err) {
       console.error("저장 중 오류 발생:", err);
       setError(err.message);
     } finally {
-      setLoading(false);
+      setIsSaving(false); // 저장 완료
     }
   };
 
   return (
     <div className={styles["answer-form-section"]}>
-      <h2>답변</h2>
+      <h2>답변하기 |</h2>
       <textarea
         rows="5"
         value={answer}
@@ -79,16 +82,22 @@ const AnswerForm = ({ complaintSeq, memberSeq = 1, teamSeq = 1 }) => {
       ></textarea>
       <div className={styles["answer-actions"]}>
         {/* AI 답변 생성 버튼 */}
-        <button onClick={generateAnswer} disabled={loading}>
-          {loading ? "생성 중..." : "답변 자동 생성"}
+        <button
+          onClick={generateAnswer}
+          disabled={isGenerating}
+          className={`${styles["answer-actions button"]} ${styles["generate-button"]}`}
+        >
+          {isGenerating ? "생성 중..." : "답변 자동 생성"}
         </button>
         {/* 답변 저장 버튼 */}
-        <button onClick={saveAnswer} disabled={loading || !answer}>
-          {loading ? "저장 중..." : "저장"}
+        <button onClick={saveAnswer} disabled={isSaving || !answer}>
+          {isSaving ? "저장 중..." : "답변 저장"}
         </button>
       </div>
       {error && <p className={styles["error-message"]}>오류 발생: {error}</p>}
-      {success && <p className={styles["success-message"]}>저장이 완료되었습니다.</p>}
+      {success && (
+        <p className={styles["success-message"]}>저장이 완료되었습니다.</p>
+      )}
     </div>
   );
 };

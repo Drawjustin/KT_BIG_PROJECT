@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import Contents from "./answer/Contents";
-import AnswerForm from "./Answer/AnswerForm";
+import AnswerForm from "./answer/AnswerForm";
 import styles from './Answer.module.css'
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { complaintApi } from "../../../api";
 import AnswerSave from "./answer/AnswerSave";
 
 //** 민원 답변 글쓰기 페이지 : 백엔드 호출, 레이아웃 구성 담당 */
 const ComplaintDetail = () => {
   const { id :complainSeq } = useParams(); // URL 파라미터에서 가져오도록 수정
-
+  const navigate = useNavigate();
   const [postData, setPostData] = useState(null); // 백엔드 데이터 저장
   const [loading, setLoading] = useState(true); // 로딩 상태
   const [error, setError] = useState(null); // 에러 상태
@@ -78,6 +78,12 @@ const ComplaintDetail = () => {
         {/* Answer Form ......>  1. DTO list사이즈로 내가 계산해서 조건을 나눈다. 2. isCompleted = true 조건에 따라 AnswerForm 혹은 AnswerSave 뜨도록. 
         <AnswerForm complaintSeq={postData.complaint_seq} jwtToken="your-jwt-token" /> */}
       </div>
+      <div 
+              className={styles.listButton} 
+              onClick={() => navigate('/complaint')}
+            >
+              목록
+            </div>
     </div>
   );
 };

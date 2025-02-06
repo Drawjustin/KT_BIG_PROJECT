@@ -7,7 +7,7 @@ import About from '../pages/about/About';
 import LoginPage from '../pages/login/LoginPage';
 import SignupPage from '../pages/signup/SignupPage';
 import MyPage from '../pages/mypage/myPage';
-// import ProtectedRoute from './ProtectedRoute';
+import ProtectedRoute from './ProtectedRoute';
 
 const AppRoutes = () => {
   return (
@@ -15,9 +15,9 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage />} />
       
       {/* 보호된 라우트 */}
-      {/* <Route element={<ProtectedRoute />}> */}
+      <Route element={<ProtectedRoute />}>
       {/* 위에 라우트 풀면 밑에꺼 삭제 */}
-      <Route> 
+      {/* <Route>  */}
         <Route path="/complaint/*" element={<Complaint />} />
         <Route path="/official" element={<Official />} />
         <Route path="/dataroom/*" element={<Filepage />} />
