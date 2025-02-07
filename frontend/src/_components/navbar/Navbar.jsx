@@ -9,7 +9,6 @@ const Navbar = () => {
 
   // 로그인 상태를 Redux에서 가져오기
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
-
   const handleLogout = async () => {
     try {
       await dispatch(logoutAsync()).unwrap(); // logoutAsync 액션 디스패치
@@ -47,7 +46,7 @@ const Navbar = () => {
         {isLoggedIn ? (
           <>
             {/* 로그인 상태일 때 표시 */}
-            <Link to="/mypage" className={styles.menuLink}>
+            <Link to="/mypage" className={styles.logoutButton}>
               마이페이지
             </Link>
             <button onClick={handleLogout} className={styles.logoutButton}>

@@ -40,16 +40,21 @@ export const loginPost = async (loginParam) => {
   }
 };
 /** 로그아웃 */
-export const logoutPost = async () => {
+export const logoutPost = async (logoutParam) => {
   try {
-    const res = await jwtAxios.post(`${host}/logout`);
+    const res = await jwtAxios.post(`${host}/logout`, {
+      userEmail: logoutParam.userEmail,
+      accessToken: logoutParam.accessToken
+    }, {
+      withCredentials: true
+    });
+    
     return res.data;
   } catch (error) {
     console.error("Logout Error:", error);
     throw error;
   }
 };
-
 
 
 

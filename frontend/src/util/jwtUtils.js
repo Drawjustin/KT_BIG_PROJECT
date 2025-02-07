@@ -8,7 +8,7 @@ const jwtAxios = axios.create({
   
 });
 
-const REFRESH_TOKEN_ENDPOINT = "/api/reissue=";
+const REFRESH_TOKEN_ENDPOINT = "/api/reissue";
 
 /** 요청 전 처리 */
 const beforeReq = (config) => {
