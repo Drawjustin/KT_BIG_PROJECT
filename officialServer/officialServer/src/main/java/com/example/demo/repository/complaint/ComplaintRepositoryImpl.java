@@ -73,12 +73,15 @@ public class ComplaintRepositoryImpl implements ComplaintRepositoryCustom {
                         complaint.complaintTitle,
                         complaint.complaintContent,
                         complaint.complaintFilePath,
-                        complaint.updatedAt))
+                        complaint.updatedAt,
+                        complaint.isAnswered,
+                        complaint.isBad))
                 .from(complaint)
                 .innerJoin(complaint.member, member) // complaint와 member 조인
                 .innerJoin(complaint.team, team) // complaint와 team 조인
                 .leftJoin(team.department, department) // team과 department 조인
                 .where(
+                        departmentSeqEquals(condition.getDepartmentSeq()),
                         departmentContains(condition.getDepartmentName())
                         ,titleContains(condition.getTitle())
                         , isAnsweredStatus(condition.getIsAnswered())
@@ -96,6 +99,7 @@ public class ComplaintRepositoryImpl implements ComplaintRepositoryCustom {
                 .leftJoin(complaint.team, team)
                 .leftJoin(team.department, department)
                 .where(
+                        departmentSeqEquals(condition.getDepartmentSeq()),
                         departmentContains(condition.getDepartmentName()),
                         titleContains(condition.getTitle()),
                         isAnsweredStatus(condition.getIsAnswered()),
@@ -117,5 +121,8 @@ public class ComplaintRepositoryImpl implements ComplaintRepositoryCustom {
 
     private BooleanExpression isWithinTenDays() {
         return complaint.updatedAt.after(LocalDateTime.now().minusDays(10));
+    }
+    private BooleanExpression departmentSeqEquals(Long departmentSeq) {
+        return departmentSeq != null ? department.departmentSeq.eq(departmentSeq) : null;
     }
 }

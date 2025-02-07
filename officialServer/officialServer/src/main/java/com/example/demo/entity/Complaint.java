@@ -29,6 +29,12 @@ public class Complaint extends baseEntity {
     @JoinColumn(name = "member_seq", nullable = false)
     private Member member;
 
+    @Column(name = "complaint_summary")
+    private String complaintSummary;
+
+    @Column(name = "complaint_combined")
+    private String complaintCombined;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_seq",nullable = false)
     private Team team;
@@ -47,6 +53,9 @@ public class Complaint extends baseEntity {
 
     @Column(name = "is_answered")
     private Boolean isAnswered;
+
+    @Column(name = "is_bad")
+    private Boolean isBad;
 
     @Builder
     public Complaint(Member member, Team team, String complaintTitle, String complaintContent, String complaintFilePath) {

@@ -13,4 +13,5 @@ import lombok.ToString;
 public class ComplaintSearchCondition extends BaseSearchCondition {
     private String author;
     private Boolean isAnswered;
+    private Long departmentSeq;
 }

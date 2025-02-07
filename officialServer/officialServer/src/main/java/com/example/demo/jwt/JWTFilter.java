@@ -2,6 +2,7 @@ package com.example.demo.jwt;
 
 import com.example.demo.dto.CustomUserDetails;
 import com.example.demo.entity.User;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AuthService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -22,11 +23,12 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
     private final AuthService authService;
+    private final UserRepository userRepository;
 
-    public JWTFilter(JWTUtil jwtUtil, AuthService authService) {
-
+    public JWTFilter(JWTUtil jwtUtil, AuthService authService, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
         this.authService=authService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -47,10 +49,11 @@ public class JWTFilter extends OncePerRequestFilter {
         if (accessToken != null && accessToken.startsWith("Bearer ")) {
             accessToken = accessToken.substring(7);
         } else {
-            accessToken = null;
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("No token provided");
+            return;  // 중요: 여기서 필터 체인 종료
         }
 
-        if (accessToken != null) {
             //블랙리스트 토큰인지 확인
             if (authService.isTokenBlacklisted(accessToken)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -86,16 +89,15 @@ public class JWTFilter extends OncePerRequestFilter {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("access token expired");
             }
-        }
         }catch (Exception e){
             e.printStackTrace();
         }
 
     }
     private void setAuthentication (String userEmail, String userRole){
-        User user = new User();
-        user.setUserEmail(userEmail);
-        user.setUserRole(userRole);
+//        User user = new User();
+        User user = userRepository.findByUserEmailWithTeamAndDepartment(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
                 new CustomUserDetails(user),

@@ -17,4 +17,7 @@ public class ComplaintListResponseDTO {
     private String content;             // 민원 내용
     private String filePath;            // 민원 파일 경로
     private LocalDateTime updatedAt;    // 수정 시간
+    private boolean isAnswered;
+    private boolean isBad;
 }
+

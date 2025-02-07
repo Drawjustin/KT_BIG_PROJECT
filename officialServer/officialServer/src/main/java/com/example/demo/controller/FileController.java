@@ -21,7 +21,7 @@ public class FileController {
 
     //  TODO : 파일 단건 조회
     @GetMapping("/{fileSeq}")
-    public ResponseEntity<FileResponseDTO> getComplaint(@PathVariable Long fileSeq) {FileResponseDTO responseDTO = fileService.findFilesById(fileSeq);
+    public ResponseEntity<FileResponseDTO> getfiles(@PathVariable Long fileSeq) {FileResponseDTO responseDTO = fileService.findFilesById(fileSeq);
         return ResponseEntity.ok(responseDTO);
     }
     //  TODO : 파일 페이지 조회
@@ -30,4 +30,21 @@ public class FileController {
         Page<FileListResponseDTO> result = fileService.findFilesByConditions(fileSearchCondition, pageable);
         return ResponseEntity.ok(result);
     }
+
+
+    // TODO : 민원 답변 생성 API 3 끝
+
+    // TODO : 공문서 검색 (Today Closed) 5
+//    @PostMapping("/search")
+//    public ResponseEntity<?> search(){
+//
+//    }
+    // TODO : 국민신문고 민원생성 리뉴얼
+
+    // TODO : 국민신문고 로그인 2 끝
+
+    // TODO : DB 공문서 넣기 (DB 데이터 초기설정) 1
+
+    // TODO : 국민신문고 수정 삭제 자기꺼만 RETURN 상태코드 변경으로 4
+
 }

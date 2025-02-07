@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.config.AIConfig;
+import com.example.demo.dto.CustomUserDetails;
 import com.example.demo.dto.complaintDTO.*;
 import com.example.demo.entity.Complaint;
 import com.example.demo.entity.ComplaintComment;
@@ -16,8 +18,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.example.demo.exception.ErrorCodeCommon.FAIL_SAVED_FILE;
 import static com.example.demo.exception.ErrorCodeCustom.*;
@@ -32,7 +43,8 @@ public class ComplaintService {
     private final ComplaintCommentRepository complaintCommentRepository;
     private final MemberRepository memberRepository;
     private final TeamRepository teamRepository;
-
+    private final DepartmentRepository departmentRepository;
+    private final AIConfig aiConfig;
 
     // 민원 답변 등록
     @Transactional
@@ -122,6 +134,76 @@ public class ComplaintService {
                 request.getContent()
         );
     }
+    private ResponseEntity<Map> restWebRequest(String url, HttpMethod method, HttpEntity<?> entity) {
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.exchange(
+                url,
+                method,
+                entity,
+                Map.class
+        );
+    }
+    private HttpEntity<?> createHttpEntity(Object body) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new HttpEntity<>(body, headers);
+    }
+    public ComplaintCreateResponseDTO createAIResponse(CustomUserDetails userDetails, ComplaintCreateRequestDTO request) {
 
+        String departmentNumber = departmentRepository.findDepartmentNumberByDepartmentName(request.getClass_department())
+                .orElseThrow(() -> new RuntimeException("해당 부서를 찾을 수 없습니다."));
+        String complaintCombined = complaintRepository.findComplaintCombinedByComplaintSeq(request.getComplaintSeq())
+                .orElseThrow(() -> new RuntimeException("민원을 찾을 수 없습니다."));
+
+
+        LocalDateTime tenDaysAgo = LocalDateTime.now().minusDays(10);
+        List<Map<String, String>> pastComplaints = complaintRepository
+                .findComplaintSummariesByComplaintSeqWithinTenDays(request.getComplaintSeq(), tenDaysAgo);
+
+
+        AIComplaintRequestDTO aiRequest = AIComplaintRequestDTO.builder()
+                .text(request.getComplaintText())  // 현재 민원 내용
+                .pastComplaints(
+                        pastComplaints.stream()
+                                .map(complaint -> new AIComplaintRequestDTO.PastComplaint(complaint.get("text")))
+                                .collect(Collectors.toList())
+                )
+                .build();
+
+        System.out.println("aiRequest = " + aiRequest);
+
+        ResponseEntity<Integer> repeatResponse = new RestTemplate().exchange(
+                aiConfig.getComplaintRepeatURL(),
+                HttpMethod.POST,
+                createHttpEntity(aiRequest),
+                Integer.class
+        );
+        Integer repeatResponseBody = repeatResponse.getBody();
+
+        try {
+
+            CreateAIRequestDTO createAIRequestDTO = CreateAIRequestDTO.builder()
+                    .tel(departmentNumber)
+                    .text(complaintCombined)
+                    .repeatCount(repeatResponseBody)
+                    .class_department(request.getClass_department())
+                    .build();
+
+            ResponseEntity<Map> createResponse = restWebRequest(
+                    aiConfig.getComplaintResponseURL(),
+                    HttpMethod.POST,
+                    createHttpEntity(createAIRequestDTO)
+            );
+
+            Map<String, Object> responseBody = createResponse.getBody();
+            return ComplaintCreateResponseDTO.builder()
+                    .answer((String) responseBody.get("answer"))
+                    .retrievedDocs((ArrayList<String>) responseBody.get("retrieved_docs"))
+                    .build();
+
+        } catch (RestClientException e) {
+            throw new RuntimeException("AI 서버 통신 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
 
 }
