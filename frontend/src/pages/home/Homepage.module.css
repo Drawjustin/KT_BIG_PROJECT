@@ -92,6 +92,16 @@
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   border: 1px solid #E2E5EB;
   padding: 1.5rem;
+    /* 로고 중앙 정렬을 위한 추가 스타일 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo {
+  max-width: 150px; /* 로고 최대 너비 지정 */
+  margin-bottom: 1.5rem; /* 로고 아래 여백 */
+  align-self: center; /* 추가적인 중앙 정렬 */
 }
 
 .loginHeader {

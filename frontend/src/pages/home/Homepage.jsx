@@ -1,5 +1,6 @@
 import styles from "./HomePage.module.css";
 import searchIcon from "../../assets/images/search.png";
+import logoSOS from "../../assets/images/logo.png";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useSelector} from 'react-redux'; // Redux 훅, 로그인 상태 확인을 위한(로그인/로그아웃 버튼)
@@ -68,6 +69,7 @@ const HomePage = () => {
 
           <section className={styles.rightSection}>
             <div className={styles.loginCard}>
+            <img src={logoSOS} alt="SOS Logo" className={styles.logo} />
               {isLoggedIn ? (
                 <>
                   <div className={styles.loginHeader}>
