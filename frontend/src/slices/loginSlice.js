@@ -11,6 +11,35 @@ const initialState = {
   loading: false,
   error: null,
 };
+const checkInitialLoginStatus = () => {
+  const memberInfo = getCookie('member');
+  
+  if (memberInfo) {
+    try {
+      // memberInfo가 이미 객체인 경우 처리
+      const parsedInfo = typeof memberInfo === 'string' ? 
+        JSON.parse(memberInfo) : memberInfo;
+
+      // 유효성 검사 추가
+      if (!parsedInfo || !parsedInfo.accessToken) {
+        throw new Error('Invalid member info structure');
+      }
+      return {
+        ...initialState, // 초기 상태를 스프레드
+        userEmail: parsedInfo.userEmail || '',
+        isLoggedIn: !!parsedInfo.userEmail
+      };
+    } catch (error) {
+      console.error('쿠키 파싱 중 오류:', error);
+      removeCookie('member');
+      return initialState;
+    }
+  }
+  
+  return initialState;
+};
+
+
 
 /** 로그인 비동기 요청 */
 export const loginPostAsync = createAsyncThunk(
@@ -22,8 +51,11 @@ export const loginPostAsync = createAsyncThunk(
       const { userEmail, accessToken } = response.data;
 
       // 쿠키에 이메일과 토큰 저장
-      setCookie("member", JSON.stringify({ userEmail, accessToken }), 7); // 토큰 저장 (유효기간 7일)
-
+      // setCookie("member", JSON.stringify({ userEmail, accessToken }), 7); // 토큰 저장 (유효기간 7일)
+      setCookie("member", JSON.stringify({ 
+        accessToken,
+        userEmail 
+      }), 7);
       return { userEmail, accessToken };
     } catch (error) {
       // AxiosError 타입으로 명시했던 부분을 일반적인 조건문으로 처리
@@ -81,7 +113,8 @@ export const logoutAsync = createAsyncThunk(
 // );
 const loginSlice = createSlice({
   name: "loginSlice",
-  initialState,
+  initialState: checkInitialLoginStatus(), // 초기 상태 동적 설정
+  // initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -115,6 +148,7 @@ const loginSlice = createSlice({
       })
   },
 });
+
 
 export const { logout } = loginSlice.actions;
 
