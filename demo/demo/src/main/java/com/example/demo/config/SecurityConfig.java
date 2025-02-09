@@ -2,6 +2,7 @@ package com.example.demo.config;
 
 import com.example.demo.jwt.JWTFilter;
 import com.example.demo.jwt.JWTUtil;
+import com.example.demo.repository.MemberRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AuthService;
 import org.springframework.context.annotation.Bean;
@@ -25,18 +26,20 @@ public class SecurityConfig {
 
     private final JWTUtil jwtUtil;
     private final AuthService authService;
+    private final MemberRepository memberRepository;
 
     private final UserRepository userRepository;
-    public SecurityConfig(JWTUtil jwtUtil,AuthService authService, UserRepository userRepository) {
+    public SecurityConfig(JWTUtil jwtUtil,AuthService authService, UserRepository userRepository, MemberRepository memberRepository) {
         this.jwtUtil = jwtUtil;
         this.authService=authService;
         this.userRepository = userRepository;
+        this.memberRepository = memberRepository;
     }
 
 
     @Bean
     public JWTFilter jwtFilter() {
-        return new JWTFilter(jwtUtil, authService,userRepository);
+        return new JWTFilter(jwtUtil, authService,userRepository, memberRepository);
     }
 
     // AuthenticationManager 설정 추가
@@ -93,6 +96,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList(
                 "https://www.officialsos.shop",
                 "http://localhost:5173",
+                "http://localhost:5174",
                 "https://officialsos.shop"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));

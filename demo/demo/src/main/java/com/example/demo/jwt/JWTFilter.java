@@ -3,6 +3,7 @@ package com.example.demo.jwt;
 import com.example.demo.dto.CustomUserDetails;
 import com.example.demo.entity.Member;
 import com.example.demo.entity.User;
+import com.example.demo.repository.MemberRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AuthService;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -25,11 +26,13 @@ public class JWTFilter extends OncePerRequestFilter {
     private final JWTUtil jwtUtil;
     private final AuthService authService;
     private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
-    public JWTFilter(JWTUtil jwtUtil, AuthService authService, UserRepository userRepository) {
+    public JWTFilter(JWTUtil jwtUtil, AuthService authService, UserRepository userRepository, MemberRepository memberRepository) {
         this.jwtUtil = jwtUtil;
         this.authService=authService;
         this.userRepository = userRepository;
+        this.memberRepository = memberRepository;
     }
 
     @Override
@@ -77,7 +80,7 @@ public class JWTFilter extends OncePerRequestFilter {
                 // 이메일 추출 및 토큰 검증
                 String userEmail = jwtUtil.getUserEmail(accessToken);
 
-                // Redis에 저장된 토큰과 비교
+//                 Redis에 저장된 토큰과 비교
                 if (!authService.validateAccessToken(userEmail, accessToken)) {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return;
@@ -97,9 +100,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
     }
     private void setAuthentication (String memberEmail, String memberRole){
-        Member member = new Member();
-        member.setMemberEmail(memberEmail);
-        member.setMemberRole(memberRole);
+        Member member = memberRepository.findByMemberEmail(memberEmail).get();
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
                 new CustomUserDetails(member),

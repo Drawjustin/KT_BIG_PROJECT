@@ -6,13 +6,9 @@ import com.example.demo.config.RestTemplateConfig;
 import com.example.demo.config.S3Config;
 import com.example.demo.dto.*;
 import com.example.demo.dto.ai.*;
-import com.example.demo.entity.Team;
-import com.example.demo.entity.Complaint;
-import com.example.demo.entity.Member;
+import com.example.demo.entity.*;
 import com.example.demo.exception.RestApiException;
-import com.example.demo.repository.ComplaintRepository;
-import com.example.demo.repository.MemberRepository;
-import com.example.demo.repository.TeamRepository;
+import com.example.demo.repository.*;
 import com.example.demo.utils.ExceptionHandlerUtil;
 import jakarta.transaction.Transactional;
 import lombok.*;
@@ -45,7 +41,9 @@ public class ComplaintService {
     private final MemberRepository memberRepository;
     private final TeamRepository teamRepository;
     private final RestTemplateConfig restTemplateConfig;
+    private final DepartmentRepository departmentRepository;
     private final AmazonS3 amazonS3;
+    private final DistrictRepository districtRepository;
     @Value("${aws.s3.directory}")
     private String directory;
 
@@ -60,6 +58,7 @@ public class ComplaintService {
         private Byte Count;
         private Boolean isBad;
         private TextSummaryResponse textSummaryResponse;
+        private String filePath;
     }
     // 민원 등록
     @Transactional
@@ -67,20 +66,37 @@ public class ComplaintService {
         // 민원 요약
         TextSummaryResponse textSummaryResponse = getTextSummary(request.getContent());
 
+        System.out.println("textSummaryResponse = " + textSummaryResponse);
 
         // 부서 분류
         String department = predictDepartment(textSummaryResponse.getCombined()).replace("\"", "");
-
+        System.out.println("department = " + department);
 
         // 팀 분류
         PredictTeamResponse predictTeamResponse = predictTeam(department, textSummaryResponse.getCombined());
-        Optional<Team> byTeam = teamRepository.findByTeamName(predictTeamResponse.get팀());
 
+        System.out.println("userDetails.getMember(): " + userDetails.getMember());
 
+        Optional<Member> byId = memberRepository.findById(userDetails.getMember().getMemberSeq());
+        System.out.println("byId present?: " + byId.isPresent());
+
+        Optional<District> byDistrictName = districtRepository.findByDistrictName(predictTeamResponse.get구분());
+        System.out.println("구분: " + predictTeamResponse.get구분());
+        System.out.println("byDistrictName present?: " + byDistrictName.isPresent());
+
+// 이 부분에서 에러가 날 가능성이 높음 - byDistrictName이 비어있는데 get() 호출
+        Optional<Department> byDepartmentNameAndDistrictSeq = departmentRepository.findByDepartmentNameAndDistrictSeq(
+                department,
+                byDistrictName.get().getDistrictSeq()  // 여기서 NoSuchElementException 발생 가능
+        );
+
+        Optional<Team> byTeam = teamRepository.findByTeamNameAndDepartmentDepartmentSeq(
+                predictTeamResponse.get팀(),
+                byDepartmentNameAndDistrictSeq.get().getDepartmentSeq()
+        );
         // 악성 민원 판단
         Integer i = predictMalcs(new MalcsRequest(textSummaryResponse.getSummary()));
         boolean isBad = i == 1;
-
 
         // 반복 민원 판단
         ArrayList<PastComplaint> pastComplaints = new ArrayList<>();
@@ -88,11 +104,12 @@ public class ComplaintService {
         for (String summary : recentComplaintSummariesByMemberSeq) {
             pastComplaints.add(new PastComplaint(summary));
         }
-        getRepeatCount(textSummaryResponse.getSummary(),pastComplaints);
-        Integer repeatCount = getRepeatCount(textSummaryResponse.getSummary(), pastComplaints);
+        Integer repeatCount = !pastComplaints.isEmpty() ? getRepeatCount(textSummaryResponse.getSummary(), pastComplaints) : 0;
 
 
-        OtherCreateRequestDTO otherCreateRequestDTO = new OtherCreateRequestDTO(byTeam.get(), repeatCount.byteValue(), isBad, textSummaryResponse);
+        String filePath = request.getFile() != null ? saveFile(request.getFile()) : null;
+
+        OtherCreateRequestDTO otherCreateRequestDTO = new OtherCreateRequestDTO(byTeam.get(), repeatCount.byteValue(), isBad, textSummaryResponse,filePath);
         Complaint complaint = buildComplaint(userDetails,request,otherCreateRequestDTO);
         return saveAndCreateResponse(complaint);
     }
@@ -136,7 +153,7 @@ public class ComplaintService {
                 .complaintCount(otherCreateRequestDTO.getCount()) // ai 반복민원갯수 판단
                 .isAnswered(false)
                 .complaintContent(request.getContent())
-                .complaintFilePath(saveFile(request.getFile())) // s3불러오기
+                .complaintFilePath(otherCreateRequestDTO.getFilePath()) // s3불러오기
                 .build();
     }
 
@@ -171,9 +188,11 @@ public class ComplaintService {
     }
     public TextSummaryResponse getTextSummary(String text) {
         try {
+            TextSummaryRequest textSummaryRequest = new TextSummaryRequest(text);
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<String> entity = new HttpEntity<>(text, headers);
+            HttpEntity<TextSummaryRequest> entity = new HttpEntity<>(textSummaryRequest, headers);
 
             ResponseEntity<TextSummaryResponse> response = restTemplateConfig.restTemplate().exchange(
                     restTemplateConfig.getGetTextSummaryUrl(),
