@@ -72,7 +72,7 @@ public class AuthController {
             // Access Token만 응답 본문에 포함
             return ResponseEntity.ok(CommonResponse.success("로그인 성공",
                     new AuthResponse(
-                            authResponse.userEmail(),
+                            authResponse.memberEmail(),
                             authResponse.accessToken(),
                             null
                     )));
@@ -94,7 +94,7 @@ public class AuthController {
             @RequestBody @Valid LogoutRequest request,
             HttpServletResponse response) {
         try {
-            authService.logout(request.userEmail(), request.accessToken());
+            authService.logout(request.memberEmail(), request.accessToken());
 
             // Refresh Token 쿠키 만료
             Cookie cookie = cookieUtil.createCookie("");
