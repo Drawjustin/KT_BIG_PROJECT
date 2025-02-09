@@ -22,4 +22,10 @@ public class ComplaintResponseDTO {
 
     private boolean isBad;
     private String summary;
+
+    private String complaintCombined;
+    private String complaintSummary;
+    private Byte complaintCount;
+
+
 }

@@ -9,6 +9,4 @@ import org.springframework.context.annotation.Configuration;
 public class AIConfig {
     @Value("${complaint.response.url}")
     private String ComplaintResponseURL;
-    @Value("${complaint.repeat.url}")
-    private String ComplaintRepeatURL;
 }

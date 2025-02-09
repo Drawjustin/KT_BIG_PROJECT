@@ -92,6 +92,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList(
                 "https://www.officialsos.shop",
                 "http://localhost:5173",
+                "http://localhost:5174",
                 "https://officialsos.shop"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));

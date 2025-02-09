@@ -134,65 +134,31 @@ public class ComplaintService {
                 request.getContent()
         );
     }
-    private ResponseEntity<Map> restWebRequest(String url, HttpMethod method, HttpEntity<?> entity) {
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.exchange(
-                url,
-                method,
-                entity,
-                Map.class
-        );
-    }
-    private HttpEntity<?> createHttpEntity(Object body) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return new HttpEntity<>(body, headers);
-    }
     public ComplaintCreateResponseDTO createAIResponse(CustomUserDetails userDetails, ComplaintCreateRequestDTO request) {
-
-        String departmentNumber = departmentRepository.findDepartmentNumberByDepartmentName(request.getClass_department())
+        String departmentNumber = departmentRepository.findDepartmentNumberByComplaintSeq(request.getComplaintSeq())
                 .orElseThrow(() -> new RuntimeException("해당 부서를 찾을 수 없습니다."));
-        String complaintCombined = complaintRepository.findComplaintCombinedByComplaintSeq(request.getComplaintSeq())
-                .orElseThrow(() -> new RuntimeException("민원을 찾을 수 없습니다."));
 
-
-        LocalDateTime tenDaysAgo = LocalDateTime.now().minusDays(10);
-        List<Map<String, String>> pastComplaints = complaintRepository
-                .findComplaintSummariesByComplaintSeqWithinTenDays(request.getComplaintSeq(), tenDaysAgo);
-
-
-        AIComplaintRequestDTO aiRequest = AIComplaintRequestDTO.builder()
-                .text(request.getComplaintText())  // 현재 민원 내용
-                .pastComplaints(
-                        pastComplaints.stream()
-                                .map(complaint -> new AIComplaintRequestDTO.PastComplaint(complaint.get("text")))
-                                .collect(Collectors.toList())
-                )
-                .build();
-
-        System.out.println("aiRequest = " + aiRequest);
-
-        ResponseEntity<Integer> repeatResponse = new RestTemplate().exchange(
-                aiConfig.getComplaintRepeatURL(),
-                HttpMethod.POST,
-                createHttpEntity(aiRequest),
-                Integer.class
-        );
-        Integer repeatResponseBody = repeatResponse.getBody();
+        ComplaintResponseDTO repeat = complaintRepository.getComplaintById(request.getComplaintSeq());
 
         try {
-
             CreateAIRequestDTO createAIRequestDTO = CreateAIRequestDTO.builder()
                     .tel(departmentNumber)
-                    .text(complaintCombined)
-                    .repeatCount(repeatResponseBody)
+                    .text(repeat.getComplaintCombined())
+                    .repeatCount(repeat.getComplaintCount())
                     .class_department(request.getClass_department())
                     .build();
 
-            ResponseEntity<Map> createResponse = restWebRequest(
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<CreateAIRequestDTO> entity = new HttpEntity<>(createAIRequestDTO,headers);
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            ResponseEntity<Map> createResponse = restTemplate.exchange(
                     aiConfig.getComplaintResponseURL(),
                     HttpMethod.POST,
-                    createHttpEntity(createAIRequestDTO)
+                    entity,
+                    Map.class
             );
 
             Map<String, Object> responseBody = createResponse.getBody();

@@ -59,7 +59,9 @@ public class ComplaintRepositoryImpl implements ComplaintRepositoryCustom {
                 .filePath(result.getComplaintFilePath())
                 .date(result.getUpdatedAt())
                 .isBad(isBadState)
-                .summary("summaryExample")
+                .summary(result.getComplaintSummary())
+                .complaintCombined(result.getComplaintCombined())
+                .complaintCount(result.getComplaintCount())
                 .build();
     }
 

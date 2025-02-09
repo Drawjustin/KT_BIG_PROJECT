@@ -42,6 +42,9 @@ public class Complaint extends baseEntity {
     @OneToMany(mappedBy = "complaint")
     private List<ComplaintComment> complaintComment;
 
+    @Column(name = "complaint_count")
+    private Byte complaintCount;
+
     @Column(name = "complaint_title", length = 256)
     private String complaintTitle;
 
