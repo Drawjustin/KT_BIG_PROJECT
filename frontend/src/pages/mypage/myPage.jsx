@@ -1,9 +1,12 @@
-const MyPage = () =>{
+import MyPageLayout from '../../_components/layout/MyPageLayout';
 
-    return(
-        <>
-            <h1>mypage입니다.</h1>
-        </>
-    );
-}
+const MyPage = () => {
+  return (
+    <MyPageLayout>
+      <h1>마이페이지</h1>
+      <p>환영합니다. </p>
+    </MyPageLayout>
+  );
+};
+
 export default MyPage;

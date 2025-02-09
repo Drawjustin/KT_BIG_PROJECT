@@ -1,10 +1,10 @@
-const Dashboard = () =>{
+import MyPageLayout from "../../_components/layout/MyPageLayout";
 
+const Dashboard = () =>{
     return(
-        <>
-            <h1>Dashboard</h1>
-            <p>대쉬보드 입니다.</p>
-        </>
-    );
+        <MyPageLayout>
+            <h1>대시보드입니다.</h1>
+        </MyPageLayout>
+    )
 }
 export default Dashboard;
