@@ -73,7 +73,7 @@ public class SecurityConfig {
                 .formLogin((auth)-> auth.disable())
                 .httpBasic((auth)-> auth.disable())
                 .authorizeHttpRequests((auth)-> auth
-                        .requestMatchers("/api/login","/api/join","/api/reissue","/api/logout").permitAll()
+                        .requestMatchers("/error","/api/healthy","/api/login","/api/join","/api/reissue","/api/logout").permitAll()
                         .requestMatchers("/api/departments", "/api/teams").permitAll()
                         .requestMatchers("/db-test").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")//관리자만 접근가능
@@ -99,7 +99,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:5173"
+                "https://www.officialsos.shop",
+                "http://localhost:5173",
+                "https://officialsos.shop"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));

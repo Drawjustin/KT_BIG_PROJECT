@@ -33,6 +33,7 @@ public class AuthController {
     private final AuthService authService;
     private final CookieUtil cookieUtil;
 
+    @GetMapping("/healthy")public ResponseEntity<?> healthy() {    return ResponseEntity.ok().build();}
     @PostMapping("/join")
     public ResponseEntity<CommonResponse<String>> join(@RequestBody @Valid JoinRequest request) {
         try {
