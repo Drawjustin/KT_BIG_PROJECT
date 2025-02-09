@@ -1,7 +1,9 @@
 package com.example.demo.jwt;
 
 import com.example.demo.dto.CustomUserDetails;
+import com.example.demo.entity.Member;
 import com.example.demo.entity.User;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AuthService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -22,11 +24,12 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
     private final AuthService authService;
+    private final UserRepository userRepository;
 
-    public JWTFilter(JWTUtil jwtUtil, AuthService authService) {
-
+    public JWTFilter(JWTUtil jwtUtil, AuthService authService, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
         this.authService=authService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -50,6 +53,7 @@ public class JWTFilter extends OncePerRequestFilter {
             accessToken = null;
         }
 
+            System.out.println("accessToken = " + accessToken);
         if (accessToken != null) {
             //블랙리스트 토큰인지 확인
             if (authService.isTokenBlacklisted(accessToken)) {
@@ -92,15 +96,15 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
     }
-    private void setAuthentication (String userEmail, String userRole){
-        User user = new User();
-        user.setUserEmail(userEmail);
-        user.setUserRole(userRole);
+    private void setAuthentication (String memberEmail, String memberRole){
+        Member member = new Member();
+        member.setMemberEmail(memberEmail);
+        member.setMemberRole(memberRole);
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
-                new CustomUserDetails(user),
+                new CustomUserDetails(member),
                 null,
-                List.of(new SimpleGrantedAuthority(userRole))
+                List.of(new SimpleGrantedAuthority(memberRole))
         );
         SecurityContextHolder.getContext().setAuthentication(auth);
     }

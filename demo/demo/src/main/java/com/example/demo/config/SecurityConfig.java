@@ -2,6 +2,7 @@ package com.example.demo.config;
 
 import com.example.demo.jwt.JWTFilter;
 import com.example.demo.jwt.JWTUtil;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AuthService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,14 +26,17 @@ public class SecurityConfig {
     private final JWTUtil jwtUtil;
     private final AuthService authService;
 
-    public SecurityConfig(JWTUtil jwtUtil,AuthService authService) {
+    private final UserRepository userRepository;
+    public SecurityConfig(JWTUtil jwtUtil,AuthService authService, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
         this.authService=authService;
+        this.userRepository = userRepository;
     }
+
 
     @Bean
     public JWTFilter jwtFilter() {
-        return new JWTFilter(jwtUtil, authService);
+        return new JWTFilter(jwtUtil, authService,userRepository);
     }
 
     // AuthenticationManager 설정 추가
@@ -87,8 +91,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:8080"  // 프론트엔드 개발 서버
-                  // 프로덕션 도메인
+                "https://www.officialsos.shop",
+                "http://localhost:5173",
+                "https://officialsos.shop"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));

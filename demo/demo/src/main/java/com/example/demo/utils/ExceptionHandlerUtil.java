@@ -1,21 +1,29 @@
 package com.example.demo.utils;
 
+import java.io.IOException;
 import java.util.function.Supplier;
 
 public class ExceptionHandlerUtil {
-    public static <T> T executeWithCustomException(Supplier<T> action, RuntimeException customException) {
+    @FunctionalInterface
+    public interface CheckedExceptionSupplier<T> {
+        T get() throws IOException;
+    }
+
+    // 일반 예외용
+    public static <T> T executeWithException(Supplier<T> action, RuntimeException customException) {
         try {
             return action.get();
         } catch (Exception e) {
-            throw customException; // 지정된 커스텀 예외 던지기
+            throw customException;
         }
     }
 
-    public static void executeWithCustomException(Runnable action, RuntimeException customException) {
+    // IOException용
+    public static <T> T executeWithIOException(CheckedExceptionSupplier<T> action, RuntimeException customException) {
         try {
-            action.run();
+            return action.get();
         } catch (Exception e) {
-            throw customException; // 지정된 커스텀 예외 던지기
+            throw customException;
         }
     }
 }

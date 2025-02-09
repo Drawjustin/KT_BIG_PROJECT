@@ -1,6 +1,6 @@
 package com.example.demo.dto;
 
-import com.example.demo.entity.User;
+import com.example.demo.entity.Member;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,46 +12,44 @@ import java.util.List;
 @Getter
 public class CustomUserDetails implements UserDetails {
 
-    private final User user; //userEntity 초기화
+    private final Member member; //memberEntity 초기화
 
-    public User getUserEntity() {
-        return user;
+    public Member getMemberEntity() {
+        return member;
     }
 
-    public CustomUserDetails(User user){
-        this.user = user;
+    public CustomUserDetails(Member member){
+        this.member = member;
     }
 
-    //userEmail 리턴
+    //memberEmail 리턴
     @Override
     public String getUsername() {
-
-        return user.getUserEmail();
+        return member.getMemberEmail();
     }
 
     //password 리턴
     @Override
     public String getPassword() {
-
-        return user.getUserPassword();
+        return member.getMemberPassword();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // ArrayList 직접 생성 대신 List.of 사용
-        return List.of(new SimpleGrantedAuthority(user.getUserRole()));
+        return List.of(new SimpleGrantedAuthority(member.getMemberRole()));
     }
 
     //계정이 만료되지 않았는지 확인
     @Override
     public boolean isAccountNonExpired() {
-        return !user.getIsDeleted();  // BaseEntity의 삭제 상태 활용
+        return !member.getIsDeleted();  // BaseEntity의 삭제 상태 활용
     }
 
     //계정이 잠기지 않았는지 확인
     @Override
     public boolean isAccountNonLocked() {
-        return !user.getIsDeleted();  // BaseEntity의 삭제 상태 활용
+        return !member.getIsDeleted();  // BaseEntity의 삭제 상태 활용
     }
 
     //자격 증명이 만료되지 않았는지 확인
@@ -63,7 +61,6 @@ public class CustomUserDetails implements UserDetails {
     // 계정이 활성 상태인지 확인
     @Override
     public boolean isEnabled() {
-        return !user.getIsDeleted();  // BaseEntity의 삭제 상태 활용
+        return !member.getIsDeleted();  // BaseEntity의 삭제 상태 활용
     }
 }
-

@@ -45,7 +45,7 @@ public class AuthService {
     }
 
     public boolean validateAccessToken(String userEmail, String accessToken) {
-        String key = ACCESS_TOKEN_PREFIX + userEmail;
+        String key = ACCESS_TOKEN_PREFIX + userEmail + "member";
         String storedToken = redisTemplate.opsForValue().get(key);
         return storedToken != null && storedToken.equals(accessToken);
     }

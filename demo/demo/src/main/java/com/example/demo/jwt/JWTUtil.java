@@ -35,7 +35,7 @@ public class JWTUtil {
 
         return Jwts.builder()
                 .claim("category", category)
-                .claim("userEmail", customUserDetails.getUsername())
+                .claim("memberEmail", customUserDetails.getUsername())
                 .claim("role", customUserDetails.getAuthorities().iterator().next().getAuthority())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
@@ -50,7 +50,7 @@ public class JWTUtil {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
-                .get("userEmail", String.class);
+                .get("memberEmail", String.class);
     }
 
     //role 가져와서 나의 토큰 키인지 확인

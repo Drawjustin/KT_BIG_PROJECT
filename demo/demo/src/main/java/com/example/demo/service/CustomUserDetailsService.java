@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.CustomUserDetails;
+import com.example.demo.entity.Member;
 import com.example.demo.entity.User;
+import com.example.demo.repository.MemberRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,26 +17,26 @@ import java.util.Optional;
 public class CustomUserDetailsService implements UserDetailsService {
 
     //DB접근할 수 있는 userRepository
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
-    public CustomUserDetailsService(UserRepository userRepository){
+    public CustomUserDetailsService(MemberRepository memberRepository){
 
-        this.userRepository=userRepository;
+        this.memberRepository=memberRepository;
     }
 
     //이메일 확인
     @Override
-    public UserDetails loadUserByUsername (String userEmail) throws UsernameNotFoundException{
+    public UserDetails loadUserByUsername (String memberEmail) throws UsernameNotFoundException{
 
         //DB에 userEmail 조회
-        Optional<User> userOptional = userRepository.findByUserEmail(userEmail);
-        if (!userOptional.isPresent()) {
-            throw new UsernameNotFoundException("User not found with email: " + userEmail);
+        Optional<Member> memberOptional = memberRepository.findByMemberEmail(memberEmail);
+        if (!memberOptional.isPresent()) {
+            throw new UsernameNotFoundException("User not found with email: " + memberEmail);
         }
-        User userData = userOptional.get();
+        Member memberData = memberOptional.get();
 
         // UserDetails에 담아서 반환
-        return new CustomUserDetails(userData);
+        return new CustomUserDetails(memberData);
 
     }
 }

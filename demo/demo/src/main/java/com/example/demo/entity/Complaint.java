@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Getter
 @Entity
@@ -31,11 +33,23 @@ public class Complaint extends baseEntity {
     @JoinColumn(name = "team_seq",nullable = false)
     private Team team;
 
+    @OneToMany(mappedBy = "complaint")
+    private List<ComplaintComment> complaintComment;
+
     @Column(name = "complaint_title", length = 256)
     private String complaintTitle;
 
+    @Column(name = "complaint_count")
+    private Byte complaintCount;
+
     @Column(name = "complaint_content", columnDefinition = "TEXT")
     private String complaintContent;
+
+    @Column(name = "complaint_summary")
+    private String complaintSummary;
+
+    @Column(name = "complaint_combined")
+    private String complaintCombined;
 
     @Column(name = "complaint_file_path", length = 256)
     private String complaintFilePath;
