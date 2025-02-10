@@ -16,6 +16,10 @@ const MainContentContainer = styled.div`
   flex-grow: 1;
   padding: 20px;
   overflow-y: auto;
+  h1 {
+    font-weight: normal;
+    color : #2A5C96;
+  }
 `;
 
 const MyPageLayout = ({ children }) => {
