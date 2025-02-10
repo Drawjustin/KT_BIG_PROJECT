@@ -198,6 +198,8 @@ const generateAnswer = async () => {
           required
         />
         <div className={styles["answer-actions"]}>
+        <p>오른쪽 버튼을 눌러 AI 답변 생성 서비스를 이용해보세요!</p>
+
           <button
             type="button"
             onClick={generateAnswer}
