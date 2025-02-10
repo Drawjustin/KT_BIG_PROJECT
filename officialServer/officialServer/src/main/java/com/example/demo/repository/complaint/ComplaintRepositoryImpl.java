@@ -47,7 +47,6 @@ public class ComplaintRepositoryImpl implements ComplaintRepositoryCustom {
                         comment.getUpdatedAt()))
                 .toList();
 
-        boolean isBadState = !commentDTOs.isEmpty();
         // 3. ComplaintResponseDTO 생성 및 반환
         return ComplaintResponseDTO.builder()
                 .complaintSeq(result.getComplaintSeq())
@@ -58,7 +57,8 @@ public class ComplaintRepositoryImpl implements ComplaintRepositoryCustom {
                 .content(result.getComplaintContent())
                 .filePath(result.getComplaintFilePath())
                 .date(result.getUpdatedAt())
-                .isBad(isBadState)
+                .isBad(result.getIsBad())
+                .isAnswered(result.getIsAnswered())
                 .summary(result.getComplaintSummary())
                 .complaintCombined(result.getComplaintCombined())
                 .complaintCount(result.getComplaintCount())

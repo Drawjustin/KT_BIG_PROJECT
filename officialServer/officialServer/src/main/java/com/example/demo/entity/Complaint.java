@@ -76,4 +76,9 @@ public class Complaint extends baseEntity {
     }
 
 
+    public void ChangeAnswered() {
+        if(!isAnswered){
+            isAnswered = true;
+        }
+    }
 }

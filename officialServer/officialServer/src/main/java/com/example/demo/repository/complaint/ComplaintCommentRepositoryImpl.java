@@ -1,5 +1,6 @@
 package com.example.demo.repository.complaint;
 
+import com.example.demo.entity.Complaint;
 import com.example.demo.entity.ComplaintComment;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -14,6 +15,8 @@ public class ComplaintCommentRepositoryImpl implements ComplaintCommentRepositor
     private final EntityManager em;
     @Transactional
     public void saveCustom(ComplaintComment complaintComment){
+        Complaint complaint = complaintComment.getComplaint();
+        complaint.ChangeAnswered();
         em.persist(complaintComment);
     }
 

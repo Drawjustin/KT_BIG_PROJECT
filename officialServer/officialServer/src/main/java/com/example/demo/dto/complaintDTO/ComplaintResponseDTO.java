@@ -20,6 +20,7 @@ public class ComplaintResponseDTO {
     private String filePath;            // 민원 파일 경로
     private LocalDateTime date;    // 수정 시간
 
+    private boolean isAnswered;
     private boolean isBad;
     private String summary;
 
