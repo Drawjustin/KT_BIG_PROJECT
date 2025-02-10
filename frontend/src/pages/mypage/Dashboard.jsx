@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { ComplaintRatioChart, MonthlyComplaintChart } from "./charts";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { complaintApi } from "../../api";
-// 공통 카드 스타일
+import { complaintApi, mypageApi } from "../../api";
+// 스타일 컴포넌트들
 const DashboardCard = styled.div`
   background-color: white;
   border-radius: 12px;
@@ -13,39 +13,93 @@ const DashboardCard = styled.div`
   margin-bottom: 20px;
 `;
 
-// 대시보드 그리드
+// 기존 스타일 컴포넌트들 유지...
 const DashboardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 `;
+// const ChartContainer = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   height: 300px;
+// `;
 const ChartContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 300px;
+  height: 280px;  // 높이 조정
+  padding: 10px;  // 패딩 추가
 `;
-
 // 원형 차트 컴포넌트
 const PieChartCard = () => (
   <DashboardCard>
-    <h3>악성 민원 비율</h3>
+    <h3>이번 달, 우리 부서 민원</h3>
     <ChartContainer>
       <ComplaintRatioChart />
     </ChartContainer>
   </DashboardCard>
 );
 
-// 막대 차트 컴포넌트
-const BarChartCard = () => (
+// 라인 차트 컴포넌트
+const LineChartCard = () => (
   <DashboardCard>
-    <h3>월/년 민원 건수</h3>
+    <h3>이번 달, 우리 부서 민원 추이</h3>
     <ChartContainer>
       <MonthlyComplaintChart />
     </ChartContainer>
   </DashboardCard>
 );
+// 테이블 스타일 컴포넌트 추가
+const DashboardTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
 
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #edf2f7;
+  }
+
+  th {
+    font-weight: 600;
+    color: #4a5568;
+    background-color: #f7fafc;
+  }
+
+  tbody tr {
+    &:hover {
+      background-color: #f8fafc;
+    }
+  }
+
+  td {
+    color: #2d3748;
+  }
+
+  a {
+    color: #2b6cb0;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
+const TableHeader = styled.h3`
+  margin: 0 0 16px 0;
+  color: #2d3748;
+  font-size: 18px;
+  font-weight: 600;
+`;
+
+const NoDataMessage = styled.td`
+  text-align: center;
+  padding: 24px;
+  color: #718096;
+`;
 const ComplaintTableCard = () => {
   const [pageData, setPageData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,8 +111,8 @@ const ComplaintTableCard = () => {
         setLoading(true);
         const params = {
           page: 0,
-          size: 4, // 대시보드에는 4개만 표시
-          departmentSeq: 1,
+          size: 4,
+          answered: true, // 답변 완료된 데이터만 요청
         };
         const response = await complaintApi.getList(params);
         setPageData(response.data);
@@ -78,8 +132,8 @@ const ComplaintTableCard = () => {
 
   return (
     <DashboardCard>
-      <h3>민원 도우미</h3>
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <TableHeader>오늘, 우리 부서 답변</TableHeader>
+      <DashboardTable>
         <thead>
           <tr>
             <th>번호</th>
@@ -88,82 +142,152 @@ const ComplaintTableCard = () => {
           </tr>
         </thead>
         <tbody>
-          {pageData?.content?.slice(0, 4).map((item, index) => (
-            <tr key={`complaint-${item.complaintSeq}`}>
-              <td>{index + 1}</td>
-              <td>
-                <Link to={`/complaint/write/${item.complaintSeq}`}>
-                  {item.bad ? "⚠️" : ""}
-                  {item.title && item.title.trim() !== ""
-                    ? item.title
-                    : "제목 없음"}
-                </Link>
-              </td>
-              <td style={{ color: item.answered ? "green" : "red" }}>
-                {item.answered ? "답변완료" : "답변대기"}
-              </td>
+          {pageData?.content
+            ?.filter((item) => item.answered)
+            .map((item, index) => (
+              <tr key={`complaint-${item.complaintSeq}`}>
+                <td style={{ width: "60px" }}>{index + 1}</td>
+                <td>
+                  <Link to={`/complaint/write/${item.complaintSeq}`}>
+                    {item.bad ? "⚠️ " : ""}
+                    {item.title?.trim() || "제목 없음"}
+                  </Link>
+                </td>
+                <td style={{ width: "100px", color: "#48bb78" }}>답변완료</td>
+              </tr>
+            ))}
+          {pageData?.content?.filter((item) => item.answered).length === 0 && (
+            <tr>
+              <NoDataMessage colSpan="3">
+                답변 완료된 민원이 없습니다.
+              </NoDataMessage>
             </tr>
-          ))}
+          )}
         </tbody>
-      </table>
+      </DashboardTable>
     </DashboardCard>
   );
 };
-// // 민원 도우미 테이블 컴포넌트
-// const ComplaintTableCard = () => (
-//   <DashboardCard>
-//     <h3>민원 도우미</h3>
-//     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-//       <thead>
-//         <tr>
-//           <th>번호</th>
-//           <th>제목</th>
-//         </tr>
-//       </thead>
-//       <tbody>
-//         {/* 실제 데이터로 매핑 */}
-//         {[1,2,3,4].map((item, index) => (
-//           <tr key={index}>
-//             <td>{index + 1}</td>
-//             <td>민원 항목 {index + 1}</td>
+const CallServiceTableCard = () => {
+
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await mypageApi.getDailyCalls();
+        setData(response.data);
+      } catch (error) {
+        console.error("데이터 가져오기 실패:", error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) return <p>로딩 중...</p>;
+  if (error) return <p>오류 발생: {error}</p>;
+
+  return (
+    <DashboardCard>
+      <TableHeader>오늘, 우리 부서에 들어온 전화민원</TableHeader>
+      <div className="max-h-96 overflow-y-auto">
+        <DashboardTable>
+          <thead className="sticky top-0 bg-white">
+            <tr>
+              <th className="w-16">번호</th>
+              <th className="w-24">악성여부</th>
+              <th>전화링크</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.length > 0 ? (
+              data.map((item, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>
+                    {item.isComplain ? (
+                      <span className="text-red-600">악성</span>
+                    ) : (
+                      <span className="text-green-600">정상</span>
+                    )}
+                  </td>
+                  <td>
+                    {item.telecomFilePath ? (
+                      <a 
+                        href={item.telecomFilePath}
+                        className="text-blue-600 hover:underline"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        통화 파일 듣기
+                      </a>
+                    ) : (
+                      <span className="text-gray-400">파일 없음</span>
+                    )}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <NoDataMessage colSpan="3">
+                  오늘 접수된 전화민원이 없습니다.
+                </NoDataMessage>
+              </tr>
+            )}
+          </tbody>
+        </DashboardTable>
+      </div>
+    </DashboardCard>
+  );
+};
+
+// const CallServiceTableCard = () => {
+//   const mockData = [1, 2, 3, 4]; // 목업 데이터
+
+//   return (
+//     <DashboardCard>
+//       <TableHeader>오늘, 우리 부서에 들어온 전화민원</TableHeader>
+//       <DashboardTable>
+//         <thead>
+//           <tr>
+//             <th style={{ width: "60px" }}>번호</th>
+//             <th>제목</th>
 //           </tr>
-//         ))}
-//       </tbody>
-//     </table>
-//   </DashboardCard>
-// );
-
-// 전화 서비스 테이블 컴포넌트
-const CallServiceTableCard = () => (
-  <DashboardCard>
-    <h3>전화 서비스</h3>
-    <table style={{ width: "100%", borderCollapse: "collapse" }}>
-      <thead>
-        <tr>
-          <th>번호</th>
-          <th>제목</th>
-        </tr>
-      </thead>
-      <tbody>
-        {/* 실제 데이터로 매핑 */}
-        {[1, 2, 3, 4].map((item, index) => (
-          <tr key={index}>
-            <td>{index + 1}</td>
-            <td>전화 서비스 항목 {index + 1}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </DashboardCard>
-);
-
+//         </thead>
+//         <tbody>
+//           {mockData.length > 0 ? (
+//             mockData.map((item, index) => (
+//               <tr key={index}>
+//                 <td>{index + 1}</td>
+//                 <td>전화 서비스 항목 {index + 1}</td>
+//               </tr>
+//             ))
+//           ) : (
+//             <tr>
+//               <NoDataMessage colSpan="2">
+//                 오늘 접수된 전화민원이 없습니다.
+//               </NoDataMessage>
+//             </tr>
+//           )}
+//         </tbody>
+//       </DashboardTable>
+//     </DashboardCard>
+//   );
+// };
 const Dashboard = () => {
   return (
     <MyPageLayout>
       <h1>대시보드</h1>
       <DashboardGrid>
         <PieChartCard />
-        <BarChartCard />
+        <LineChartCard />
         <ComplaintTableCard />
         <CallServiceTableCard />
       </DashboardGrid>

@@ -1,91 +1,175 @@
-import { useState, useEffect } from 'react';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+/**
+ * charts.js - 대시보드의 데이터 시각화를 위한 차트 컴포넌트들
+ *
+ * @module charts
+ * @requires recharts - 차트 라이브러리
+ * @requires react - React 프레임워크
+ */
 
-const API_URL = "http://localhost:5000/api/complaints";  // 백엔드 API 주소
+import { useState, useEffect } from "react";
+import {
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { mypageApi } from "../../api";
 
-// 파이 차트 컴포넌트 (악성 민원 비율)
+/**
+ * 악성 민원 비율을 파이 차트로 표시하는 컴포넌트
+ *
+ * @component
+ * @returns {JSX.Element} 원형 차트 컴포넌트
+ */
 const ComplaintRatioChart = () => {
+  // 차트 데이터와 로딩 상태 관리
   const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
 
-  const COLORS = ['#47597E', '#7FB5B5', '#FFE5B4', '#B4D4FF'];
+  // 차트에 사용될 색상 팔레트 정의
+  const COLORS = ["#82ca9d", "#8884d8"];
 
+  // const COLORS = ['#47597E', '#7FB5B5', '#FFE5B4', '#B4D4FF'];
+
+  // 데이터 fetch 함수
   useEffect(() => {
-    fetch(API_URL)
-      .then(response => response.json())
-      .then(data => {
-        if (data.complaint_ratio) {
-          setData(data.complaint_ratio);
-        }
-        setIsLoading(false);
-      })
-      .catch(error => {
-        console.error("Error fetching complaint ratio data:", error);
-        setIsLoading(false);
-      });
+    const fetchData = async () => {
+      try {
+        const response = await mypageApi.getComplaintSum();
+        const { totalComplaints, maliciousComplaints } = response.data;
+
+        // 데이터 업데이트
+        setData([
+          { name: "악성 민원", value: maliciousComplaints },
+          { name: "기타 민원", value: totalComplaints - maliciousComplaints },
+        ]);
+      } catch (error) {
+        console.error("데이터 로드 실패:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  if (isLoading) return <p>Loading...</p>;
-
   return (
-    <div className="chart-container">
-      <PieChart width={300} height={300}>
+    <ResponsiveContainer width="100%" height={300}>
+      <PieChart>
         <Pie
           data={data}
-          cx={150}
-          cy={150}
-          innerRadius={0}
+          dataKey="value"
+          nameKey="name"
           outerRadius={100}
           fill="#8884d8"
-          paddingAngle={0}
-          dataKey="value"
+          label
         >
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>
         <Tooltip />
-        <Legend />
+        <Legend /> {/* 범례 추가 */}
       </PieChart>
-    </div>
+    </ResponsiveContainer>
   );
 };
-
-// 바 차트 컴포넌트 (월별 민원 건수)
+/**
+ * MonthlyComplaintChart.jsx
+ * 전체 민원과 악성 민원의 월별 추이를 보여주는 라인 차트 컴포넌트
+ */
+/**
+ * 월별 민원 추이 차트 컴포넌트
+ * @returns {JSX.Element} 라인 차트 컴포넌트
+ */
 const MonthlyComplaintChart = () => {
+  // 차트 데이터 상태 관리
   const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
 
+  /**
+   * 컴포넌트 마운트 시 데이터 불러오기
+   */
   useEffect(() => {
-    fetch(API_URL)
-      .then(response => response.json())
-      .then(data => {
-        if (data.monthly_complaints) {
-          setData(data.monthly_complaints);
-        }
-        setIsLoading(false);
-      })
-      .catch(error => {
-        console.error("Error fetching monthly complaint data:", error);
-        setIsLoading(false);
-      });
+    const fetchData = async () => {
+      try {
+        const response = await mypageApi.getDailyComplaint();
+        console.log("API Response:", response);
+
+        const responseData = Array.isArray(response.data)
+          ? response.data
+          : Array.isArray(response.data.content)
+          ? response.data.content
+          : [];
+
+        const formattedData = responseData.map((item) => ({
+          date: item.date,
+          "전체 민원": item.totalComplaints,
+          "악성 민원": item.maliciousComplaints,
+        }));
+
+        setData(formattedData);
+      } catch (error) {
+        console.error("데이터 로드 실패:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  if (isLoading) return <p>Loading...</p>;
-
   return (
-    <div className="chart-container">
-      <BarChart width={400} height={300} data={data}>
+    <ResponsiveContainer width="100%" height={250}>
+      {" "}
+      {/* height 조정 */}
+      <LineChart
+        data={data}
+        margin={{
+          top: 10, // 상단 여백 축소
+          right: 10, // 우측 여백 축소
+          left: 10, // 좌측 여백 축소
+          bottom: 20, // 하단 여백 (범례를 위한 공간)
+        }}
+      >
+        {/* 격자 표시 */}
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="year" />
+
+        {/* X축 설정 - 날짜 표시 */}
+        <XAxis dataKey="date" padding={{ left: 30, right: 30 }} />
+
+        {/* Y축 설정 - 건수 표시 */}
         <YAxis />
+
+        {/* 툴팁 - 마우스 오버 시 상세정보 표시 */}
         <Tooltip />
+
+        {/* 범례 표시 */}
         <Legend />
-        <Bar dataKey="value1" fill="#47597E" />
-        <Bar dataKey="value2" fill="#7FB5B5" />
-        <Bar dataKey="value3" fill="#FFE5B4" />
-      </BarChart>
-    </div>
+
+        {/* 전체 민원 라인 */}
+        <Line
+          type="monotone" // 부드러운 곡선으로 표시
+          dataKey="전체 민원"
+          stroke="#8884d8" // 보라색 계열
+          strokeWidth={2} // 선 굵기
+          dot={{ r: 5 }} // 데이터 포인트 크기
+          activeDot={{ r: 8 }} // 활성화된 데이터 포인트 크기
+        />
+
+        {/* 악성 민원 라인 */}
+        <Line
+          type="monotone" // 부드러운 곡선으로 표시
+          dataKey="악성 민원"
+          stroke="#82ca9d" // 초록색 계열
+          strokeWidth={2} // 선 굵기
+          dot={{ r: 5 }} // 데이터 포인트 크기
+          activeDot={{ r: 8 }} // 활성화된 데이터 포인트 크기
+        />
+      </LineChart>
+    </ResponsiveContainer>
   );
 };
 
