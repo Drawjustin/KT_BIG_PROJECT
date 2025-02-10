@@ -1,17 +1,100 @@
 /* SignUpForm.module.css */
 .form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    max-width: 400px;
-    margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 480px;  /* 폼 전체 너비 증가 */
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* 입력 필드 컨테이너 스타일링 */
+.form > div {
+  width: 100%;
+}
+
+/* Select 컴포넌트 컨테이너 스타일링 */
+.selectContainer {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+/* Select 라벨 스타일링 */
+.selectContainer label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* react-select 커스텀 스타일 */
+:global(.select__control) {
+  min-height: 42px !important;
+  border-color: #ddd !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+
+:global(.select__control:hover) {
+  border-color: #aaa !important;
+}
+
+:global(.select__control--is-focused) {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 1px #2563eb !important;
+}
+
+:global(.select__placeholder) {
+  color: #999 !important;
+}
+
+:global(.select__single-value) {
+  color: #333 !important;
+}
+
+:global(.select__menu) {
+  border: 1px solid #ddd !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 체크박스 컨테이너 스타일링 */
+.checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 16px;
+  background-color: #f9fafb;
+  border-radius: 4px;
+}
+
+/* 체크박스 라벨 스타일링 */
+.checkboxes label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* 에러 메시지 스타일링 */
+.serverError {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  color: #dc2626;
+  background-color: #fee2e2;
+  border-radius: 4px;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 640px) {
+  .form {
+    padding: 16px;
+    max-width: 100%;
   }
-  
-  .checkboxes {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-  }
-  
+}
