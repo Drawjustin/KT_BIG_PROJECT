@@ -2,6 +2,7 @@
 import jwtAxios from '../util/jwtUtils';
 import axios from 'axios';
 
+
 // 공통 axios
 const apiClient = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -13,6 +14,21 @@ const apiClient = axios.create({
 
 /**axois 회원관련 api registar,  */
 export const signApi = {
+  /** 구선택 api () */
+  getDistricts : async () =>{ 
+    const response = await apiClient.get('api/districts');
+    return response.data;
+  },
+  /** department api (distrinctId) */
+  getDepartmentsByDistrict: async (districtId) => { // departments
+    const response = await apiClient.get(`api/departments?districtSeq=${districtId}`);
+    return response.data;
+  },
+  /** team api (departmentId) */
+  getTeamsByDepartment: async (departmentId) => { //teams
+    const response = await apiClient.get(`api/teams?departmentSeq=${departmentId}`);
+    return response.data;
+  },
   // 회원가입
   register: (userData) => 
     apiClient.post('/api/join', userData),
@@ -31,7 +47,11 @@ export const complaintApi = {
   
   // 답변 등록
   create: (postData) => 
-    jwtAxios.post('/complaint-comments', postData),
+    jwtAxios.post('/complaint-comments', postData,{
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }),
 
   //민원 수정
   update: (complaintSeq,postData) => 
@@ -43,8 +63,12 @@ export const complaintApi = {
 };
 /** ai 답변생성 api */
 export const commentsApi = {
-  
-
+  create: (postData)=>
+    jwtAxios.post(`/complaint-comments/create`,postData,{
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }),
 };
 
 // 공문서 관련 API -> 공문서 아직 ,,
