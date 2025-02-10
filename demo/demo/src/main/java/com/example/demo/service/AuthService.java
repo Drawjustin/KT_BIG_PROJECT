@@ -4,22 +4,14 @@ import com.example.demo.config.JwtConfig;
 import com.example.demo.dto.CustomUserDetails;
 import com.example.demo.dto.request.JoinRequest;
 import com.example.demo.dto.request.LoginRequest;
-import com.example.demo.dto.response.AuthResponse;
-import com.example.demo.dto.response.DepartmentResponse;
-import com.example.demo.dto.response.TeamResponse;
-import com.example.demo.dto.response.TokenResponse;
+import com.example.demo.dto.response.*;
 import com.example.demo.entity.Department;
 import com.example.demo.entity.Refresh;
 import com.example.demo.entity.Team;
 import com.example.demo.entity.User;
-import com.example.demo.exception.EmailAlreadyExistsException;
-import com.example.demo.exception.InvalidTokenException;
-import com.example.demo.exception.TeamNotFoundException;
-import com.example.demo.exception.UserNotFoundException;
+import com.example.demo.exception.*;
 import com.example.demo.jwt.JWTUtil;
-import com.example.demo.repository.RefreshRepository;
-import com.example.demo.repository.TeamRepository;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -29,7 +21,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.example.demo.repository.DepartmentRepository;
 
 import java.time.Duration;
 import java.util.Date;
@@ -52,6 +43,7 @@ public class AuthService {
     private final DepartmentRepository departmentRepository;
 
     private static final String ACCESS_TOKEN_PREFIX = "access_token:";
+    private final DistrictRepository districtRepository;
 
     public AuthService(
             JWTUtil jwtUtil,
@@ -62,8 +54,8 @@ public class AuthService {
             @Lazy AuthenticationManager authenticationManager,
             JwtConfig jwtConfig,
             TeamRepository teamRepository,
-            DepartmentRepository departmentRepository
-            ) {
+            DepartmentRepository departmentRepository,
+            DistrictRepository districtRepository) {
         this.jwtUtil = jwtUtil;
         this.redisTemplate = redisTemplate;
         this.refreshRepository = refreshRepository;
@@ -73,7 +65,7 @@ public class AuthService {
         this.jwtConfig=jwtConfig;
         this.teamRepository=teamRepository;
         this.departmentRepository=departmentRepository;
-
+        this.districtRepository = districtRepository;
     }
 
     // 회원가입 처리
@@ -227,20 +219,31 @@ public class AuthService {
         );
     }
 
+    public List<DistrictResponse> getAllDistricts(){
+        return districtRepository.findAll().stream()
+                .map(dept -> new DistrictResponse(
+                        dept.getDistrictSeq(),
+                        dept.getDistrictName()
+                )).collect(Collectors.toList());
+    }
+
+
+
     // 부서 목록 조회 메서드 추가
-    public List<DepartmentResponse> getAllDepartments() {
-        return departmentRepository.findAll().stream()
-                .map(dept -> new DepartmentResponse(
-                        dept.getDepartmentSeq(),
-                        dept.getDepartmentName()
+    public List<DepartmentResponse> getDepartmentsByDistrict(Long districtSeq) {
+        return departmentRepository.findAllByDistrictDistrictSeq(districtSeq).stream()
+                .map(department -> new DepartmentResponse(
+                        department.getDepartmentSeq(),
+                        department.getDepartmentName()
                 ))
                 .collect(Collectors.toList());
+
     }
 
     // 특정 부서의 팀 목록 조회 메서드 추가
     public List<TeamResponse> getTeamsByDepartment(Long departmentSeq) {
         Department department = departmentRepository.findById(departmentSeq)
-                .orElseThrow(() -> new TeamNotFoundException("존재하지 않는 팀입니다."));
+                .orElseThrow(() -> new TeamNotFoundException("존재하지 않는 부서입니다."));
 
         return teamRepository.findByDepartment(department).stream()
                 .map(team -> new TeamResponse(

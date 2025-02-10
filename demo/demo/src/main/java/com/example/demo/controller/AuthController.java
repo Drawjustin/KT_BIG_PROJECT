@@ -145,10 +145,19 @@ public class AuthController {
         }
     }
 
+
+    @GetMapping("/districts")
+    public ResponseEntity<CommonResponse<List<DistrictResponse>>> getAllDistrict() {
+        List<DistrictResponse> districts = authService.getAllDistricts();
+        return ResponseEntity.ok(CommonResponse.success("구국 목록 조회 성공", districts));
+    }
+
     // 부서 목록 엔드포인트 추가
     @GetMapping("/departments")
-    public ResponseEntity<CommonResponse<List<DepartmentResponse>>> getAllDepartments() {
-        List<DepartmentResponse> departments = authService.getAllDepartments();
+    public ResponseEntity<CommonResponse<List<DepartmentResponse>>> getAllDepartments(
+            @RequestParam(name = "districtSeq") Long districtSeq
+    ) {
+        List<DepartmentResponse> departments = authService.getDepartmentsByDistrict(districtSeq);
         return ResponseEntity.ok(CommonResponse.success("부서 목록 조회 성공", departments));
     }
 

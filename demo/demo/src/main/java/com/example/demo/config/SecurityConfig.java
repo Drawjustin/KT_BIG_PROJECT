@@ -74,7 +74,7 @@ public class SecurityConfig {
                 .httpBasic((auth)-> auth.disable())
                 .authorizeHttpRequests((auth)-> auth
                         .requestMatchers("/error","/api/healthy","/api/login","/api/join","/api/reissue","/api/logout").permitAll()
-                        .requestMatchers("/api/departments", "/api/teams").permitAll()
+                        .requestMatchers("/api/districts","/api/departments", "/api/teams").permitAll()
                         .requestMatchers("/db-test").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")//관리자만 접근가능
                         .requestMatchers("/user/**").hasRole("USER")  // 사용자만 접근 가능
@@ -101,6 +101,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList(
                 "https://www.officialsos.shop",
                 "http://localhost:5173",
+                "http://localhost:5174",
                 "https://officialsos.shop"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
