@@ -75,11 +75,11 @@ export const commentsApi = {
 export const documentApi = {
   // 공문서 검색
   search: (params) => 
-    jwtAxios.get('/api/documents/search', { params }),
-  
-  // 공문서 상세 조회
-  getDetail: (id) => 
-    jwtAxios.get(`/api/documents/${id}`)
+    jwtAxios.post('/files/searchPublic',params,{
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }),
 };
 
 /**자료실 관련 api */
@@ -93,3 +93,15 @@ export const dataroomApi = {
       jwtAxios.get(`files/${fileSeq}`),
   };
   
+  export const mypageApi={
+    getComplaintSum: ()=>
+      jwtAxios.get(`/complaint-comments/profiles/complaints/summary`),
+
+    getDailyComplaint:()=>
+      jwtAxios.get(`/complaint-comments/profiles/complaints/daily`),
+
+    getDailyCalls:()=>
+      jwtAxios.get(`complaint-comments/profiles/calls/daily`),
+
+
+  }

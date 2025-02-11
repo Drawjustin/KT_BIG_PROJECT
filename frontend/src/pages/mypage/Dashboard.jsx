@@ -111,7 +111,7 @@ const ComplaintTableCard = () => {
         setLoading(true);
         const params = {
           page: 0,
-          size: 4,
+          size: 8,
           answered: true, // 답변 완료된 데이터만 요청
         };
         const response = await complaintApi.getList(params);

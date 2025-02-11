@@ -1,13 +1,6 @@
-// import { useState } from 'react';
-// import DocumentAssistantComponent from './DocumentAssistantComponent';
-// import Sidebar from './Sidebar';
 import styled from 'styled-components';
 import styles from '../../filepage/page.module.css'
 import SearchPage from './SearchPage';
-// import SearchResults from './Test';
-// import Docu from './Docu';
-// import Sample from './Sample';
-// import Chat from './Sample';
 
 const MainContent = styled.div`
   margin-left: ${props => props.sidebarOpen ? '250px' : '0'};
@@ -25,12 +18,7 @@ const Official = () => {
         <h1>공문서 도우미</h1>
           </div>
           <MainContent>
-            {/* <Docu/> */}
-            {/* <DocumentAssistantComponent /> */}
-            {/* <SearchResults/> */}
             <SearchPage/>
-            {/* <Sample/> */}
-            {/* <Chat/> */}
           </MainContent>
       </div>
   );

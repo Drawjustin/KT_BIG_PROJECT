@@ -13,7 +13,7 @@
 .contentWrapper {
   display: flex;
   justify-content: center;
-  gap: 11.5rem;
+  gap: 11.5vh;
   position: relative;
   padding-top: 3.75rem; /* 60px */
 }
@@ -96,6 +96,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-width: 210px;
 }
 
 .logo {

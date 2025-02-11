@@ -7,17 +7,16 @@ import Layout from './_components/layout/Layout';
 import Navbar from './_components/navbar/Navbar';
 import Footer from './_components/footer/Footer';
 import AppRoutes from './routes';
-
 function App() {
   return (
     <Provider store={store}>
-      <Router>
-        <Layout>
-          <Navbar />
-          <AppRoutes />
-        </Layout>
-        <Footer />
-      </Router>
+        <Router>
+          <Layout>
+            <Navbar />
+            <AppRoutes />
+          </Layout>
+          <Footer />
+        </Router>
     </Provider>
   );
 }

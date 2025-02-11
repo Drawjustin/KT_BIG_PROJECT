@@ -1,22 +1,31 @@
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import MyPageLayout from '../../_components/layout/MyPageLayout';
+import profileDefaultImage from '../../assets/images/logo.png';
+
 
 const MyPage = () => {
-  // const { userEmail, isLoggedIn } = useSelector(state => state.loginSlice);
   const { userEmail, isLoggedIn } = useSelector(state => state.login || {});
   return (
     <MyPageLayout>
       <h1>마이페이지</h1>
       {isLoggedIn ? (
         <WelcomeCard>
+          <ProfileSection>
+            <ProfileImageContainer>
+              <ProfileImage 
+                src={profileDefaultImage} // import한 이미지 사용
+                alt="프로필 이미지" 
+              />
+            </ProfileImageContainer>
+          </ProfileSection>
           <WelcomeText>환영합니다, <UserEmail>{userEmail}</UserEmail> 님</WelcomeText>
           <UserInfoSection>
             <InfoItem>
               <InfoLabel>이메일</InfoLabel>
               <InfoValue>{userEmail}</InfoValue>
             </InfoItem>
-            {/* 추가 정보 항목들을 여기에 넣을 수 있습니다 */}
+            {/* 추가 정보 항목들 */}
           </UserInfoSection>
         </WelcomeCard>
       ) : (
@@ -26,6 +35,32 @@ const MyPage = () => {
   );
 };
 
+
+const ProfileSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+`;
+
+const ProfileImageContainer = styled.div`
+  position: relative;
+  margin-bottom: 1rem;
+`;
+
+const ProfileImage = styled.img`
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
 
 const WelcomeCard = styled.div`
   background-color: white;
@@ -48,7 +83,7 @@ const WelcomeText = styled.p`
 
 const UserEmail = styled.span`
   font-weight: bold;
-  color: #3498db;
+  color: #2A5C96;
 `;
 
 const UserInfoSection = styled.div`
@@ -79,5 +114,7 @@ const NotLoggedInMessage = styled.p`
   color: #e74c3c;
   text-align: center;
 `;
+
+
 
 export default MyPage;
