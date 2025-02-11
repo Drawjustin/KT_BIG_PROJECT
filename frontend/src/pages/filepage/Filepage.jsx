@@ -2,6 +2,7 @@ import FileList from "./FileList";
 import FileView from "./FileView";
 import { Route, Routes } from "react-router-dom";
 import styles from './page.module.css';  // 새로운 CSS 모듈 추가
+// import FileDetail from "./FileDetail";
 
 
 const Filepage = () => {
@@ -15,6 +16,7 @@ const Filepage = () => {
         <Route index element={<FileList />} />
 
         {/* 자료실 조회 */}
+        {/* <Route path="view/:id" element={<FileDetail />} /> */}
         <Route path="view/:id" element={<FileView />} />
       </Routes>
     </div>

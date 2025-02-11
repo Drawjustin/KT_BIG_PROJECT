@@ -10,7 +10,6 @@ const ListPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const postsPerPage = 10;
-  const departmentSeq = 1;
   const [searchType, setSearchType] = useState("title"); // 검색 유형
   const [searchKeyword, setSearchKeyword] = useState(""); // 검색어
 
@@ -20,7 +19,6 @@ const ListPage = () => {
       const params = {
         page: page - 1,
         size: postsPerPage,
-        departmentSeq: departmentSeq,
       };
 
       //검색어가 있는 경우 params에 추가

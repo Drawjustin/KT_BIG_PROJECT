@@ -9,7 +9,7 @@ import LoadingScreen from '../../../_components/loading/LoadingScreen';
 const SearchContainer = styled.div`
   padding: 20px;
   margin: 0 auto;
-  max-width: 1200px;
+  max-width: 1000px;
 `;
 
 const SearchForm = styled.form`
@@ -94,6 +94,14 @@ const SearchPage = () => {
 
       console.log("검색 응답:", response);
       setSearchResults(response.data);
+      // 데이터가 빈 문자열인 경우만 체크
+      if (response.data === "") {
+        alert("검색 결과가 없습니다. 다른 검색어로 다시 시도해주세요.");
+        setSearchResults(null);
+        return;
+    }
+        setSearchResults(response.data);
+
       
     } catch (error) {
       console.error("검색 오류:", error);
@@ -111,7 +119,7 @@ const SearchPage = () => {
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="ai에게 공문서 검색을 맡겨보세요!"
+          placeholder="AI에게 공문서 검색을 맡겨보세요!"
           disabled={loading}
         />
         <AiBtn onClick={handleSubmit}/>

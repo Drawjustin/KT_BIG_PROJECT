@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+import styled from "styled-components";
+import { useState } from "react";
 
 // 스타일 컴포넌트
 const Container = styled.div`
@@ -31,9 +32,8 @@ const Title = styled.h3`
 
 const MetaInfo = styled.div`
   font-size: 14px;
-  color: #666;
+  color: black;
   margin-bottom: 10px;
-
   span {
     margin-right: 12px;
   }
@@ -44,66 +44,135 @@ const Summary = styled.p`
   line-height: 1.6;
   margin: 0;
 `;
+// 추가 스타일 컴포넌트
+const BaseResponseSection = styled(Section)`
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+`;
 
+const ResultHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  &:hover {
+    text-decoration:underline;
+    transform: translateX(5px);
+  }
+`;
+
+
+const ScoreIndicator = styled.span`
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: ${(props) =>
+    props.score >= 0.9
+      ? "#ff4444"
+      : props.score >= 0.8
+      ? "#ff8800"
+      : props.score >= 0.7
+      ? "#00C851"
+      : "#666"};
+`;
+
+const DetailContent = styled.div`
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+  display: ${(props) => (props.isOpen ? "block" : "none")};
+`;
+
+const SummaryText = styled.p`
+  color: #666;
+  line-height: 1.6;
+`;
+
+const SectionTitle = styled(Title)`
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #2196f3;
+`;
+
+// 컴포넌트 수정
 const SearchResults = ({ data }) => {
-  if (!data) return null;
+  const [openItems, setOpenItems] = useState({});
+
+  const toggleItem = (section, index) => {
+    setOpenItems((prev) => ({
+      ...prev,
+      [`${section}-${index}`]: !prev[`${section}-${index}`],
+    }));
+  };
 
   return (
     <Container>
-      {/* 기본 답변 섹션 */}
       {data.base_answer && (
-        <Section>
-          <Title>기본 답변</Title>
+        <BaseResponseSection>
+          <SectionTitle>기본 응답</SectionTitle>
           <Summary>{data.base_answer}</Summary>
-        </Section>
+        </BaseResponseSection>
       )}
 
-      {/* 상위 검색결과 섹션 */}
       {data.high_results && data.high_results.length > 0 && (
         <Section>
-          <Title>상위 검색결과</Title>
+          <SectionTitle>상위 검색결과</SectionTitle>
           {data.high_results.map((result, index) => (
             <ResultItem key={index}>
-              <Title>{result.title}</Title>
-              <MetaInfo>
-                <span>부처: {result.ministry}</span>
-                <span>부서: {result.department}</span>
-                <span>날짜: {result.document_issue_date}</span>
-                <span>점수: {result.score}</span>
-              </MetaInfo>
-              <Summary>{result.summary}</Summary>
+              <ResultHeader onClick={() => toggleItem("high", index)}>
+                <Title>{result.title}</Title>
+                <ScoreIndicator score={result.score}>
+                  {result.score}%
+                </ScoreIndicator>
+              </ResultHeader>
+              <DetailContent isOpen={openItems[`high-${index}`]}>
+                <MetaInfo>
+                  <span>부처: {result.ministry}</span>
+                  <span>부서: {result.department}</span>
+                  <span>날짜: {result.document_issue_date}</span>
+                </MetaInfo>
+                <SummaryText>{result.summary}</SummaryText>
+              </DetailContent>
             </ResultItem>
           ))}
         </Section>
       )}
 
-      {/* 중위 검색결과 섹션 */}
       {data.medium_results && data.medium_results.length > 0 && (
         <Section>
-          <Title>중위 검색결과</Title>
+          <SectionTitle>중위 검색결과</SectionTitle>
           {data.medium_results.map((result, index) => (
             <ResultItem key={index}>
-              <Title>{result.title}</Title>
-              <MetaInfo>
-                <span>부처: {result.ministry}</span>
-                <span>부서: {result.department}</span>
-                <span>날짜: {result.document_issue_date}</span>
-                <span>점수: {result.score}</span>
-              </MetaInfo>
-              <Summary>{result.summary}</Summary>
+              <ResultHeader onClick={() => toggleItem("medium", index)}>
+                <Title>{result.title}</Title>
+                <ScoreIndicator score={result.score}>
+                  {result.score}%
+                </ScoreIndicator>
+              </ResultHeader>
+              <DetailContent isOpen={openItems[`medium-${index}`]}>
+                <MetaInfo>
+                  <span>부처: {result.ministry}</span>
+                  <span>부서: {result.department}</span>
+                  <span>날짜: {result.document_issue_date}</span>
+                </MetaInfo>
+                <SummaryText>{result.summary}</SummaryText>
+              </DetailContent>
             </ResultItem>
           ))}
         </Section>
       )}
 
-      {/* QnA 섹션 */}
       {data.qna_list && data.qna_list.length > 0 && (
         <Section>
-          <Title>자주 묻는 질문</Title>
+          <SectionTitle>자주 묻는 질문</SectionTitle>
           {data.qna_list.map((qna, index) => (
             <ResultItem key={index}>
               <Title>{qna.question}</Title>
-              <Summary>{qna.answer}</Summary>
+              <SummaryText>{qna.answer}</SummaryText>
             </ResultItem>
           ))}
         </Section>
@@ -111,5 +180,72 @@ const SearchResults = ({ data }) => {
     </Container>
   );
 };
+
+// const SearchResults = ({ data }) => {
+//   if (!data) return null;
+
+//   return (
+//     <Container>
+//       {/* 기본 답변 섹션 */}
+//       {data.base_answer && (
+//         <Section>
+//           <Title>기본 응답</Title>
+//           <Summary>{data.base_answer}</Summary>
+//         </Section>
+//       )}
+
+//       {/* 상위 검색결과 섹션 */}
+//       {data.high_results && data.high_results.length > 0 && (
+//         <Section>
+//           <Title>상위 검색결과</Title>
+//           {data.high_results.map((result, index) => (
+//             <ResultItem key={index}>
+//               <Title>{result.title}</Title>
+//               <MetaInfo>
+//                 <span>부처: {result.ministry}</span>
+//                 <span>부서: {result.department}</span>
+//                 <span>날짜: {result.document_issue_date}</span>
+//                 <span>유사도: {result.score}</span>
+//               </MetaInfo>
+//               <Summary>{result.summary}</Summary>
+//             </ResultItem>
+//           ))}
+//         </Section>
+//       )}
+
+//       {/* 중위 검색결과 섹션 */}
+//       {data.medium_results && data.medium_results.length > 0 && (
+//         <Section>
+//           <Title>중위 검색결과</Title>
+//           {data.medium_results.map((result, index) => (
+//             <ResultItem key={index}>
+//               <Title>{result.title}</Title>
+//               <MetaInfo>
+//                 <span>부처: {result.ministry}</span>
+//                 <span>부서: {result.department}</span>
+//                 <span>날짜: {result.document_issue_date}</span>
+//                 <span>점수: {result.score}</span>
+//               </MetaInfo>
+//               <Summary>{result.summary}</Summary>
+//             </ResultItem>
+//           ))}
+//         </Section>
+//       )}
+
+//       {/* QnA 섹션 */}
+//       {data.qna_list && data.qna_list.length > 0 && (
+//         <Section>
+//           <Title>더 알아보기</Title>
+//           {data.qna_list.map((qna, index) => (
+//             <ResultItem key={index}>
+//               <Title>{qna.question}</Title>
+//               <Summary>{qna.answer}</Summary>
+//             </ResultItem>
+//           ))}
+//         </Section>
+//       )}
+//     </Container>
+//   );
+// };
 
 export default SearchResults;
