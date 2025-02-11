@@ -1,8 +1,13 @@
 // import { useState } from 'react';
-import DocumentAssistantComponent from './DocumentAssistantComponent';
+// import DocumentAssistantComponent from './DocumentAssistantComponent';
 // import Sidebar from './Sidebar';
 import styled from 'styled-components';
 import styles from '../../filepage/page.module.css'
+import SearchPage from './SearchPage';
+// import SearchResults from './Test';
+// import Docu from './Docu';
+// import Sample from './Sample';
+// import Chat from './Sample';
 
 const MainContent = styled.div`
   margin-left: ${props => props.sidebarOpen ? '250px' : '0'};
@@ -13,18 +18,6 @@ const MainContent = styled.div`
 
 
 const Official = () => {
-  // const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
-  //   const saved = localStorage.getItem('sidebarOpen');
-  //   return saved ? JSON.parse(saved) : true;
-  // });
-
-  // const toggleSidebar = () => {
-  //   setIsSidebarOpen(prev => {
-  //     const newState = !prev;
-  //     localStorage.setItem('sidebarOpen', JSON.stringify(newState));
-  //     return newState;
-  //   });
-  // };
 
   return (
     <div className={styles.pageContainer}>
@@ -32,7 +25,12 @@ const Official = () => {
         <h1>공문서 도우미</h1>
           </div>
           <MainContent>
-            <DocumentAssistantComponent />
+            {/* <Docu/> */}
+            {/* <DocumentAssistantComponent /> */}
+            {/* <SearchResults/> */}
+            <SearchPage/>
+            {/* <Sample/> */}
+            {/* <Chat/> */}
           </MainContent>
       </div>
   );
