@@ -463,12 +463,13 @@ const SignupForm = () => {
 
 
       {/* 제출 버튼 */}
-      <Button
+      <button
         type="submit"
+        className={styles.submitButton} 
         onClick={loading ? null : handleSubmit}
       >
         {loading ? '처리 중...' : '회원가입'}
-      </Button>
+      </button>
     </form>
       );
     };

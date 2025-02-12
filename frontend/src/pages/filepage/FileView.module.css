@@ -1,4 +1,118 @@
 /* 기본 스타일 */
+/* FileView.module.css에 추가할 스타일 */
+
+.attachmentSection {
+  position: relative;
+  width: calc(100% - 60px);
+  margin: 30px auto;
+  padding: 0 30px;
+  border-top: 1px solid #CDD7E4;
+  border-bottom: 1px solid #CDD7E4;
+}
+
+.attachmentTitle {
+  color: #2A5C96;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  padding-top: 20px;
+  margin-left: 25px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.attachmentItem {
+  display: flex;
+  align-items: center;
+  margin: 20px 25px;
+  padding: 16px;
+  background: #F8F9FA;
+  border: 1px solid #E9ECEF;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.attachmentItem:hover {
+  background: #EDF1F5;
+}
+
+.fileIconWrapper {
+  width: 40px;
+  height: 40px;
+  background: #E7F5FF;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2A5C96;
+  margin-right: 16px;
+}
+
+.fileInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fileName {
+  color: #00162F;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.fileDate {
+  color: #868E96;
+  font-size: 13px;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.previewButton, .downloadButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.previewButton {
+  background: white;
+  color: #2A5C96;
+  border: 1px solid #2A5C96;
+}
+
+.previewButton:hover {
+  background: #F8F9FA;
+}
+
+.downloadButton {
+  background: #2A5C96;
+  color: white;
+  border: 1px solid #2A5C96;
+}
+
+.downloadButton:hover {
+  background: #1F4571;
+}
+
+.previewContainer {
+  width: calc(100% - 50px);
+  height: 600px;
+  margin: 20px 25px;
+  border: 1px solid #DEE2E6;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
 .container {
   max-width: 983px;
   margin: 2rem auto 0;
@@ -67,6 +181,9 @@
 .contentSection {
   margin-bottom: 20px;
   min-height: 200px;
+  line-height: 1.8; /* ✅ 글 간격을 넓혀 가독성 향상 */
+  font-size: 16px; /* ✅ 글씨 크기 유지 */
+  color: #333; /* ✅ 텍스트 컬러 */
 }
 
 .attachmentSection {
@@ -79,9 +196,9 @@
 }
 
 .attachmentTitle {
-  color: #333333;
+  color: #2A5C96;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 700;
   margin-bottom: 15px;
   padding-top: 20px;
   margin-left: 25px;
@@ -89,8 +206,10 @@
 
 .attachmentItem {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
   height: 24.50px;
+  min-height: 30px;
   margin-top: 30px;
   margin-bottom: 30px;
   position: relative;
@@ -100,6 +219,10 @@
   color: #666666;
   font-size: 15px;
   margin-left: 25px;
+  width: 80%; /* ✅ 파일명이 너무 길어질 경우 버튼과 겹치지 않도록 설정 */
+  word-break: break-word; /* ✅ 긴 단어도 줄바꿈 */
+  white-space: normal;     /* ✅ 자동 줄바꿈 허용 */
+  overflow-wrap: break-word; /* ✅ 단어 단위로 줄바꿈 */
 }
 
 .viewButton {
@@ -229,5 +352,26 @@
     height: 36px;
     font-size: 14px;
     line-height: 36px;
+  }
+}
+/* 반응형 스타일 */
+@media screen and (max-width: 768px) {
+  .attachmentItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .actionButtons {
+    width: 100%;
+    margin-top: 16px;
+  }
+  
+  .previewButton, .downloadButton {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .previewContainer {
+    height: 400px;
   }
 }

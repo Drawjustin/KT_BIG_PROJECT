@@ -1,13 +1,14 @@
 import styled from 'styled-components';
+import search2 from '../../../assets/images/search2.png';
 
 const StyledButton = styled.button`
   position: relative;
-  width: 190px;
+  width: 200px;
   height: 65px;
   background:#2a5c96;
   color: white;
-  font-family: "Pretendard-Light", sans-serif;
-  font-size: 25px;
+  font-family: "Pretendard-Light";
+  font-size: 20px;
   border-radius: 10px;
   border: none;
   display: flex;
@@ -16,7 +17,12 @@ const StyledButton = styled.button`
   cursor: pointer;
   transition: all 0.3s ease-in-out;
   white-space: nowrap;
-  padding: 0 60px;
+  padding: 0 80px;
+  img {  // 이미지 스타일링
+    width: 24px;
+    height: 24px;
+    margin-left:7px;
+  }
 
   &:hover {
     background:#2196f3;
@@ -56,6 +62,7 @@ const AiBtn = ({ onClick }) => {
   return (
     <StyledButton onClick={onClick}>
       AI에게 질문하기
+      <img src={search2} alt="search icon" />
       {[1, 2, 3, 4, 5, 6].map((num) => (
         <Star key={`star-${num}`} className={`star-${num}`}>
           <svg viewBox="0 0 784.11 815.53">

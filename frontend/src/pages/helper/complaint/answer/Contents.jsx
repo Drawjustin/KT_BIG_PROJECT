@@ -91,27 +91,22 @@ const Contents = ({ data }) => {
         </div>
       
       <div className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2>민원 제목  |  {title}</h2>
+        <div className={styles.summaryHeader}>
+          <h3>민원 제목  |  {title}</h3>
         </div>
         <div className={styles.sectionContent}>
-          {bad && (
-            <div className={styles.warningBox}>
-              <span className={styles.warningIcon}></span>
-              <span>해당 게시글은 특이민원으로 추정되는 게시글입니다!</span>
-            </div>
-          )}
           <p>{content}</p>
         </div>
       </div>
 
       {/* 요약 섹션 */}
       <div className={styles.section}>
-        <div className={styles.summaryHeader}>
+        <div className={styles.AIsummaryHeader}>
           <h3>AI 요약 서비스</h3>
-        </div>
-        <div className={styles.sectionContent}>
+          <div className={styles.sectionContent}>
           <p>{summary}</p>
+        </div>
+        
         </div>
       </div>
     </div>

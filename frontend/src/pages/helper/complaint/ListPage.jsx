@@ -52,10 +52,31 @@ const ListPage = () => {
     setCurrentPage(pageNumber);
   };
 
-  if (loading) return <p>로딩 중...</p>;
-  if (error) return <p>오류 발생: {error}</p>;
+  if (loading) return (
+      <div className={styles.listPageContainer}>
+        <p style={{ 
+          textAlign: 'center', 
+          position: 'absolute', 
+          left: '50%', 
+          top: '50%', 
+          transform: 'translate(-50%, -50%)',
+          color:'#2A5C96'
+        }}>로딩 중...</p>
+      </div>
+    );
+    if (error) return (
+      <div className={styles.listPageContainer}>
+        <p style={{ 
+          textAlign: 'center', 
+          position: 'absolute', 
+          left: '50%', 
+          top: '50%', 
+          transform: 'translate(-50%, -50%)', 
+          color:'red'
+        }}>오류발생: {error}</p>
+      </div>
+    );
   
-
   return (
     <>
     <div className={styles.listPageContainer}>

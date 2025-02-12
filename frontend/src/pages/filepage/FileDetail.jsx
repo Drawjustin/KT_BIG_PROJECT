@@ -81,6 +81,7 @@ const AttachmentItem = styled.div`
   align-items: center;
   margin-bottom: 15px;
   gap: 10px;
+  flex-wrap: wrap;
 `;
 
 const FileName = styled.span`
@@ -88,6 +89,8 @@ const FileName = styled.span`
   font-family: "NotoSansKr-Regular", sans-serif;
   font-size: 15px;
   flex: 1;
+  word-break: break-word; 
+  white-space: normal;  
 `;
 
 const AttachButton = styled.button`

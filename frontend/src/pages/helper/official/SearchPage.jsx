@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
+import { useLocation } from "react-router-dom";
 import styled from 'styled-components';
 import { documentApi } from '../../../api';
 import SearchResults from './SearchResults';
@@ -15,7 +16,7 @@ const SearchContainer = styled.div`
 const SearchForm = styled.form`
   margin-bottom: 30px;
   display: flex;
-  gap: 10px;
+  gap: 50px;
 `;
 
 const SearchInput = styled.input`
@@ -28,27 +29,7 @@ const SearchInput = styled.input`
   transition: border-color 0.2s;
 
   &:focus {
-    border-color: #2196f3;
-  }
-`;
-
-const SearchButton = styled.button`
-  padding: 12px 24px;
-  background-color: #2196f3;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #1976d2;
-  }
-
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+    border-color: #2a5c96;
   }
 `;
 const ResultsContainer = styled.div`
@@ -77,6 +58,45 @@ const SearchPage = () => {
   const [searchResults, setSearchResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // 라우트 위치 정보
+  const location = useLocation();
+  //메인페이지>공문서 도우미 검색
+  useEffect(() => {
+      // location.state에 searchQuery가 있는 경우
+      if (location.state?.searchQuery) {
+        // 검색어 상태 업데이트
+        setSearchTerm(location.state.searchQuery);
+  
+        // 자동 검색 함수
+        const autoSearch = async () => {
+          try {
+            // 로딩 상태 시작
+            setLoading(true);
+  
+            // documentApi를 통해 검색 요청
+            const response = await documentApi.search({
+              user_query: location.state.searchQuery, // 검색어 전달
+            });
+  
+            // 응답 상태 업데이트
+            setSearchResults(response.data);
+            console.log("response", response );
+          } catch (error) {
+            // 에러 처리
+            console.error("검색 중 오류 발생:", error);
+            alert("검색 중 오류가 발생했습니다.");
+          } finally {
+            // 로딩 상태 종료
+            // setLoading(false);
+          }
+        };
+  
+        // 자동 검색 실행
+        autoSearch();
+      }
+    }, [location.state]); // location.state 변경 시 실행
+  
 
  // 검색 폼 제출 핸들러
   const handleSubmit = async (e) => {

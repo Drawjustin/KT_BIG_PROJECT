@@ -5,6 +5,8 @@
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    margin-bottom: 100px;
+    margin-top: 50px;
   }
   
   .title {

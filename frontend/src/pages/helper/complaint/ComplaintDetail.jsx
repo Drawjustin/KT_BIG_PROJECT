@@ -74,18 +74,40 @@ const ComplaintDetail = () => {
     }
   }, [complainSeq]);
 
-  if (loading) return <p>로딩 중...</p>;
-  if (error) return <p>오류 발생: {error}</p>;
-
+  if (loading) return (
+      <div className={styles.listPageContainer}>
+        <p style={{ 
+          textAlign: 'center', 
+          position: 'absolute', 
+          left: '50%', 
+          top: '50%', 
+          transform: 'translate(-50%, -50%)',
+          color:'#2A5C96'
+        }}>로딩 중...</p>
+      </div>
+    );
+    if (error) return (
+      <div className={styles.listPageContainer}>
+        <p style={{ 
+          textAlign: 'center', 
+          position: 'absolute', 
+          left: '50%', 
+          top: '50%', 
+          transform: 'translate(-50%, -50%)', 
+          color:'red'
+        }}>오류발생: {error}</p>
+      </div>
+    );
+  
   return (
     <>
-      {postData?.bad && (
+    <div className={styles["warning-container"]}>
+    {postData?.bad && (
         <WarningMessage>
           해당 게시글은 특이민원으로 추정되는 게시글입니다!
         </WarningMessage>
       )}
-      {/* <WarningMessage>
-      해당 게시글은 특이민원으로 추정되는 게시글입니다!      </WarningMessage> */}
+    </div>
       <div className={styles["answer-detail-container"]}>
         <div className={styles["main-content"]}>
           {/* Title, Content, Summary */}

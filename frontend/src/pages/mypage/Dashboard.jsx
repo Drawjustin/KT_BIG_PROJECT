@@ -11,6 +11,8 @@ const DashboardCard = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin-bottom: 20px;
+  position: relative;  // 추가
+  min-height: 200px;  // 추가
 `;
 
 // 기존 스타일 컴포넌트들 유지...
@@ -127,9 +129,19 @@ const ComplaintTableCard = () => {
     fetchListData();
   }, []);
 
-  if (loading) return <p>로딩 중...</p>;
-  if (error) return <p>오류 발생: {error}</p>;
-
+  if (loading) return (
+    <DashboardCard>
+      <TableHeader>오늘, 우리 부서 답변</TableHeader>
+      <p style={{ 
+        position: 'absolute', 
+        top: '50%', 
+        left: '50%', 
+        transform: 'translate(-50%, -50%)'
+      }}>
+        로딩 중...
+      </p>
+    </DashboardCard>
+  );
   return (
     <DashboardCard>
       <TableHeader>오늘, 우리 부서 답변</TableHeader>
@@ -191,9 +203,19 @@ const CallServiceTableCard = () => {
     fetchData();
   }, []);
 
-  if (loading) return <p>로딩 중...</p>;
-  if (error) return <p>오류 발생: {error}</p>;
-
+  if (loading) return (
+    <DashboardCard>
+      <TableHeader>오늘, 우리 부서에 들어온 전화민원</TableHeader>
+      <p style={{ 
+        position: 'absolute', 
+        top: '50%', 
+        left: '50%', 
+        transform: 'translate(-50%, -50%)'
+      }}>
+        로딩 중...
+      </p>
+    </DashboardCard>
+  );
   return (
     <DashboardCard>
       <TableHeader>오늘, 우리 부서에 들어온 전화민원</TableHeader>
@@ -213,9 +235,9 @@ const CallServiceTableCard = () => {
                   <td>{index + 1}</td>
                   <td>
                     {item.isComplain ? (
-                      <span className="text-red-600">악성</span>
+                      <span style={{ color: 'red', fontWeight: 'bold' }}>악성</span>
                     ) : (
-                      <span className="text-green-600">정상</span>
+                      <span style={{ color: '#2b6cb0', fontWeight: 'bold' }}>정상</span>
                     )}
                   </td>
                   <td>
@@ -248,39 +270,6 @@ const CallServiceTableCard = () => {
   );
 };
 
-// const CallServiceTableCard = () => {
-//   const mockData = [1, 2, 3, 4]; // 목업 데이터
-
-//   return (
-//     <DashboardCard>
-//       <TableHeader>오늘, 우리 부서에 들어온 전화민원</TableHeader>
-//       <DashboardTable>
-//         <thead>
-//           <tr>
-//             <th style={{ width: "60px" }}>번호</th>
-//             <th>제목</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {mockData.length > 0 ? (
-//             mockData.map((item, index) => (
-//               <tr key={index}>
-//                 <td>{index + 1}</td>
-//                 <td>전화 서비스 항목 {index + 1}</td>
-//               </tr>
-//             ))
-//           ) : (
-//             <tr>
-//               <NoDataMessage colSpan="2">
-//                 오늘 접수된 전화민원이 없습니다.
-//               </NoDataMessage>
-//             </tr>
-//           )}
-//         </tbody>
-//       </DashboardTable>
-//     </DashboardCard>
-//   );
-// };
 const Dashboard = () => {
   return (
     <MyPageLayout>

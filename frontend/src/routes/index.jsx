@@ -10,7 +10,7 @@ import MyPage from '../pages/mypage/myPage';
 import Dashboard from '../pages/mypage/Dashboard';
 import TermsOfService from '../_components/footer/TermsServie';
 import PrivacyPolicy from '../_components/footer/privacypolicy';
-// import ProtectedRoute from './ProtectedRoute';
+import ProtectedRoute from './ProtectedRoute';
 
 const AppRoutes = () => {
   return (
@@ -18,9 +18,8 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage />} />
       
       {/* 보호된 라우트 */}
-      {/* <Route element={<ProtectedRoute />}> */}
+      <Route element={<ProtectedRoute />}>
       {/* 위에 라우트 풀면 밑에꺼 삭제 */}
-      <Route> 
         <Route path="/complaint/*" element={<Complaint />} />
         <Route path="/official" element={<Official />} />
         <Route path="/dataroom/*" element={<Filepage />} />

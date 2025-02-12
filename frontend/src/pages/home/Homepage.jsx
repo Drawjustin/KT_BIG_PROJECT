@@ -35,6 +35,13 @@ const HomePage = () => {
     }
   };
 
+  // 이메일 마스킹 함수
+  const maskEmail = (email) => {
+    if (!email) return "";
+    const [localPart] = email.split("@"); // '@' 기준으로 앞부분만 가져옴
+    if (localPart.length <= 3) return `${localPart}****`; // 너무 짧으면 전부 표시
+    return `${localPart.slice(0, 3)}****`; // 앞 3글자 + ****
+  };
   return (
     <main className={styles.main}>
       <div className={styles.container}>
@@ -74,7 +81,7 @@ const HomePage = () => {
                 <>
                   <div className={styles.loginHeader}>
                     <h2 className={styles.loginTitle}>
-                      {userEmail}님,
+                      {maskEmail(userEmail)}님,
                       <br />
                       환영합니다!
                     </h2>

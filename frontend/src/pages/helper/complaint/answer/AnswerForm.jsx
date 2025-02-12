@@ -26,6 +26,8 @@ const AnswerForm = ({
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [showDocsSection, setShowDocsSection] = useState(false); // 문서 섹션 표시 여부 상태 추가
+
 /**
  * AI 응답 데이터를 포맷팅하는 함수
  * 
@@ -56,6 +58,8 @@ const generateAnswer = async () => {
   try {
     setIsGenerating(true);
     setError(null);
+    setShowDocsSection(false); // 생성 시작할 때 섹션 숨기기
+
 
     const params = {
       complaintSeq,
@@ -67,6 +71,8 @@ const generateAnswer = async () => {
     const { answer: formattedAnswer, docs } = formatAnswer(response.data);
     setAnswer(formattedAnswer);
     setRetrievedDocs(docs);
+    setShowDocsSection(true); // 응답을 받은 후 섹션 표시
+
   } catch (err) {
     console.error("답변 생성 중 오류 발생:", err);
     setError(err.message);
@@ -152,22 +158,24 @@ const generateAnswer = async () => {
         )}
       </form>
 
-      {/* 3. 검색된 문서 섹션 */}
-      <div className={styles.section}>
-        <div className={styles.summaryHeader}>
-          <h3>AI가 답변 생성에 참고한 문서</h3>
-        </div>
-        <div className={styles.sectionContent}>
-          {retrievedDocs.map((doc, index) => (
-            <div key={index} className={styles["doc-item"]}>
-              <div className={styles["info-row"]}>
-                <div className={styles["info-label"]}>문서 {index + 1}</div>
-                <div className={styles["info-value"]}>{doc}</div>
+      {/* showDocsSection이 true일 때만 문서 섹션 표시 */}
+      {showDocsSection && retrievedDocs.length > 0 && (
+        <div className={styles.section}>
+          <div className={styles.summaryHeader}>
+            <h3>AI가 답변 생성에 참고한 문서</h3>
+          </div>
+          <div className={styles.sectionContent}>
+            {retrievedDocs.map((doc, index) => (
+              <div key={index} className={styles["doc-item"]}>
+                <div className={styles["info-row"]}>
+                  <div className={styles["info-label"]}>문서 {index + 1}</div>
+                  <div className={styles["info-value"]}>{doc}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

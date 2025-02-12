@@ -31,7 +31,7 @@ const AnswerSave = ({ data }) => {
    <div className={styles.form}>
      <div className={styles.section}>
        <div className={styles.summaryHeader}>
-         <h3>답변 |</h3>
+         <h3>민원 답변</h3>
        </div>
        <div className={styles.sectionContent}>
          <p>{content}</p>

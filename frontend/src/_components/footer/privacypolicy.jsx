@@ -178,12 +178,11 @@ const PrivacyPolicy = () => {
         <Section>
           <SectionTitle>제10조 (문의처)</SectionTitle>
           <Paragraph>
-            개인정보와 관련된 문의사항은 아래의 연락처로 문의해주시기 바랍니다:
+            개인정보와 관련된 문의사항은 아래로 문의해주시기 바랍니다:
           </Paragraph>
           <List>
-            <ListItem>전화: [전화번호]</ListItem>
-            <ListItem>이메일: [이메일 주소]</ListItem>
-            <ListItem>주소: [회사 주소]</ListItem>
+            <ListItem>사두용미</ListItem>
+            <ListItem>에이블스쿨 6기 2조</ListItem>
           </List>
         </Section>
       </Container>
