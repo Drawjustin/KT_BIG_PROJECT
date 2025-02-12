@@ -36,20 +36,6 @@ const About = () => {
           </div>
         ))}
       </div>
-
-      <div className={styles.contactCard}>
-        <h2 className={styles.contactTitle}>문의 안내</h2>
-        <div className={styles.contactInfo}>
-          <div className={styles.contactItem}>
-            <span className={styles.contactLabel}>이용 시간</span>
-            <span className={styles.contactValue}>평일</span>
-          </div>
-          <div className={styles.contactItem}>
-            <span className={styles.contactLabel}>이메일</span>
-            <span className={styles.contactValue}>support@gmail.com</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
