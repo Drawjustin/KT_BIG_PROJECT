@@ -1,15 +1,32 @@
+/* Footer.module.css */
+
 .wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end; /* Tailwind의 items-end */
-    user-select: none; /* Tailwind의 select-none */
-    height: 5rem; /* Tailwind의 h-20 (20 * 0.25rem = 5rem) */
-  }
-  
-  .copyright {
-    display: flex; /* Tailwind의 web:flex */
-    font-weight: 300; /* Tailwind의 font-thin */
-    font-size: 0.75rem; /* Tailwind의 text-xs (12px = 0.75rem) */
-    font-family: Arial, sans-serif; /* Tailwind의 font-arial */
-  }
-  
+  background-color: #f8f9fa;
+  padding: 40px 0;
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+  border-top: 1px solid #ddd;
+}
+
+.section {
+  margin-bottom: 15px;
+}
+
+.link {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: 500;
+  margin: 0 10px;
+}
+
+.separator {
+  margin: 0 10px;
+  color: #888;
+}
+
+.copyright {
+  font-size: 12px;
+  color: #888;
+  margin-top: 10px;
+}

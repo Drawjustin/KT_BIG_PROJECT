@@ -34,7 +34,8 @@ const ComplaintRatioChart = () => {
   // const [isLoading, setIsLoading] = useState(true);
 
   // 차트에 사용될 색상 팔레트 정의
-  const COLORS = ["#82ca9d", "#8884d8"];
+  // const COLORS = ["#82ca9d", "#8884d8"];
+  const COLORS = ["#FF6B6B", "#82ca9d"]; // 악성 민원: 빨강, 기타 민원: 초록
 
   // const COLORS = ['#47597E', '#7FB5B5', '#FFE5B4', '#B4D4FF'];
 
@@ -48,7 +49,7 @@ const ComplaintRatioChart = () => {
         // 데이터 업데이트
         setData([
           { name: "악성 민원", value: maliciousComplaints },
-          { name: "기타 민원", value: totalComplaints - maliciousComplaints },
+          { name: "일반 민원", value: totalComplaints - maliciousComplaints },
         ]);
       } catch (error) {
         console.error("데이터 로드 실패:", error);
@@ -138,7 +139,10 @@ const MonthlyComplaintChart = () => {
         <CartesianGrid strokeDasharray="3 3" />
 
         {/* X축 설정 - 날짜 표시 */}
-        <XAxis dataKey="date" padding={{ left: 30, right: 30 }} />
+        <XAxis dataKey="date" 
+        padding={{ left: 30, right: 30 }}
+        tickFormatter={(date) => new Date(date).getDate()} 
+        />
 
         {/* Y축 설정 - 건수 표시 */}
         <YAxis />
@@ -153,7 +157,7 @@ const MonthlyComplaintChart = () => {
         <Line
           type="monotone" // 부드러운 곡선으로 표시
           dataKey="전체 민원"
-          stroke="#8884d8" // 보라색 계열
+          stroke="#2b6cb0" // blue계열
           strokeWidth={2} // 선 굵기
           dot={{ r: 5 }} // 데이터 포인트 크기
           activeDot={{ r: 8 }} // 활성화된 데이터 포인트 크기
@@ -163,7 +167,7 @@ const MonthlyComplaintChart = () => {
         <Line
           type="monotone" // 부드러운 곡선으로 표시
           dataKey="악성 민원"
-          stroke="#82ca9d" // 초록색 계열
+          stroke="#FF6B6B" // red 계열
           strokeWidth={2} // 선 굵기
           dot={{ r: 5 }} // 데이터 포인트 크기
           activeDot={{ r: 8 }} // 활성화된 데이터 포인트 크기

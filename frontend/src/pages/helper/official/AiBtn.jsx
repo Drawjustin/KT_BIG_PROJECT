@@ -4,7 +4,7 @@ const StyledButton = styled.button`
   position: relative;
   width: 190px;
   height: 65px;
-  background:#2196f3;
+  background:#2a5c96;
   color: white;
   font-family: "Pretendard-Light", sans-serif;
   font-size: 25px;
@@ -19,7 +19,7 @@ const StyledButton = styled.button`
   padding: 0 60px;
 
   &:hover {
-    background:#2a5c96;
+    background:#2196f3;
     box-shadow: 0 0 80px rgba(31, 107, 221, 0.5);
 
     .star-1 { top: -80%; left: -30%; opacity: 1; }

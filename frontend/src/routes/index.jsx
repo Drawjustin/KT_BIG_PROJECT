@@ -8,6 +8,8 @@ import LoginPage from '../pages/login/LoginPage';
 import SignupPage from '../pages/signup/SignupPage';
 import MyPage from '../pages/mypage/myPage';
 import Dashboard from '../pages/mypage/Dashboard';
+import TermsOfService from '../_components/footer/TermsServie';
+import PrivacyPolicy from '../_components/footer/privacypolicy';
 // import ProtectedRoute from './ProtectedRoute';
 
 const AppRoutes = () => {
@@ -24,6 +26,9 @@ const AppRoutes = () => {
         <Route path="/dataroom/*" element={<Filepage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/dashboard" element={<Dashboard/>}/>
+        <Route path="/terms" element={<TermsOfService />} /> {/* 이용약관 경로 추가 */}
+        <Route path="/privacypolicy" element={<PrivacyPolicy/>} /> {/* 이용약관 경로 추가 */}
+
 
       </Route>
 

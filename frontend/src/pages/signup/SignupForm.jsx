@@ -446,6 +446,21 @@ const SignupForm = () => {
         />
         {/* ... 나머지 Checkbox 컴포넌트들 ... */}
       </div>
+      <button 
+          type="button" 
+          className={styles.linkButton} 
+          onClick={() => navigate('/terms')}
+        >
+          이용약관 확인하기
+        </button>
+      <button 
+          type="button" 
+          className={styles.linkButton} 
+          onClick={() => navigate('/privacypolicy')}
+        >
+          개인정보 처리방침 확인하기
+        </button>
+
 
       {/* 제출 버튼 */}
       <Button
