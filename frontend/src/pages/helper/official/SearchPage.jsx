@@ -143,9 +143,6 @@ const SearchPage = () => {
           disabled={loading}
         />
         <AiBtn onClick={handleSubmit}/>
-        {/* <SearchButton type="submit" disabled={loading || !searchTerm.trim()}>
-          {loading ? '검색 중...' : '검색'}
-        </SearchButton> */}
       </SearchForm>
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -156,16 +153,9 @@ const SearchPage = () => {
           searchResults && <SearchResults data={searchResults} />
         )}
       </ResultsContainer>
-      {/* {loading ? (
-        <LoadingSpinner>검색 중...</LoadingSpinner>
-      ) : (
-        searchResults && <SearchResults data={searchResults} />
-      )} */}
+      
     </SearchContainer>
   );
 };
-
-// SearchResults 컴포넌트는 이전에 작성한 것과 동일
-// ... SearchResults 컴포넌트 코드 ...
 
 export default SearchPage;

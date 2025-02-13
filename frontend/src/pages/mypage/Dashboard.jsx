@@ -21,12 +21,6 @@ const DashboardGrid = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 `;
-// const ChartContainer = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   height: 300px;
-// `;
 const ChartContainer = styled.div`
   display: flex;
   justify-content: center;

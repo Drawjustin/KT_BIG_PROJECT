@@ -29,31 +29,6 @@ const MyPage = () => {
         </ProfileCard>
       </Container>
     </MyPageLayout>
-    // <MyPageLayout>
-    //   <h1>마이페이지</h1>
-    //   {isLoggedIn ? (
-    //     <WelcomeCard>
-    //       <ProfileSection>
-    //         <ProfileImageContainer>
-    //           <ProfileImage 
-    //             src={profileDefaultImage} // import한 이미지 사용
-    //             alt="프로필 이미지" 
-    //           />
-    //         </ProfileImageContainer>
-    //       </ProfileSection>
-    //       <WelcomeText>환영합니다, <UserEmail>{userEmail}</UserEmail> 님</WelcomeText>
-    //       <UserInfoSection>
-    //         <InfoItem>
-    //           <InfoLabel>이메일</InfoLabel>
-    //           <InfoValue>{userEmail}</InfoValue>
-    //         </InfoItem>
-    //         {/* 추가 정보 항목들 */}
-    //       </UserInfoSection>
-    //     </WelcomeCard>
-    //   ) : (
-    //     <NotLoggedInMessage>로그인이 필요합니다.</NotLoggedInMessage>
-    //   )}
-    // </MyPageLayout>
   );
 };
 
