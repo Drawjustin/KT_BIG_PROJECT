@@ -1,0 +1,377 @@
+/* 기본 스타일 */
+/* FileView.module.css에 추가할 스타일 */
+
+.attachmentSection {
+  position: relative;
+  width: calc(100% - 60px);
+  margin: 30px auto;
+  padding: 0 30px;
+  border-top: 1px solid #CDD7E4;
+  border-bottom: 1px solid #CDD7E4;
+}
+
+.attachmentTitle {
+  color: #2A5C96;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  padding-top: 20px;
+  margin-left: 25px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.attachmentItem {
+  display: flex;
+  align-items: center;
+  margin: 20px 25px;
+  padding: 16px;
+  background: #F8F9FA;
+  border: 1px solid #E9ECEF;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.attachmentItem:hover {
+  background: #EDF1F5;
+}
+
+.fileIconWrapper {
+  width: 40px;
+  height: 40px;
+  background: #E7F5FF;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2A5C96;
+  margin-right: 16px;
+}
+
+.fileInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fileName {
+  color: #00162F;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.fileDate {
+  color: #868E96;
+  font-size: 13px;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.previewButton, .downloadButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.previewButton {
+  background: white;
+  color: #2A5C96;
+  border: 1px solid #2A5C96;
+}
+
+.previewButton:hover {
+  background: #F8F9FA;
+}
+
+.downloadButton {
+  background: #2A5C96;
+  color: white;
+  border: 1px solid #2A5C96;
+}
+
+.downloadButton:hover {
+  background: #1F4571;
+}
+
+.previewContainer {
+  width: calc(100% - 50px);
+  height: 600px;
+  margin: 20px 25px;
+  border: 1px solid #DEE2E6;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.container {
+  max-width: 983px;
+  margin: 2rem auto 0;
+  position: relative;
+  border-top: 2px solid #2A5C96;
+  overflow: hidden; /* 추가: 요소들이 컨테이너를 벗어나지 않도록 */
+
+}
+
+.header {
+  width: 100%;
+  height: 112px;
+  position: relative;
+  background: #EDF1F5;
+  border-bottom: 1px solid #CDD7E4;
+  margin-top: 2px;
+}
+
+.headerContent {
+  width: calc(100% - 60px);
+  max-width: 848.95px;
+  height: 34.50px;
+  position: absolute;
+  left: 30px;
+  top: 20px;
+}
+
+.title {
+  width: 100%;
+  color: black;
+  font-size: 23px;
+  font-weight: 400;
+  line-height: 34.50px;
+  word-wrap: break-word;
+}
+
+.authorInfo {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 30px;
+  top: 66px;
+  color: #666666;
+  font-size: 15px;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.verticalDivider {
+  width: 1px;
+  height: 10px;
+  background: #D7D7D7;
+  margin: 0 10px;
+}
+
+.content {
+  position: relative;
+  width: calc(100% - 60px);
+  max-width: 952.08px;
+  margin: 30px auto;
+  padding: 0 30px;
+  color: #666666;
+  font-size: 15px;
+  line-height: 17.25px;
+}
+
+.contentSection {
+  margin-bottom: 20px;
+  min-height: 200px;
+  line-height: 1.8; /* ✅ 글 간격을 넓혀 가독성 향상 */
+  font-size: 16px; /* ✅ 글씨 크기 유지 */
+  color: #333; /* ✅ 텍스트 컬러 */
+}
+
+.attachmentSection {
+  position: relative;
+  width: calc(100% - 60px); /* 수정: 패딩을 고려한 너비 계산 */
+  margin: 30px auto; /* 수정: 중앙 정렬을 위해 auto 마진 사용 */
+  padding: 0 30px;
+  border-top: 1px solid #CDD7E4;
+  border-bottom: 1px solid #CDD7E4;
+}
+
+.attachmentTitle {
+  color: #2A5C96;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  padding-top: 20px;
+  margin-left: 25px;
+}
+
+.attachmentItem {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  height: 24.50px;
+  min-height: 30px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.attachmentName {
+  color: #666666;
+  font-size: 15px;
+  margin-left: 25px;
+  width: 80%; /* ✅ 파일명이 너무 길어질 경우 버튼과 겹치지 않도록 설정 */
+  word-break: break-word; /* ✅ 긴 단어도 줄바꿈 */
+  white-space: normal;     /* ✅ 자동 줄바꿈 허용 */
+  overflow-wrap: break-word; /* ✅ 단어 단위로 줄바꿈 */
+}
+
+.viewButton {
+  position: absolute;
+  right: 30px;
+  width: 42.28px;
+  height: 22.50px;
+  background: linear-gradient(0deg, #1F9BDE 0%, #1F9BDE 100%);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.viewButtonText {
+  color: white;
+  font-size: 11px;
+}
+
+.listButton {
+  width: 105px;
+  height: 42px;
+  background: var(--AIVLE-02-secondary_navy-navy-04, #2A5C96);
+  border-radius: 3px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  line-height: 42px;
+  margin: 30px 30px 30px auto;
+  display: block;
+}
+.listButton:hover{
+  background-color:#1f4571; 
+}
+
+/* 태블릿 반응형 */
+@media screen and (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: 0 15px;
+  }
+
+  .header {
+    height: auto;
+    padding: 15px 0;
+  }
+
+  .headerContent {
+    position: relative;
+    left: 15px;
+    width: calc(100% - 30px);
+  }
+
+  .title {
+    font-size: 20px;
+    line-height: 1.4;
+  }
+
+  .authorInfo {
+    position: relative;
+    left: 15px;
+    top: 10px;
+  }
+
+  .content {
+    width: calc(100% - 30px); /* 수정: 여백 조정 */
+    padding: 0;
+    margin: 30px auto;
+  }
+
+  .attachmentSection {
+    width: calc(100% - 30px); /* 수정: 여백 조정 */
+    padding: 0;
+    margin: 30px auto;
+  }
+
+  .attachmentTitle {
+    margin-left: 15px;
+  }
+
+  .attachmentName {
+    margin-left: 15px;
+  }
+
+  .viewButton {
+    right: 0;
+  }
+
+  .listButton {
+    margin-right: 15px;
+  }
+}
+
+/* 모바일 반응형 */
+@media screen and (max-width: 480px) {
+  .title {
+    font-size: 18px;
+  }
+
+  .authorInfo {
+    font-size: 14px;
+  }
+
+  .content {
+    font-size: 14px;
+  }
+
+  .attachmentItem {
+    flex-direction: column;
+    height: auto;
+    align-items: flex-start;
+  }
+
+  .attachmentName {
+    margin-bottom: 10px;
+  }
+
+  .viewButton {
+    position: relative;
+    right: 0;
+    margin-left: 15px;
+  }
+
+  .listButton {
+    width: 90px;
+    height: 36px;
+    font-size: 14px;
+    line-height: 36px;
+  }
+}
+/* 반응형 스타일 */
+@media screen and (max-width: 768px) {
+  .attachmentItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .actionButtons {
+    width: 100%;
+    margin-top: 16px;
+  }
+  
+  .previewButton, .downloadButton {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .previewContainer {
+    height: 400px;
+  }
+}

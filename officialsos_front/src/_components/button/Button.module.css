@@ -1,0 +1,28 @@
+/* Button.module.css */
+.button {
+    width: 320px;
+    height: 50px;
+    flex-shrink: 0;
+  
+    border-radius: 5px;
+    border: 1px solid var(--AIVLE-02-secondary_navy-navy-05, #003675);
+    background: var(--AIVLE-02-information_blue-blue-07, #173E99);
+  
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+  
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  /* Hover 효과 */
+  .button:hover {
+    background-color: #002b6e; /* 어두운 블루 */
+  }
+  
+  /* Active 상태 효과 */
+  .button:active {
+    transform: scale(0.98); /* 클릭 시 살짝 눌리는 효과 */
+  }
+  
