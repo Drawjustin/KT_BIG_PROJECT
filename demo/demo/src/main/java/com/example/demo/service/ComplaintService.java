@@ -59,6 +59,8 @@ public class ComplaintService {
         private Boolean isBad;
         private TextSummaryResponse textSummaryResponse;
         private String filePath;
+        private Boolean isAnswered;
+
     }
     // 민원 등록
     @Transactional
@@ -104,27 +106,46 @@ public class ComplaintService {
         for (String summary : recentComplaintSummariesByMemberSeq) {
             pastComplaints.add(new PastComplaint(summary));
         }
-        Integer repeatCount = !pastComplaints.isEmpty() ? getRepeatCount(textSummaryResponse.getSummary(), pastComplaints) : 0;
+        int repeatCount = !pastComplaints.isEmpty() ? getRepeatCount(textSummaryResponse.getSummary(), pastComplaints) : 0;
 
-
+        boolean isAnswered = false;
+        if(repeatCount >= 3){
+            isAnswered = true;
+            isBad = true;
+        }
         String filePath = request.getFile() != null ? saveFile(request.getFile()) : null;
 
-        OtherCreateRequestDTO otherCreateRequestDTO = new OtherCreateRequestDTO(byTeam.get(), repeatCount.byteValue(), isBad, textSummaryResponse,filePath);
-        Complaint complaint = buildComplaint(userDetails,request,otherCreateRequestDTO);
+        OtherCreateRequestDTO otherCreateRequestDTO = new OtherCreateRequestDTO(byTeam.get(), (byte) repeatCount, isBad, textSummaryResponse,filePath,isAnswered);
+        Complaint complaint = buildComplaint(userDetails, request, otherCreateRequestDTO);
+
+        if(repeatCount >= 3) {
+            complaint.getComplaintComment().add(
+                    new ComplaintComment(
+                            complaint,
+                            "동일한 내용으로 이미 답변이 완료된 민원입니다. 기존에 제공해 드린 답변을 참고해 주시기 바랍니다. 추가 문의사항이 있으시다면 새로운 내용으로 다시 접수해 주시면 성심성의껏 답변 드리겠습니다."
+                    )
+            );
+        }
+
         return saveAndCreateResponse(complaint);
     }
     // 민원 업데이트
     @Transactional
-    public String updateComplaint(Long id, ComplaintUpdateRequestDTO request) {
+    public String updateComplaint(CustomUserDetails userDetails, Long id, ComplaintUpdateRequestDTO request) {
         Complaint complaint = findComplaintOrThrow(id);
+        if(complaint.getMember().getMemberSeq() != userDetails.getMember().getMemberSeq())
+            return "수정에 실패했습니다.";
         updateComplaintDetails(complaint, request);
         return "수정이 잘 되었습니다";
     }
     // 민원 삭제
     @Transactional
-    public void deleteComplaint(Long id) {
+    public void deleteComplaint(CustomUserDetails userDetails, Long id) {
         Complaint complaint = complaintRepository.findById(id)
                 .orElseThrow(() -> new RestApiException(NO_COMPLAINT));
+
+        if(complaint.getMember().getMemberSeq() != userDetails.getMember().getMemberSeq())
+            return;
         complaint.markAsDeleted();
     }
 
@@ -146,12 +167,13 @@ public class ComplaintService {
         return Complaint.builder()
                 .member(memberDetails.getMember())//멤버넣고
                 .team(otherCreateRequestDTO.getTeam())//ai팀찾기
+                .complaintComment(new ArrayList<>())
                 .complaintTitle(request.getTitle())
                 .complaintSummary(otherCreateRequestDTO.textSummaryResponse.getSummary()) // ai민원ㅇ요약
                 .complaintCombined(otherCreateRequestDTO.textSummaryResponse.getCombined()) // ai민원요약2
                 .isBad(otherCreateRequestDTO.getIsBad())//ai악성민원여부 확인
                 .complaintCount(otherCreateRequestDTO.getCount()) // ai 반복민원갯수 판단
-                .isAnswered(false)
+                .isAnswered(otherCreateRequestDTO.getIsAnswered())
                 .complaintContent(request.getContent())
                 .complaintFilePath(otherCreateRequestDTO.getFilePath()) // s3불러오기
                 .build();
@@ -291,6 +313,7 @@ public class ComplaintService {
 
     private ComplaintCreateResponseDTO saveAndCreateResponse(Complaint complaint) {
         Long complaintSeq = complaintRepository.save(complaint).getComplaintSeq();
+
         return ComplaintCreateResponseDTO.builder()
                 .complaintSeq(complaintSeq)
                 .build();
@@ -325,11 +348,21 @@ public class ComplaintService {
 
 
     private void updateComplaintDetails(Complaint complaint, ComplaintUpdateRequestDTO request) {
-        complaint.updateComplaint(
-                request.getTitle(),
-                request.getContent(),
-                saveFile(request.getFile())
-        );
+
+
+        if(request.getFile()!=null) {
+            complaint.updateComplaintFile(
+                    request.getTitle(),
+                    request.getContent(),
+                    saveFile(request.getFile())
+            );
+        }
+        else{
+            complaint.updateComplaint(
+                    request.getTitle(),
+                    request.getContent()
+            );
+        }
     }
 
     private String generateUniqueFileName(String originalFilename) {

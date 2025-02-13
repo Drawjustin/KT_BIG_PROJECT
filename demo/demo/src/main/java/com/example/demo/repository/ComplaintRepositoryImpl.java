@@ -57,7 +57,7 @@ public class ComplaintRepositoryImpl implements ComplaintRepositoryCustom {
                 .innerJoin(complaint.member, member) // complaint와 member 조인
                 .innerJoin(complaint.team, team) // complaint와 team 조인
                 .leftJoin(team.department, department) // team과 department 조인
-                .where(departmentContains(condition.getDepartmentName()),titleContains(condition.getTitle()))
+                .where(departmentContains(condition.getDepartmentName()),titleContains(condition.getTitle()),notDeleted())
                 .orderBy(complaint.updatedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -72,6 +72,7 @@ public class ComplaintRepositoryImpl implements ComplaintRepositoryCustom {
                 .where(
                         departmentContains(condition.getDepartmentName())
                         ,titleContains(condition.getTitle())
+                        ,notDeleted()
                 );
 
         return PageableExecutionUtils.getPage(content,pageable, countQuery::fetchCount);
@@ -81,5 +82,8 @@ public class ComplaintRepositoryImpl implements ComplaintRepositoryCustom {
     }
     private BooleanExpression titleContains(String title) {
         return title != null ? complaint.complaintTitle.contains(title) : null;
+    }
+    private BooleanExpression notDeleted() {
+        return complaint.isDeleted.isFalse();
     }
 }

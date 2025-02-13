@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
 
 import java.util.List;
 
@@ -17,6 +19,8 @@ import java.util.List;
 //@SQLDelete(sql = "UPDATE complaint SET is_deleted = true WHERE id = ?")
 //@SQLRestriction("is_deleted = false")
 @AllArgsConstructor
+@FilterDef(name = "deletedFilter")
+@Filter(name = "deletedFilter", condition = "is_deleted = false")
 @Table(name = "complaint")
 public class Complaint extends baseEntity {
 
@@ -33,7 +37,7 @@ public class Complaint extends baseEntity {
     @JoinColumn(name = "team_seq",nullable = false)
     private Team team;
 
-    @OneToMany(mappedBy = "complaint")
+    @OneToMany(mappedBy = "complaint", cascade = CascadeType.ALL)
     private List<ComplaintComment> complaintComment;
 
     @Column(name = "complaint_title", length = 256)
@@ -71,11 +75,14 @@ public class Complaint extends baseEntity {
         this.isBad=isBad;
     }
 
-    public void updateComplaint(String title, String content, String newFilePath) {
+    public void updateComplaintFile(String title, String content, String newFilePath) {
         complaintTitle = title;
         complaintContent = content;
         complaintFilePath = newFilePath;
     }
-
+    public void updateComplaint(String title, String content) {
+        complaintTitle = title;
+        complaintContent = content;
+    }
 
 }

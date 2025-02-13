@@ -35,13 +35,13 @@ public class ComplaintController {
     @PutMapping("/{complaintSeq}")
     public ResponseEntity<String> complaintUpdate(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long complaintSeq, @ModelAttribute ComplaintUpdateRequestDTO updateRequestDTO) {
         System.out.println("updateRequestDTO = " + updateRequestDTO);
-        return ResponseEntity.ok(complaintService.updateComplaint(complaintSeq, updateRequestDTO));
+        return ResponseEntity.ok(complaintService.updateComplaint(userDetails,complaintSeq, updateRequestDTO));
     }
 
     // TODO : 민원 삭제
     @DeleteMapping("/{complaintSeq}")
     public ResponseEntity<String> complaintDelete(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long complaintSeq) {
-        complaintService.deleteComplaint(complaintSeq);
+        complaintService.deleteComplaint(userDetails,complaintSeq);
         return ResponseEntity.noContent().build();
     }
 

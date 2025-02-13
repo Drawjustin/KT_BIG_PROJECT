@@ -7,6 +7,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SoftDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -24,6 +25,7 @@ public class baseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt; // 데이터 수정 시간
 
+    @SoftDelete
     @Column(name = "is_deleted")
     private Boolean isDeleted=false; // 삭제 여부, 디폴트 false
 
