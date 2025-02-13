@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.example.demo.entity.baseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Getter
-public class BaseEntity {
+public class baseEntity {
 
     @CreationTimestamp // 자동으로 생성 시간 설정
     @Column(name = "created_at", updatable = false)
@@ -23,15 +23,4 @@ public class BaseEntity {
     @Column(name = "is_deleted")
     private Boolean isDeleted=false; // 삭제 여부, 디폴트 false
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
-    }
 }
