@@ -1,1 +1,0 @@
-# KT_BIG_PROJECT
