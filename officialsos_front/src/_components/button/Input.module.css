@@ -1,0 +1,60 @@
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+.label {
+  font-size: 14px;
+  color: #333;
+  font-weight: bold;
+}
+
+/* 제공된 스타일 적용 */
+.input {
+  width: 320px;
+  height: 50px;
+  font-size: 18px;
+  flex-shrink: 0;
+
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: 1px solid var(--AIVLE-02-gray-gray-07, #8E8E8E);
+
+  color: #8E8E8E;
+  padding: 10px;
+
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus {
+  border-color: #007BFF; /* 포커스 시 파란 테두리 */
+}
+
+.input:hover {
+  border-color: #666666; /* 호버 시 어두운 회색 테두리 */
+}
+
+/* 에러 상태 스타일 */
+.inputError {
+  border-color: #dc3545;
+}
+
+.inputError:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.1);
+}
+
+.inputError:hover {
+  border-color: #dc3545;
+}
+
+/* 에러 메시지 스타일 */
+.errorMessage {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-bottom: 0;
+}

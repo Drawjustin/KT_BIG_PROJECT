@@ -1,0 +1,92 @@
+/* 전체 컨테이너 */
+.pageContainer {
+  width: 100%;
+  padding: 2rem 1rem;
+  overflow: hidden;
+}
+
+/* 제목 스타일 */
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* 왼쪽 정렬 */
+  text-align: left;
+  margin-top: 20px;
+  margin-bottom: 5px; /* ✅ 기존보다 여백 줄이기 */
+  padding-left: 50px; /* 들여쓰기 추가 */
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* 제목 스타일 */
+.titleArea h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2A5C96;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 5px;
+  width: 100%;
+  max-width: 1200px;
+  padding-left: 10px;
+}
+
+/* ✅ 구분선 스타일 (검색 블럭과 맞추기) */
+.titleArea h1::after {
+  content: "";
+  display: block;
+  width: 100%; /* ✅ 검색 바의 max-width와 동일하게 설정 */
+  max-width: calc(100% - 10px); /* ✅ 검색 바 끝까지 맞춤 */
+  height: 1px; /* ✅ 구분선 두께 줄이기 (기존 3px → 2px) */
+  background-color: #2A5C96;
+  margin-top: 60px; /* ✅ 구분선을 아래로 내리기 (기존 5px → 10px) */
+  margin-bottom: -40px; /* ✅ 기존 10px → 0px 으로 줄여서 아래 여백 최소화 */
+  border-radius: 1px;
+}
+
+/* ✅ 검색 블록 위치 조정 */
+.searchContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  max-width: 1200px;
+  padding-right: 20px; /* ✅ 검색 블록 정렬 */
+}
+
+/* ✅ 테이블과 제목 사이 간격 조정 */
+.listTable {
+  margin-top: 10px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 📌 반응형 태블릿 */
+@media screen and (max-width: 768px) {
+  .titleArea {
+    padding-left: 20px;
+  }
+
+  .titleArea h1 {
+    font-size: 28px;
+  }
+
+  .titleArea h1::after {
+    width: 100%;
+  }
+}
+
+/* 📌 반응형 모바일 */
+@media screen and (max-width: 480px) {
+  .titleArea {
+    padding-left: 10px;
+  }
+
+  .titleArea h1 {
+    font-size: 24px;
+  }
+
+  .titleArea h1::after {
+    width: 100%;
+  }
+}

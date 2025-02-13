@@ -1,0 +1,42 @@
+/* LoginPage.module.css */
+
+/* 전체 컨테이너 스타일 */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh; /* 화면 높이 채우기 */
+  overflow: hidden; 
+  padding-top: 100px;
+}
+
+/* 제목 스타일 */
+.title {
+  color: var(--AIVLE-02-information_blue-blue-07, #173E99);
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 38px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 47px; /* 123.684% */
+  padding-top: -550px;
+}
+
+/* 하단 링크 컨테이너 */
+.links {
+  margin-top: 20px; /* 위쪽 여백 */
+  display: flex;
+  gap: 10px; /* 링크 간 간격 */
+  font-size: 14px;
+}
+
+/* 개별 링크 스타일 */
+.links a {
+  color: #173E99; /* 링크 색상 */
+  text-decoration: none; /* 밑줄 제거 */
+}
+
+.links a:hover {
+  text-decoration: underline; /* 호버 시 밑줄 */
+}

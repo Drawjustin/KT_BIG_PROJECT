@@ -1,0 +1,62 @@
+/* Nav.module.css */
+:root {
+    --nav-width: 210px;
+    --nav-border-color: #2A5C96;
+    --nav-active-bg: #2A5C96;
+    --nav-text-color: #666666;
+    --nav-title-color: #004A8F;
+  }
+  
+  .nav {
+    width: var(--nav-width);
+    height: auto;
+    min-height: 237px;
+  }
+  
+  .heading {
+    width: 100%;
+    padding: 30px 10px;
+    border-bottom: 1px solid var(--nav-border-color);
+  }
+  
+  .title {
+    color: var(--nav-title-color);
+    font-size: 27px;
+    text-align: center;
+  }
+  
+  /* ... 나머지 스타일 ... */
+  .list {
+    width: 210px;
+    height: 230px;
+    position: absolute;
+    left: 0;
+    top: 121px;
+  }
+  
+  .item {
+    width: 210px;
+    height: 55.5px;
+    display: block;
+    border: 1px solid #DEDEDE;
+    text-decoration: none;
+    padding: 16.5px 15px;
+    color: #666666;
+    font-size: 15px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 400;
+    line-height: 22.5px;
+  }
+  
+  .active {
+    background: #2A5C96;
+    color: white;
+  }
+  
+  .itemContent {
+    height: 43px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }

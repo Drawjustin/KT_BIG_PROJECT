@@ -1,0 +1,203 @@
+.main {
+  flex: 1;
+  padding-top: 5rem;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 80rem; /* 1280px */
+  margin: 0 auto;
+  padding: 0 5rem;
+}
+
+.contentWrapper {
+  display: flex;
+  justify-content: center;
+  gap: 11.5vh;
+  position: relative;
+  padding-top: 3.75rem; /* 60px */
+}
+
+.leftSection {
+  flex: 1;
+  max-width: 32.5rem; /* 520px */
+  display: flex;
+  flex-direction: column;
+  gap: 3.75rem; /* 60px - banner와 search bar 사이 간격 */
+}
+
+.banner {
+  color: #0F4C85;
+  font-size: clamp(2rem, 3vw, 2.58rem); /* 41.34px */
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.searchWrapper {
+  width: 32.5rem; /* 520px - leftSection과 동일한 너비 */
+}
+
+.searchBar {
+  width: 100%;  /* searchWrapper의 너비를 상속 */
+  height: 4rem; /* 64px */
+  display: flex;
+  align-items: center;
+  border: 2px solid #2A5C96;
+  border-radius: 0.9375rem;
+  padding: 0 1.25rem;
+  background-color: white;
+}
+
+.searchInput {
+  flex: 1;
+  height: 100%;
+  font-size: 1.11rem; /* 17.81px */
+  color: #777777;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.searchButton {
+  width: 2.5rem; /* 40px */
+  height: 2.5rem;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.searchButton:hover {
+  opacity: 0.8;
+}
+
+.searchButton img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.rightSection {
+  width: 100%;
+  max-width: 23.3125rem; /* 373px */
+}
+
+.loginCard {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #E2E5EB;
+  padding: 1.5rem;
+    /* 로고 중앙 정렬을 위한 추가 스타일 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 210px;
+}
+
+.logo {
+  max-width: 150px; /* 로고 최대 너비 지정 */
+  margin-bottom: 1.5rem; /* 로고 아래 여백 */
+  align-self: center; /* 추가적인 중앙 정렬 */
+}
+
+.loginHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.loginTitle {
+  font-size: 1.125rem; /* 18px */
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.loginButton {
+  width: 100%;
+  background-color: var(--secondary-secondary-50, #003675);
+  color: white;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.loginButton:hover {
+  background-color: var(--secondary-secondary-40, #2A5C96);
+}
+
+.loginLinks {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #666;
+  padding: 0 0.9375rem;
+}
+
+.loginLinks button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #666;
+  font-size: inherit;
+  transition: all 0.2s;
+}
+
+.loginLinks button:hover {
+  color: black;
+  text-decoration: underline;
+}
+
+@media (max-width: 64rem) { /* 1024px */
+  .container {
+    padding: 0 1.25rem;
+  }
+
+  .contentWrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
+    padding-top: 2rem;
+  }
+
+  .leftSection {
+    gap: 2rem;
+  }
+
+  .leftSection,
+  .rightSection {
+    max-width: 100%;
+  }
+
+  .banner {
+    text-align: center;
+  }
+}
+
+@media (max-width: 40rem) { /* 640px */
+  .main {
+    padding-top: 3rem;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .contentWrapper {
+    gap: 2rem;
+  }
+
+  .loginCard {
+    padding: 1rem;
+  }
+}

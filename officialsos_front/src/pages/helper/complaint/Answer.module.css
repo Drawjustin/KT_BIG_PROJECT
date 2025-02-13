@@ -1,0 +1,634 @@
+.form {
+  width: 917px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-sizing: border-box;  /* padding이 width에 포함되도록 */
+}
+.warning-container {
+  width: 100%;
+  max-width: 917px;
+  margin: 0 auto; /* 중앙 정렬 */
+  padding: 10px 0; /* 위아래 여백 추가 */
+  border-top: 1px solid transparent; /* ✅ 중복된 선 제거 */
+  position: relative; /* ✅ 위치 지정 */
+}
+ 
+.WarningMessage {
+  width: 100%;
+  max-width: 917px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* ✅ 중앙 정렬 */
+  gap: 8px;
+  color: #dc2626;
+  font-size: 16px;
+  padding: 10px 20px; /* ✅ 내부 패딩 조정 */
+  text-align: center;
+  border: 1px solid #dc2626; /* ✅ 경계선 추가 */
+  border-radius: 5px; /* ✅ 모서리 둥글게 */
+  background-color: rgba(220, 38, 38, 0.1); /* ✅ 살짝 배경 강조 */
+}
+/* ✅ 민원 제목 아래 구분선 길이 조정 */
+.divider {
+  width: 50%; /* 전체 너비의 80%로 조정 */
+  max-width: 400px; /* 최대 600px로 설정 */
+  margin: 12px auto; /* 중앙 정렬 */
+  border-top: 2px solid #2A5C96; /* 파란색 구분선 */
+}
+
+/* 부모 컨테이너의 크기 맞추기 */
+.title-container {
+  max-width: 750px; /* 구분선과 맞춤 */
+  margin: 0 auto; /* 중앙 정렬 */
+  text-align: center; /* 제목 중앙 정렬 */
+  border-bottom: none !important;
+}
+
+
+/* 전체 컨테이너 너비를 맞춤 */
+.info-container,
+.divider,
+.answer-detail-container {
+  max-width: 800px; /* 기존보다 늘려서 조정 */
+  width: 100%; /* 부모 컨테이너 크기에 맞게 자동 조정 */
+  margin: 0 auto; /* 가운데 정렬 */
+}
+
+/* 박스 간 여백 조정 */
+.section {
+  margin-bottom: 15px; /* 아래쪽 여백 추가 */
+}
+
+
+.answer-detail-container { /* 전체 내용 블록 */
+  max-width: 750px; /* 동일한 너비 적용 */
+  margin: 0 ; /* 중앙 정렬 */
+}
+/* ✅ 민원 정보 전체 컨테이너 조정 */
+.info-container {
+  max-width: 1000px; /* 기존 유지 */
+  margin: 0 auto; /* 중앙 정렬 */
+  border-top: 1px solid #2A5C96; /* 위쪽 구분선 추가 */
+  padding-top: 24px; /* ✅ 위쪽 여백 추가 */
+}
+/* 개별 블록 크기 조정 */
+.section,
+.summaryHeader,
+.summaryContent,
+.answer-form-section {
+  max-width: 750px; /* 기존보다 좁게 설정 */
+  margin: 0 ; /* 중앙 정렬 */
+}
+
+/* ✅ 답변 부분 테두리 추가 */
+.answer-form-section {
+  width: 100%;
+  max-width: 917px;
+  min-height: 430px;
+  max-height: 450px;
+  border-radius: 5px;
+  border: 2px solid #2A5C96; /* ✅ 테두리 추가 */
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1); /* ✅ 살짝 그림자 효과 */
+  overflow: hidden;
+  margin-top: 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  background-color: #F8FAFC; /* ✅ 답변 배경색 추가 */
+  margin-bottom: 50px;
+}
+.sectionHeader {
+  width: 917px;  /* 너비 명시 */
+  height: 58px;  /* 높이 지정 */
+  padding: 0 36px;  /* 좌우 패딩만 유지 */
+  color: black; 
+  display: flex;  /* 세로 중앙 정렬을 위해 추가 */
+  align-items: center;  /* 세로 중앙 정렬 */
+  border-bottom: 1px solid #99B0CB;
+
+}
+.sectionHeader h2 {
+  margin: 0;  /* 기본 마진 제거 */
+  font-size: 20px;
+  font-weight: normal;
+  line-height: 24px;
+}
+
+/* ✅ AI 요약 서비스 강조 */
+.summaryHeader {
+  width: 100%;
+  max-width: 917px;
+  padding: 20px 36px; 
+  background-color: #003675; 
+  color: white;
+  font-size: 22px; /* ✅ 폰트 크기 증가 */
+  font-weight: bold;
+  text-align: center; /* ✅ 중앙 정렬 */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); 
+  border-radius: 6px; 
+  text-transform: uppercase; 
+  letter-spacing: 1px; 
+}
+/* ✅ AI 요약 서비스 스타일 (더 깔끔하고 세련된 디자인 적용) */
+.AIsummaryHeader {
+  width: 100%;
+  max-width: 917px;
+  padding: 18px 32px; /* ✅ 패딩 조정 */
+  background: linear-gradient(135deg, #f7c4c4, #f48fb1); /* ✅ 부드러운 핑크 그라데이션 */
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.15); /* ✅ 더 부드러운 그림자 */
+  border-radius: 12px; /* ✅ 더 둥글게 */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  flex-direction: column; /* ✅ 텍스트를 수직으로 정렬 */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* ✅ 호버 효과 추가 */
+}
+
+/* ✅ 호버 시 살짝 떠오르는 효과 */
+.AIsummaryHeader:hover {
+  transform: translateY(-3px);
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ✅ 반응형 디자인 */
+@media (max-width: 768px) {
+  .AIsummaryHeader {
+    font-size: 18px; /* ✅ 작은 화면에서는 폰트 크기 조정 */
+    padding: 15px 20px; /* ✅ 패딩 조정 */
+  }
+}
+/* ✅ AI 요약 서비스 내부 텍스트 */
+.summaryHeader h3 {
+  margin: 0;
+  color: white;
+  font-size: 22px;
+  font-weight: 600;
+  
+}
+
+
+/* ✅ 요약 내용 정렬 및 스타일 */
+.sectionContent {
+  text-align: center; /* ✅ 중앙 정렬 */
+  font-size: 16px;
+  font-weight: 500; /* ✅ 살짝 얇게 */
+  margin-top: 10px; /* ✅ 제목과 내용 사이 여백 추가 */
+  line-height: 1.5; /* ✅ 가독성을 위한 줄 간격 조정 */
+  color: #333; /* ✅ 블랙보다 부드러운 색상 */
+}
+
+
+
+.warningIcon {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #8E8E8E;
+  border-radius: 3px;
+}
+
+.editorToolbar {
+  border: 1px solid black;
+  padding: 10px;
+  margin: 24px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.infoSection {
+  padding: 11px;
+  border-top: 1px solid #99B0CB;
+}
+
+/* 민원 정보 행 스타일 */
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 30px;
+  border-bottom: 1px solid #99B0CB;
+  
+}
+
+/* 민원 정보 라벨 */
+.infoLabel {
+  width: 120px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* 민원 정보 값 */
+.infoValue {
+  flex: 1;
+  background: #EDF1F5;
+  padding: 6px 12px; /* 내부 여백 추가 */
+  border-radius: 4px;
+  white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 설정 */
+  overflow: hidden;
+  text-overflow: ellipsis; /* 너무 긴 텍스트는 ...으로 표시 */
+}
+
+.answer-detail-container,
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 블록 간 여백 추가 */
+}
+/* 전체 컨텐츠 너비 조정 */
+.answer-detail-container {
+  max-width: 750px; /* 기존보다 좁게 조정 */
+  margin: 0 auto;
+}
+
+.answer-content {
+  width: 100%;
+  padding: 24px;
+  font-size: 16px;
+  line-height: 24px;
+  overflow-wrap: break-word; /* 긴 텍스트 자동 줄바꿈 */
+  word-break: break-word;
+}
+
+/* 메인 컨텐츠 */
+.main-content {
+  width: 917px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 블록 사이 여백 추가 */
+}
+
+/* 답변이 들어가는 블록 크기 조정 */
+.answer-form-section {
+  width: 100%;
+  max-width: 917px; /* 기존과 동일 */
+  min-height: 430px; /* ✅ 최소 높이를 300px로 줄임 */
+  max-height: 450px; /* ✅ 최대 높이를 제한 */
+  border-radius: 5px;
+  border: 1px solid #99B0CB;
+  overflow: hidden;
+  margin-top: 15px;
+  padding: 15px; /* ✅ 내부 여백 조정 */
+  box-sizing: border-box;
+  margin-bottom: 50px;
+}
+
+/* 제목 (h2) */
+.answer-form-section h2 {
+  width: 917px;
+  height: 58px;
+  padding: 0 36px;
+  color: black;
+  font-size: 20px;
+  font-weight: normal;
+  line-height: 24px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #99B0CB;
+}
+
+
+/* 에디터 도구 모음 */
+.editor-toolbar {
+  width: calc(100% - 48px);
+  margin: 24px;
+  padding: 10px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toolbar-group {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+/* 답변 텍스트 입력 영역 크기 조정 */
+.answer-textarea {
+  width: 100%;
+  min-height: 150px; /* ✅ 기본 높이를 줄임 */
+  max-height: 300px; /* ✅ 최대 높이를 제한 */
+  padding: 12px;
+  border: 1px solid #99B0CB;
+  border-radius: 5px;
+  font-size: 16px;
+  line-height: 22px;
+  resize: vertical; /* 사용자가 크기 조절 가능 */
+  color: black;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+/* 버튼 영역 */
+.answer-actions {
+  width: calc(100% - 48px);
+  margin: 0 10px 30px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.answer-actions p{
+  color:#4A5568;
+}
+
+.answer-actions button {
+  width: 120px; /* 기존보다 조금 넓게 조정 */
+  height: 45px; /* 기존보다 약간 더 크게 */
+  background: #636E86;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: normal;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.answer-actions button.generate-button {
+  background: #2A5C96;
+ }
+ 
+ .answer-actions button.generate-button:hover {
+  background: #002a5c;  /* 호버시 더 진한 색상 */
+ }
+.answer-actions button:hover {
+  background: #4A5568;
+}
+
+.answer-actions button:disabled {
+  background: #CBD5E0;
+  cursor: not-allowed;
+}
+
+/* 부가 정보 섹션 */
+.info-section {
+  padding: 11px;
+  border-top: 1px solid #99B0CB;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.info-label {
+  width: 115px;
+  color: black;
+  font-size: 16px;
+}
+
+.info-value {
+  flex: 1;
+  background: #EDF1F5;
+  padding: 4px 8px;
+}
+
+/* 상태 메시지 */
+.error-message {
+  color: #E53E3E;
+  margin: 8px 24px;
+  font-size: 14px;
+}
+
+.success-message {
+  color: #38A169;
+  margin: 8px 24px;
+  font-size: 14px;
+}
+
+/* 로딩 상태 */
+.loading {
+  text-align: center;
+  padding: 24px;
+  color: #4A5568;
+  font-size: 16px;
+}
+/* 답변 폼 섹션 수정 */
+.answer-form-section {
+  width: 820px;
+  height: 402px;
+  border-radius: 5px;
+  border: 1px solid #99B0CB;
+  overflow: hidden;
+  margin-top: 15px;
+  box-sizing: border-box;  /* padding이 width에 포함되도록 */
+
+}
+
+.answer-form-section h2 {
+  width: 917px;
+  height: 58px;
+  padding: 0 36px;
+  color: black;
+  font-size: 20px;
+  font-weight: normal;
+  line-height: 24px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* 답변 텍스트 영역 */
+.answer-textarea {
+  width: 710px;
+  margin: 24px;
+  min-height: 200px;
+  padding: 16px;
+  border: 1px solid #99B0CB;
+  border-radius: 5px;
+  font-size: 16px;
+  line-height: 24px;
+  resize: vertical;
+  color: black;
+}
+
+/* 에디터 도구 모음 */
+.editor-toolbar {
+  width: calc(917px - 48px);
+  margin: 24px;
+  padding: 10px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.answer-actions {
+  width: 100%; /* ✅ 전체 너비 사용 */
+  margin: 0 10px 15px; /* ✅ 여백 조정 */
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px; /* ✅ 버튼 간격 조정 */
+  overflow: visible; /* ✅ 버튼이 잘리지 않도록 설정 */
+}
+.answer-actions button {
+  width: 100px; /* ✅ 버튼 크기 살짝 줄임 */
+  height: 40px; /* ✅ 버튼 높이 조정 */
+  background: #636E86;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px; /* ✅ 폰트 크기 조정 */
+  font-weight: normal;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+qj
+/* 저장 버튼에 마진 추가 */
+.answer-actions button:last-child {
+  margin-right: 30px;
+}
+/* 정보 섹션 */
+.info-section {
+  width: calc(917px - 22px);
+  margin: 0 11px;
+  padding: 11px 0;
+  border-top: 1px solid #99B0CB;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.info-label {
+  width: 115px;
+  color: black;
+  font-size: 16px;
+}
+
+.info-value {
+  flex: 1;
+  background: #EDF1F5;
+  padding: 4px 8px;
+}
+
+
+/* 민원인 및 답변 담당자 정보 블록 크기 조정 */
+.infoBox {
+  width: 100%;
+  max-width: 800px; /* 기존보다 늘려서 조정 */
+  padding: 10px;
+  box-sizing: border-box; /* 패딩 포함 */
+  margin-top: 30px;
+  
+}
+
+/* 민원 정보 행 */
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #99B0CB;
+}
+
+.infoLabel {
+  width: 115px;
+  height: 24px;
+  color: black;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+/* 글씨가 잘리지 않도록 자동 줄 바꿈 적용 */
+.infoValue {
+  white-space: normal; /* 텍스트 줄바꿈 가능하도록 설정 */
+  word-break: break-word; /* 긴 단어가 있을 경우 줄바꿈 */
+}
+
+
+
+.listButton {
+  width: 105px;
+  height: 42px;
+  background: var(--AIVLE-02-secondary_navy-navy-04, #2A5C96);
+  border-radius: 3px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  line-height: 42px;
+  margin: 30px -65px 0px auto; /* ✅ 왼쪽 마진 제거 */
+}
+
+.listButton:hover{
+  background-color:#1f4571; 
+}
+/* ai 생성중 버튼 꾸밈 */
+.generate-button {
+  width: 150px;
+  height: 42px;
+  background: linear-gradient(270deg, #2A5C96, #1a365d, #2A5C96);
+  background-size: 200% 100%;
+  box-shadow: 0 0 10px rgba(42, 92, 150, 0.3);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: normal;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  animation: 
+    pulse 2s infinite,
+    gradient 3s linear infinite,
+    glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px rgba(42, 92, 150, 0.3);
+  }
+  to {
+    box-shadow: 0 0 20px rgba(42, 92, 150, 0.6);
+  }
+}
+
+.generate-button:hover {
+  transform: translateY(-1px);
+  animation-play-state: paused;
+  background-position: right center;
+}
+
+.generate-button:disabled {
+  background: #CBD5E0;
+  animation: none;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 저장 버튼에 마진 추가 */
+.answer-actions button:last-child {
+  margin-right: 30px;  /* 오른쪽 마진 추가 */
+}
+
