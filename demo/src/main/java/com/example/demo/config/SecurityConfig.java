@@ -89,9 +89,11 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:5173",
+                "http://localhost:5174",
                 "https://www.officialsos.shop",
+                "https://www.officialsos.store",
                 "https://officialsos.shop",
-                "https://14ff-121-136-132-253.ngrok-free.app"
+                "https://officialsos.store"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
