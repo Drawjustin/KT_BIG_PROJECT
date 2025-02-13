@@ -35,7 +35,7 @@ const ComplaintRatioChart = () => {
 
   // 차트에 사용될 색상 팔레트 정의
   // const COLORS = ["#82ca9d", "#8884d8"];
-  const COLORS = ["#F7A8A8", "#2b6cb0"]; // 악성 민원: 빨강, 기타 민원: 초록
+  const COLORS = ["#F44336", "#2b6cb0"]; // 악성 민원: 빨강, 기타 민원: 초록
 
   // const COLORS = ['#47597E', '#7FB5B5', '#FFE5B4', '#B4D4FF'];
 
@@ -176,7 +176,7 @@ const MonthlyComplaintChart = () => {
         <Line
           type="monotone" // 부드러운 곡선으로 표시
           dataKey="악성 민원"
-          stroke="#F7A8A8" // red 계열
+          stroke="#F44336" // red 계열
           strokeWidth={2} // 선 굵기
           dot={{ r: 5 }} // 데이터 포인트 크기
           activeDot={{ r: 8 }} // 활성화된 데이터 포인트 크기

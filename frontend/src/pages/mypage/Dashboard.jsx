@@ -155,8 +155,8 @@ const ComplaintTableCard = () => {
                 <td style={{ width: "60px" }}>{index + 1}</td>
                 <td>
                   <Link to={`/complaint/write/${item.complaintSeq}`}>
-                    {item.bad ? "⚠️ " : ""}
                     {item.title?.trim() || "제목 없음"}
+                    {item.bad ? "⚠️ " : ""}
                   </Link>
                 </td>
                 <td style={{ width: "100px", color: "#48bb78" }}>답변완료</td>

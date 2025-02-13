@@ -19,9 +19,7 @@ function Footer() {
       <div className={styles.section}>
         <span>현재 버전: v1.0.0</span>
         <span className={styles.separator}>|</span>
-        <span>팀: 사두용미</span>
-        <span className={styles.separator}>|</span>
-        <span>에이블스쿨 6기 2조</span>
+        <span>에이블스쿨 6기 2조 사두용미</span>
       </div>
 
       {/* 저작권 정보 */}

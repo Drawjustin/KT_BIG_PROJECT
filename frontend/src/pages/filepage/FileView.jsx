@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { dataroomApi } from '../../api';
 import styles from './FileView.module.css';
-import { FileText, Download, Eye, EyeOff } from 'lucide-react';
+import { FileText, Eye, EyeOff } from 'lucide-react';
 
 // import axios from 'axios'; // for axios
 
@@ -13,47 +13,6 @@ const FileView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
-
-  const handleDownload = async (filePath) => {
-    try {
-      const response = await fetch(filePath);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', filePath.split('/').pop());
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('파일 다운로드 중 오류 발생:', error);
-      alert('파일 다운로드에 실패했습니다.');
-    }
-  };
-  // // const url = import.meta.env.VITE_API_BASE_URL; // for axios
-  // const handleFileView = async (filePath) => {
-  //   try {
-  //     // API를 통해 파일 다운로드 or 보기 처리
-  //     const response = await dataroomApi.getFile(filePath);
-  //     // 파일 타입에 따른 처리
-  //     if (post.fileType.includes('image')) {
-  //       // 이미지 보기
-  //       window.open(URL.createObjectURL(response));
-  //     } else {
-  //       // 파일 다운로드
-  //       const url = window.URL.createObjectURL(new Blob([response]));
-  //       const link = document.createElement('a');
-  //       link.href = url;
-  //       link.download = filePath.split('/').pop(); // 파일명
-  //       document.body.appendChild(link);
-  //       link.click();
-  //       link.remove();
-  //     }
-  //   } catch (error) {
-  //     console.error('파일 처리 중 오류 발생:', error);
-  //   }
-  // };
 
 
   useEffect(() => {
@@ -158,7 +117,7 @@ const FileView = () => {
               
               <div className={styles.fileInfo}>
                 <span className={styles.fileName}>
-                  {post.fileContent}
+                  {post.fileTitle}
                 </span>
                 <span className={styles.fileDate}>
                   {formatDate(post.updatedAt)}
