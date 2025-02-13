@@ -17,6 +17,10 @@ public class Telecom extends baseEntity {
     @Column(name = "telecom_seq")
     private Long telecomSeq;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_seq")
+    private Department department;
+
     @Lob
     @Column(name = "telecom_content", columnDefinition = "TEXT")
     private String telecomContent;
@@ -33,11 +37,12 @@ public class Telecom extends baseEntity {
 
 
     @Builder
-
-    public Telecom(String telecomContent, String telecomFilePath, Boolean isComplain, Byte telecomCount) {
+    public Telecom(String telecomContent, String telecomFilePath,
+                   Boolean isComplain, Byte telecomCount, Department department) {
         this.telecomContent = telecomContent;
         this.telecomFilePath = telecomFilePath;
         this.isComplain = isComplain;
         this.telecomCount = telecomCount;
+        this.department = department;
     }
 }

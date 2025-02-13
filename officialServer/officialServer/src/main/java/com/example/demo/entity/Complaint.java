@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.Where;
 
 import java.util.List;
 
@@ -16,6 +19,8 @@ import java.util.List;
 @NoArgsConstructor
 //@SQLDelete(sql = "UPDATE complaint SET is_deleted = true WHERE id = ?")
 //@SQLRestriction("is_deleted = false")
+@FilterDef(name = "deletedFilter")
+@Filter(name = "deletedFilter", condition = "is_deleted = false")
 @AllArgsConstructor
 @Table(name = "complaint")
 public class Complaint extends baseEntity {
