@@ -1,0 +1,42 @@
+
+/* 전체 컨테이너 스타일 */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh; /* 화면 높이 채우기 */
+  overflow: hidden; 
+  padding-top: 100px;
+}
+
+/* ✅ 제목 스타일 (네이비 적용) */
+.title {
+  color: #1E1E38; /* 네이비 */
+  text-align: center;
+  font-family: Pretendard, sans-serif;
+  font-size: 38px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 47px; /* 123.684% */
+}
+
+/* ✅ 하단 링크 컨테이너 */
+.links {
+  margin-top: 20px; /* 위쪽 여백 */
+  display: flex;
+  gap: 10px; /* 링크 간 간격 */
+  font-size: 14px;
+}
+
+/* ✅ 개별 링크 스타일 (민트 적용) */
+.links a {
+  color: #2AB3A6; /* 민트 */
+  text-decoration: none; /* 밑줄 제거 */
+  font-weight: 600;
+}
+
+.links a:hover {
+  text-decoration: underline; /* 호버 시 밑줄 */
+  color: #1E897D; /* 더 진한 민트 */
+}

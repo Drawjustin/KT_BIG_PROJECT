@@ -1,0 +1,229 @@
+/* ✅ 전체 레이아웃 */
+.main {
+  flex: 1;
+  padding-top: 5rem;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 80rem; /* 1280px */
+  margin: 0 auto;
+  padding: 0 5rem;
+}
+
+/* ✅ 메인 컨텐츠 정렬 */
+.contentWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 7rem;
+  position: relative;
+  padding-top: 3rem;
+}
+
+/* ✅ 왼쪽 텍스트 섹션 */
+.leftSection {
+  flex: 1;
+  max-width: 32.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3rem;
+}
+
+/* ✅ 배너 스타일 */
+.banner {
+  color: #1E1E38;
+  font-size: clamp(2rem, 3vw, 2.58rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.banner span {
+  color: #2AB3A6;
+}
+
+/* ✅ 검색창 스타일 */
+.searchWrapper {
+  width: 32.5rem;
+}
+
+.searchBar {
+  width: 100%;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  border: 2px solid #2AB3A6;
+  border-radius: 0.9375rem;
+  padding: 0 1.25rem;
+  background-color: white;
+}
+
+.searchInput {
+  flex: 1;
+  height: 100%;
+  font-size: 1.11rem;
+  color: #777777;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.searchInput:focus {
+  background-color: #A3E3DD;
+}
+
+/* 이전 코드는 동일하게 유지하고 아래 부분만 수정 */
+
+/* ✅ 오른쪽 로그인 박스 - 크기 조정 */
+.rightSection {
+  width: 100%;
+  max-width: 37rem; /* ✅ 40rem에서 37.5rem으로 감소 */
+  display: flex;
+  align-items: center;
+  margin-bottom: -45px;
+}
+
+.loginCard {
+  width: 100%;
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #1E897D;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* ✅ 수직 중앙 정렬 */
+  align-items: center; /* ✅ 수평 중앙 정렬 */
+  height: auto;
+  min-height: 13rem;
+}
+
+/* ✅ 배너 스타일 - 두 줄 텍스트 설정 */
+.banner {
+  color: #1E1E38;
+  font-size: clamp(2rem, 3vw, 2.58rem);
+  font-weight: 700;
+  line-height: 1.3; /* ✅ line-height 증가 */
+  word-break: keep-all; /* ✅ 단어 단위로 줄바꿈 */
+  white-space: pre-line; /* ✅ 줄바꿈 허용 */
+}
+
+
+
+/* ✅ 로그인 메시지 간격 조정 */
+.loginHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* ✅ 중앙 정렬 */
+  justify-content: center;
+  text-align: center;
+  width: 100%; /* ✅ 너비 전체 사용 */
+}
+
+/* ✅ 민원 접수 버튼 스타일 수정 */
+.loginButton {
+  margin-top: 2rem; /* ✅ 버튼을 아래로 내리기 */
+  width: 100%;
+  background-color: #2AB3A6; /* ✅ 민트색 유지 */
+  color: white;
+  padding: 1.25rem; /* ✅ 버튼 크기를 키우기 */
+  border-radius: 0.75rem; /* ✅ 둥근 모서리 */
+  margin-bottom: 2rem; /* ✅ 버튼 아래 여백 추가 */
+  font-weight: 600;
+  font-size: 1.2rem; /* ✅ 버튼 글씨 크기 키우기 */
+  font-family: 'Pretendard', sans-serif; /* ✅ Pretendard 폰트 적용 */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: center;
+}
+
+.loginButton:hover {
+  background-color: #1E897D; /* ✅ 버튼 호버 시 어두운 민트 */
+}
+
+/* ✅ 로그인 제목 - 여백 추가 */
+.loginTitle {
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0; /* ✅ 아래 여백 추가 */
+  color: #1E1E38;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+/* ✅ 로그인 링크 - 폰트 크기 증가 */
+.loginLinks {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 1rem; /* ✅ 0.875rem에서 1rem으로 증가 */
+  color: #666;
+  padding: 0 0.9375rem;
+}
+
+.loginLinks button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #666;
+  font-size: inherit;
+  transition: all 0.2s;
+}
+/* ✅ 모든 버튼과 링크에 폰트 적용 */
+button, 
+a, 
+.loginButton, 
+.logoutButton, 
+.myPageButton {
+  font-family: 'Pretendard', sans-serif; /* ✅ 원하는 폰트로 변경 */
+  
+}
+.loginLinks button:hover {
+  color: #1E1E38;
+  text-decoration: underline;
+}
+
+/* ✅ 반응형 유지 */
+@media (max-width: 64rem) {
+  .container {
+    padding: 0 1.25rem;
+  }
+  .contentWrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding-top: 2rem;
+  }
+  .leftSection {
+    gap: 2rem;
+  }
+  .leftSection,
+  .rightSection {
+    max-width: 100%;
+  }
+  .banner {
+    text-align: center;
+  }
+}
+
+@media (max-width: 40rem) {
+  .main {
+    padding-top: 3rem;
+  }
+  .container {
+    padding: 0 1rem;
+  }
+  .contentWrapper {
+    gap: 1.5rem;
+  }
+  .loginCard {
+    padding: 2rem; /* ✅ 모바일에서도 적절한 패딩 유지 */
+  }
+}

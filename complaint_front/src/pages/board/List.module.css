@@ -1,0 +1,176 @@
+.listPageContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  position: relative;
+  background-color: #F7F9FC; /* 밝은 배경 */
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  background-color: #1E1E38; /* 네이비 */
+  padding: 1.2rem;
+  border-radius: 8px;
+}
+
+.headerTitle {
+  font-size: 1.5rem;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+.createButton {
+  padding: 0.6rem 1.2rem;
+  background-color: #2AB3A6; /* 청록 */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.createButton:hover {
+  background-color: #1E897D; /* 진한 청록 */
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+.table a:hover {
+  color: #2AB3A6; /* 청록 포인트 */
+}
+
+.table th,
+.table td {
+  padding: 15px;
+  text-align: center;
+  border-bottom: 1px solid #D1D5DB;
+}
+
+.table thead {
+  background-color: #2AB3A6; /* 청록 */
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background-color: #A3E3DD; /* 연한 민트 */
+}
+
+.searchContainer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.searchForm {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.searchSelect,
+.searchInput {
+  padding: 0.6rem;
+  border: 2px solid #2AB3A6;
+  border-radius: 8px;
+  background-color: white;
+  transition: all 0.3s ease-in-out;
+}
+
+.searchSelect:focus,
+.searchInput:focus {
+  border-color: #1E897D;
+  outline: none;
+  background-color: #A3E3DD;
+}
+
+.searchButton {
+  padding: 0.6rem 1.2rem;
+  background-color: #2AB3A6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  font-weight: bold;
+}
+
+.searchButton:hover {
+  background-color: #1E897D;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  list-style: none;
+  padding: 0;
+}
+
+.pagination li {
+  margin: 0 0.25rem;
+}
+
+.pagination li a {
+  display: block;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #F7F9FC;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.pagination .active a {
+  background-color: #2AB3A6;
+  color: white;
+}
+
+.pagination .disabled a {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .searchContainer {
+      flex-direction: column;
+      gap: 0.5rem;
+  }
+
+  .searchForm {
+      width: 100%;
+      flex-direction: column;
+  }
+
+  .searchSelect,
+  .searchInput,
+  .searchButton {
+      width: 100%;
+  }
+}

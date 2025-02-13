@@ -1,0 +1,122 @@
+.container {
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.titleArea {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1E1E38; /* 네이비 */
+}
+
+/* ✅ 청록 & 네이비 스타일 적용 */
+.complaintBoard {
+  background: #F7F9FC; /* 소프트 그레이 */
+  border-radius: 1rem;
+  padding: 2.5rem;
+  margin-top: 3rem;
+  text-align: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.complaintBoard:hover {
+  transform: translateY(-0.25rem);
+}
+
+/* ✅ 제목 스타일 수정 */
+.complaintTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1E1E38; /* 네이비 */
+  margin-bottom: 1.5rem;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 5px; /* 선과 간격 조정 */
+}
+
+/* ✅ 제목 아래 선 스타일 조정 */
+.complaintTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%; /* 제목의 길이와 동일하도록 조정 */
+  height: 3px; /* 제목 크기에 맞춘 두께 */
+  background-color: #1E1E38; /* 네이비 */
+  border-radius: 2px;
+}
+
+/* ✅ 공무원SOS 텍스트 스타일 변경 */
+.highlight {
+  color: #FFFFFF; /* 흰색 텍스트 */
+  font-weight: 600;
+  background-color: #2AB3A6; /* 민트 */
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  margin: 0 0.25rem;
+  display: inline-block;
+}
+
+/* ✅ 반응형 지원 */
+.featuresGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 768px) {
+  .featuresGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ✅ 카드 디자인 */
+.featureCard {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ✅ 마우스 호버 시 효과 추가 */
+.featureCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  background-color: #F0F4F8; /* 밝은 네이비 톤 */
+}
+
+/* ✅ 아이콘 컬러 변경 (네이비 추가) */
+.iconWrapper {
+  background-color: #A3E3DD; /* 연한 민트 */
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  color: #1E1E38; /* 네이비 */
+}
+
+/* ✅ 카드 타이틀 색상 네이비로 변경 */
+.featureTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1E1E38; /* 네이비 */
+  margin-bottom: 0.5rem;
+}
+
+/* ✅ 설명 텍스트도 네이비 색상 적용 */
+.featureDescription {
+  color: #1E1E38; /* 네이비 */
+  font-size: 0.875rem;
+  line-height: 1.625;
+}
