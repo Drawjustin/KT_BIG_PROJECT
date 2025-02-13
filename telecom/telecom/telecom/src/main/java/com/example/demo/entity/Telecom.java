@@ -19,6 +19,10 @@ public class Telecom extends baseEntity {
     @Column(name = "telecom_seq")
     private Long telecomSeq;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_seq")
+    private Department department;
+
     @Column(name = "telecom_content")
     private String telecomContent;
 

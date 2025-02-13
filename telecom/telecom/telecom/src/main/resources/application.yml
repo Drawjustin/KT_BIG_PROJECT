@@ -4,30 +4,41 @@ spring:
   jpa:
     database: mysql
     hibernate:
-      ddl-auto: update
-    #      naming:
-    #        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+      ddl-auto: none
     show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/officialsos?serverTimezone=Asia/Seoul
-    username: ${MYSQL_ROOT_USERNAME}
-    password: ${MYSQL_ROOT_PASSWORD}
+    url: jdbc:mysql://[MASKED]
+    username: [MASKED]
+    password: [MASKED]
+
+model:
+  text-summary:
+    url: https://[MASKED]/textSummary_by_module
+  department:
+    url: https://[MASKED]/predictDepartment_by_module
+  team:
+    url: https://[MASKED]/predictTeam_by_module
+  predictMalcs_by_module:
+    url: https://[MASKED]/predictMalcs_by_module
+
 twilio:
-  account-sid: ${TWILIO_ACCOUNT_SID}
-  auth-token: ${TWILIO_AUTH_TOKEN}
-  caller-id: ${TWILIO_CALLER_ID}
+  account-sid: [MASKED]
+  auth-token: [MASKED]
+  caller-id: [MASKED]
+  sales-id: [MASKED]
 
 google:
-  project-id: ${GOOGLE_PROJECT_ID}
-  credentials-path: ${GOOGLE_APPLICATION_CREDENTIALS}
+  project-id: [MASKED]
+  credentials-path: [MASKED]
+
 aws:
   credentials:
-    access-key: ${AWS_ACCESS_KEY_ID}
-    secret-key: ${AWS_SECRET_ACCESS_KEY}
+    access-key: [MASKED]
+    secret-key: [MASKED]
   s3:
-    bucket: ${AWS_S3_BUCKET}
+    bucket: [MASKED]
+    region: us-east-1

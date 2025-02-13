@@ -1,0 +1,6 @@
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY build/libs/telecom-0.0.1-SNAPSHOT.jar app.jar
+COPY src/main/resources/ktaivle-449323-2e589bffb918.json /app/ktaivle-449323-2e589bffb918.json
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]

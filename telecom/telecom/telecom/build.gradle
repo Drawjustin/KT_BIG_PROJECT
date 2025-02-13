@@ -63,7 +63,9 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
+//processResources {
+//	from('src/main/resources/ktaivle-449323-2e589bffb918.json')
+//}
 clean {
 	delete file('src/main/generated')
 }

@@ -12,11 +12,14 @@ import java.time.LocalDateTime;
 @Getter
 @MappedSuperclass
 public class baseEntity {
+
     @Column(updatable = false)
     private LocalDateTime createdAt;
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
+    @Column(name = "is_deleted")
     private Boolean isDeleted;
+
     @PrePersist
     public void prePersist() {
         LocalDateTime now = LocalDateTime.now();
