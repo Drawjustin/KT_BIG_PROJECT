@@ -1,0 +1,29 @@
+/* Button.module.css */
+.button {
+  width: 320px;
+  height: 50px;
+  flex-shrink: 0;
+
+  border-radius: 5px;
+  border: 1px solid #2AB3A6; /* 청록색 */
+  background: #2AB3A6;
+
+  color: white;
+  font-size: 16px;
+  font-weight: normal;
+
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover 효과 */
+.button:hover {
+  background-color: #A3E3DD; /* 연한 민트 */
+  color: #1E1E38; /* 네이비 */
+}
+
+/* Active 상태 효과 */
+.button:active {
+  transform: scale(0.96); /* 클릭 시 살짝 눌리는 효과 */
+  background-color: #1E897D; /* 진한 청록 */
+}

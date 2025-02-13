@@ -1,0 +1,154 @@
+/* ✅ 네비게이션 바 전체 스타일 */
+.navbarWrapper {
+  width: 100%;
+  border-bottom: 1px solid #D1D5DB;
+  background: #FFFFFF; /* 배경 흰색 유지 */
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 90px;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #D1D5DB; /* 연한 회색 */
+}
+
+/* ✅ 로고 스타일 */
+.logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1E1E38; /* 네이비 */
+  white-space: nowrap;
+}
+.logoLink:hover{
+  color:#2AB3A6;
+}
+/* ✅ 로고 스타일 */
+.logoLink {
+  text-decoration: none;
+  color: #1E1E38; /* 네이비 */
+
+}
+
+
+/* ✅ 네비게이션 중앙 정렬 */
+.navbarCenter {
+  flex-grow: 1; /* 가변 크기 */
+  display: flex;
+  justify-content: center;
+}
+
+/* ✅ 메뉴 스타일 */
+.menu {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin-left: -1.5rem; 
+}
+
+.menuLink {
+  text-decoration: none;
+  font-size: 1.25rem;
+  color: #1E1E38; /* 네이비 */
+  font-weight: bold;
+  transition: color 0.3s ease-in-out;
+}
+
+/* ✅ 메뉴 hover 효과 */
+.menuLink:hover {
+  color: #2AB3A6; /* 청록 */
+}
+
+/* ✅ 로그인 버튼 컨테이너 */
+.loginButtonContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  white-space: nowrap;
+}
+
+/* ✅ 로그인 & 로그아웃 버튼 스타일 */
+.loginButton,
+.logoutButton {
+  background: none;
+  border: 2px solid #2AB3A6; /* 청록 테두리 */
+  font-size: 1rem;
+  color: #1E1E38; /* 네이비 */
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+/* ✅ 버튼 hover 효과 */
+.loginButton:hover,
+.logoutButton:hover {
+  color: #FFFFFF;
+  background-color: #2AB3A6; /* 청록 */
+}
+
+/* ✅ 반응형 스타일 (태블릿) */
+@media screen and (max-width: 768px) {
+  .navbar {
+    padding: 1rem;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+  }
+  
+  .menu {
+    gap: 1rem;
+  }
+  
+  .menuLink {
+    font-size: 1rem;
+  }
+  
+  .loginButtonContainer {
+    gap: 0.5rem;
+  }
+
+  .loginButton,
+  .logoutButton {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+/* ✅ 매우 작은 화면에서의 처리 (모바일) */
+@media screen and (max-width: 480px) {
+  .navbar {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .navbarCenter {
+    order: 2;
+    margin-top: 10px;
+  }
+
+  .menu {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .loginButtonContainer {
+    order: 3;
+    margin-top: 10px;
+  }
+
+  .menuLink {
+    font-size: 0.9rem;
+  }
+
+  .loginButton,
+  .logoutButton {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
+}

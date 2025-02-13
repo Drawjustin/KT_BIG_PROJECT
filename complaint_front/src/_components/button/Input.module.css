@@ -1,0 +1,63 @@
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+.label {
+  font-size: 14px;
+  color: #1E1E38; /* 네이비 */
+  font-weight: bold;
+}
+
+/* ✅ 입력 필드 스타일 수정 */
+.input {
+  width: 320px;
+  height: 50px;
+  font-size: 18px;
+  flex-shrink: 0;
+
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: 1px solid #8E8E8E; /* 기본 테두리 */
+  
+  color: #1E1E38; /* 네이비 */
+  padding: 10px;
+
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ✅ 포커스 시 청록 테두리 */
+.input:focus {
+  border-color: #2AB3A6; /* 청록 */
+  box-shadow: 0 0 0 3px rgba(42, 179, 166, 0.2);
+}
+
+/* ✅ 호버 시 연한 민트 */
+.input:hover {
+  border-color: #A3E3DD; /* 연한 민트 */
+}
+
+/* ✅ 에러 상태 스타일 유지 */
+.inputError {
+  border-color: #dc3545;
+}
+
+.inputError:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2);
+}
+
+.inputError:hover {
+  border-color: #dc3545;
+}
+
+/* ✅ 에러 메시지 스타일 */
+.errorMessage {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-bottom: 0;
+}
