@@ -1,17 +1,18 @@
 package com.example.demo.entity;
 
+import com.example.demo.entity.baseEntity.baseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
 @Entity
+//@SQLDelete(sql = "UPDATE chat SET is_deleted = true WHERE id = ?")
+//@SQLRestriction("is_deleted = false")
 @Table(name = "chat")
-public class Chat {
+public class Chat extends baseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,27 +36,8 @@ public class Chat {
     private String chatQuestion;
 
     @Column(name = "chat_content", columnDefinition = "TEXT")
+    @Lob
     private String chatContent;
-
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "is_deleted")
-    private Boolean isDeleted;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.isDeleted = false;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 
     @Builder
     public Chat(User user, ChatBox chatBox, String chatFilepath, String chatQuestion, String chatContent) {
@@ -64,7 +46,5 @@ public class Chat {
         this.chatFilepath = chatFilepath;
         this.chatQuestion = chatQuestion;
         this.chatContent = chatContent;
-        this.createdAt = LocalDateTime.now();
-        this.isDeleted = false;
     }
 }

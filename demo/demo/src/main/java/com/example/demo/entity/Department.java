@@ -1,64 +1,40 @@
 package com.example.demo.entity;
 
+import com.example.demo.entity.baseEntity.baseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+//@SQLDelete(sql = "UPDATE department SET is_deleted = true WHERE id = ?")
+//@SQLRestriction("is_deleted = false")
+@Builder
 @Table(name = "department")
-public class Department {
-
+public class Department extends baseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "department_seq")
-    private Long departmentSeq;
+    private Long departmentSeq; // 부서 고유번호
 
-    @Column(name = "department_name", length = 30, nullable = false)
-    private String departmentName;
+    @Column(name = "department_name", nullable = false, length = 50)
+    private String departmentName; // 부서 이름
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(name="department_number",nullable = false, length=30)
+    private String departmentNumber; //부서 전화번호
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "is_deleted")
-    private Boolean isDeleted;
-
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Complaint> complaints = new ArrayList<>();
-
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FileDepartment> fileDepartments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Telecom> telecoms = new ArrayList<>();
-
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Block> blocks = new ArrayList<>();
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.isDeleted = false;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "district_seq", nullable = false)
+    private District district;
 
     @Builder
-    public Department(String departmentName) {
+    public Department(String departmentName, String departmentNumber, District district) {
         this.departmentName = departmentName;
-        this.createdAt = LocalDateTime.now();
-        this.isDeleted = false;
+        this.departmentNumber=departmentNumber;
+        this.district = district;
     }
 }

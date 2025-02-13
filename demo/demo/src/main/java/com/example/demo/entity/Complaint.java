@@ -1,17 +1,28 @@
 package com.example.demo.entity;
 
+import com.example.demo.entity.baseEntity.baseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
 
-import java.time.LocalDateTime;
+import java.util.List;
+
 
 @Getter
 @Entity
+@Builder
 @NoArgsConstructor
+//@SQLDelete(sql = "UPDATE complaint SET is_deleted = true WHERE id = ?")
+//@SQLRestriction("is_deleted = false")
+@AllArgsConstructor
+@FilterDef(name = "deletedFilter")
+@Filter(name = "deletedFilter", condition = "is_deleted = false")
 @Table(name = "complaint")
-public class Complaint {
+public class Complaint extends baseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // Primary Key, AUTO_INCREMENT
@@ -19,62 +30,59 @@ public class Complaint {
     private Long complaintSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_seq", nullable = false)
-    private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_seq", nullable = false)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_seq",nullable = false)
-    private Department department;
+    @JoinColumn(name = "team_seq",nullable = false)
+    private Team team;
+
+    @OneToMany(mappedBy = "complaint", cascade = CascadeType.ALL)
+    private List<ComplaintComment> complaintComment;
 
     @Column(name = "complaint_title", length = 256)
     private String complaintTitle;
 
+    @Column(name = "complaint_count")
+    private Byte complaintCount;
+
     @Column(name = "complaint_content", columnDefinition = "TEXT")
     private String complaintContent;
+
+    @Column(name = "complaint_summary")
+    private String complaintSummary;
+
+    @Column(name = "complaint_combined")
+    private String complaintCombined;
 
     @Column(name = "complaint_file_path", length = 256)
     private String complaintFilePath;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt; // 생성 시간
+    @Column(name="is_answered")
+    private Boolean isAnswered;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt; // 수정 시간
-
-    @Column(name = "is_deleted", nullable = false)
-    private Boolean isDeleted = false;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();  // 엔티티가 생성될 때 createdAt 설정
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();  // 엔티티가 업데이트될 때 updatedAt 설정
-    }
+    @Column(name="is_bad")
+    private Boolean isBad;
 
     @Builder
-    public Complaint(User user, Member member, Department department, String complaintTitle, String complaintContent, String complaintFilePath) {
-        this.user = user;
-        this.member = member; // Member 관계 설정
-        this.department = department;
+    public Complaint(Member member, Team team, String complaintTitle, String complaintContent, String complaintFilePath,Boolean isAnswered,Boolean isBad) {
+        this.member = member;
+        this.team = team;
         this.complaintTitle = complaintTitle;
         this.complaintContent = complaintContent;
         this.complaintFilePath = complaintFilePath;
-        this.createdAt = LocalDateTime.now();
-        this.isDeleted = false;
+        this.isAnswered=isAnswered;
+        this.isBad=isBad;
     }
 
-    // 업데이트 메서드 (필드만 업데이트)
-    public void updateComplaint(String complaintTitle, String complaintContent, String complaintFilePath) {
-        this.complaintTitle = complaintTitle;
-        this.complaintContent = complaintContent;
-        this.complaintFilePath = complaintFilePath;
-        this.updatedAt = LocalDateTime.now();
+    public void updateComplaintFile(String title, String content, String newFilePath) {
+        complaintTitle = title;
+        complaintContent = content;
+        complaintFilePath = newFilePath;
     }
+    public void updateComplaint(String title, String content) {
+        complaintTitle = title;
+        complaintContent = content;
+    }
+
 }

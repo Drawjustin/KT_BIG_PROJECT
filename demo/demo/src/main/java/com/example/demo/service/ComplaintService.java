@@ -1,80 +1,373 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Complaint;
-import com.example.demo.entity.User;
-import com.example.demo.repository.ComplaintRepository;
-import com.example.demo.repository.UserRepository;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.example.demo.config.RestTemplateConfig;
+import com.example.demo.config.S3Config;
+import com.example.demo.dto.*;
+import com.example.demo.dto.ai.*;
+import com.example.demo.entity.*;
+import com.example.demo.exception.RestApiException;
+import com.example.demo.repository.*;
+import com.example.demo.utils.ExceptionHandlerUtil;
 import jakarta.transaction.Transactional;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static com.example.demo.exception.ErrorCodeCustom.*;
+
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class ComplaintService {
 
-    public final ComplaintRepository complaintRepository;
-    private final UserRepository userRepository;
+    private final ComplaintRepository complaintRepository;
+    private final MemberRepository memberRepository;
+    private final TeamRepository teamRepository;
+    private final RestTemplateConfig restTemplateConfig;
+    private final DepartmentRepository departmentRepository;
+    private final AmazonS3 amazonS3;
+    private final DistrictRepository districtRepository;
+    @Value("${aws.s3.directory}")
+    private String directory;
 
-    public ComplaintService(ComplaintRepository complaintRepository, UserRepository userRepository) {
-        this.complaintRepository = complaintRepository;
-        this.userRepository = userRepository;
+    @Value("${aws.s3.bucket}")
+    private String bucket;
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class OtherCreateRequestDTO {
+        private Team team;
+        private Byte Count;
+        private Boolean isBad;
+        private TextSummaryResponse textSummaryResponse;
+        private String filePath;
+        private Boolean isAnswered;
+
     }
-
     // 민원 등록
     @Transactional
-    public Complaint complaintCreate(Long userSeq, String title, String content, MultipartFile file) throws IOException {
-        // 새로운 Complaint 객체를 Builder 패턴으로 생성
-        User user = userRepository.findById(userSeq)
-                .orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다: " + userSeq));
+    public ComplaintCreateResponseDTO createComplaint(CustomUserDetails userDetails, ComplaintCreateRequestDTO request) {
+        // 민원 요약
+        TextSummaryResponse textSummaryResponse = getTextSummary(request.getContent());
 
-        Complaint complaint = Complaint.builder()
-                .user(user) // User 엔티티의 참조 (필요시 수정)
-                .complaintTitle(title)
-                .complaintContent(content)
-                .complaintFilePath(file != null && !file.isEmpty() ? saveFile(file) : null)
-                .build();
+        System.out.println("textSummaryResponse = " + textSummaryResponse);
 
-        return complaintRepository.save(complaint);
-    }
+        // 부서 분류
+        String department = predictDepartment(textSummaryResponse.getCombined()).replace("\"", "");
+        System.out.println("department = " + department);
 
-    // 민원 수정
-    @Transactional
-    public Complaint complaintUpdate(Long id, String title, String content, MultipartFile file) throws IOException {
-        // 기존 Complaint 객체 조회
-        Complaint complaint = complaintRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("해당 ID의 민원을 찾을 수 없습니다: " + id));
+        // 팀 분류
+        PredictTeamResponse predictTeamResponse = predictTeam(department, textSummaryResponse.getCombined());
 
-        // 업데이트 메서드 호출
-        complaint.updateComplaint(
-                title,
-                content,
-                file != null && !file.isEmpty() ? saveFile(file) : complaint.getComplaintFilePath()
+        System.out.println("userDetails.getMember(): " + userDetails.getMember());
+
+        Optional<Member> byId = memberRepository.findById(userDetails.getMember().getMemberSeq());
+        System.out.println("byId present?: " + byId.isPresent());
+
+        Optional<District> byDistrictName = districtRepository.findByDistrictName(predictTeamResponse.get구분());
+        System.out.println("구분: " + predictTeamResponse.get구분());
+        System.out.println("byDistrictName present?: " + byDistrictName.isPresent());
+
+// 이 부분에서 에러가 날 가능성이 높음 - byDistrictName이 비어있는데 get() 호출
+        Optional<Department> byDepartmentNameAndDistrictSeq = departmentRepository.findByDepartmentNameAndDistrictSeq(
+                department,
+                byDistrictName.get().getDistrictSeq()  // 여기서 NoSuchElementException 발생 가능
         );
 
-        return complaintRepository.save(complaint);
-    }
+        Optional<Team> byTeam = teamRepository.findByTeamNameAndDepartmentDepartmentSeq(
+                predictTeamResponse.get팀(),
+                byDepartmentNameAndDistrictSeq.get().getDepartmentSeq()
+        );
+        // 악성 민원 판단
+        Integer i = predictMalcs(new MalcsRequest(textSummaryResponse.getSummary()));
+        boolean isBad = i == 1;
 
-    // 파일 저장
-    private String saveFile(MultipartFile file) throws IOException {
-        String fileName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
-        String uploadDir = "./uploads"; // 상대 경로
-        Path filePath = Paths.get(uploadDir, fileName);
+        // 반복 민원 판단
+        ArrayList<PastComplaint> pastComplaints = new ArrayList<>();
+        List<String> recentComplaintSummariesByMemberSeq = complaintRepository.findRecentComplaintSummariesByMemberSeq(userDetails.getMember().getMemberSeq(), LocalDateTime.now().minusDays(10));
+        for (String summary : recentComplaintSummariesByMemberSeq) {
+            pastComplaints.add(new PastComplaint(summary));
+        }
+        int repeatCount = !pastComplaints.isEmpty() ? getRepeatCount(textSummaryResponse.getSummary(), pastComplaints) : 0;
 
-        // 디렉토리 존재 여부 확인 및 생성
-        if (!Files.exists(filePath.getParent())) {
-            Files.createDirectories(filePath.getParent());
+        boolean isAnswered = false;
+        if(repeatCount >= 3){
+            isAnswered = true;
+            isBad = true;
+        }
+        String filePath = request.getFile() != null ? saveFile(request.getFile()) : null;
+
+        OtherCreateRequestDTO otherCreateRequestDTO = new OtherCreateRequestDTO(byTeam.get(), (byte) repeatCount, isBad, textSummaryResponse,filePath,isAnswered);
+        Complaint complaint = buildComplaint(userDetails, request, otherCreateRequestDTO);
+
+        if(repeatCount >= 3) {
+            complaint.getComplaintComment().add(
+                    new ComplaintComment(
+                            complaint,
+                            "동일한 내용으로 이미 답변이 완료된 민원입니다. 기존에 제공해 드린 답변을 참고해 주시기 바랍니다. 추가 문의사항이 있으시다면 새로운 내용으로 다시 접수해 주시면 성심성의껏 답변 드리겠습니다."
+                    )
+            );
         }
 
-        // 파일 저장
-        file.transferTo(filePath.toFile());
-        return filePath.toString();
+        return saveAndCreateResponse(complaint);
+    }
+    // 민원 업데이트
+    @Transactional
+    public String updateComplaint(CustomUserDetails userDetails, Long id, ComplaintUpdateRequestDTO request) {
+        Complaint complaint = findComplaintOrThrow(id);
+        if(complaint.getMember().getMemberSeq() != userDetails.getMember().getMemberSeq())
+            return "수정에 실패했습니다.";
+        updateComplaintDetails(complaint, request);
+        return "수정이 잘 되었습니다";
+    }
+    // 민원 삭제
+    @Transactional
+    public void deleteComplaint(CustomUserDetails userDetails, Long id) {
+        Complaint complaint = complaintRepository.findById(id)
+                .orElseThrow(() -> new RestApiException(NO_COMPLAINT));
+
+        if(complaint.getMember().getMemberSeq() != userDetails.getMember().getMemberSeq())
+            return;
+        complaint.markAsDeleted();
     }
 
     // 민원 조회 (단건)
+    @Transactional
+    public ComplaintResponseDTO findComplaintById(Long id) {
+        return complaintRepository.getComplaintById(id);
+    }
+
+    // 민원 페이지 조회 (여러건)
+    @Transactional
+    public Page<ComplaintResponseDTO> findComplaintsByConditions(ComplaintSearchCondition condition, Pageable pageable){
+        PageRequest page = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+        return complaintRepository.getComplaints(condition,page);
+    }
 
 
+    private Complaint buildComplaint(CustomUserDetails memberDetails, ComplaintCreateRequestDTO request, OtherCreateRequestDTO otherCreateRequestDTO) {
+        return Complaint.builder()
+                .member(memberDetails.getMember())//멤버넣고
+                .team(otherCreateRequestDTO.getTeam())//ai팀찾기
+                .complaintComment(new ArrayList<>())
+                .complaintTitle(request.getTitle())
+                .complaintSummary(otherCreateRequestDTO.textSummaryResponse.getSummary()) // ai민원ㅇ요약
+                .complaintCombined(otherCreateRequestDTO.textSummaryResponse.getCombined()) // ai민원요약2
+                .isBad(otherCreateRequestDTO.getIsBad())//ai악성민원여부 확인
+                .complaintCount(otherCreateRequestDTO.getCount()) // ai 반복민원갯수 판단
+                .isAnswered(otherCreateRequestDTO.getIsAnswered())
+                .complaintContent(request.getContent())
+                .complaintFilePath(otherCreateRequestDTO.getFilePath()) // s3불러오기
+                .build();
+    }
+
+    public PredictTeamResponse predictTeam(String department, String text) {
+        try {
+            // Request body 생성
+            PredictTeamRequest request = new PredictTeamRequest(department, text);
+
+            // HTTP 헤더 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // HTTP 엔티티 생성
+            HttpEntity<PredictTeamRequest> entity = new HttpEntity<>(request, headers);
+
+            // API 호출
+            ResponseEntity<PredictTeamResponse> response = restTemplateConfig.restTemplate().exchange(
+                    restTemplateConfig.getPredictTeamUrl(),
+                    HttpMethod.POST,
+                    entity,
+                    PredictTeamResponse.class
+            );
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                return response.getBody();
+            } else {
+                throw new RuntimeException("Failed to predict team");
+            }
+        } catch (RestClientException e) {
+            throw new RuntimeException("Failed to call predict team API", e);
+        }
+    }
+    public TextSummaryResponse getTextSummary(String text) {
+        try {
+            TextSummaryRequest textSummaryRequest = new TextSummaryRequest(text);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<TextSummaryRequest> entity = new HttpEntity<>(textSummaryRequest, headers);
+
+            ResponseEntity<TextSummaryResponse> response = restTemplateConfig.restTemplate().exchange(
+                    restTemplateConfig.getGetTextSummaryUrl(),
+                    HttpMethod.POST,
+                    entity,
+                    TextSummaryResponse.class
+            );
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                return response.getBody();
+            } else {
+                throw new RuntimeException("Failed to get text summary");
+            }
+        } catch (RestClientException e) {
+            throw new RuntimeException("Failed to call text summary API", e);
+        }
+    }
+    public String predictDepartment(String text) {
+        try {
+            DepartmentRequest request = new DepartmentRequest(text);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<DepartmentRequest> entity = new HttpEntity<>(request, headers);
+
+            ResponseEntity<String> response = restTemplateConfig.restTemplate().exchange(
+                    restTemplateConfig.getPredictDepartmentUrl(),
+                    HttpMethod.POST,
+                    entity,
+                    String.class
+            );
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                return response.getBody();
+            } else {
+                throw new RuntimeException("Failed to predict department");
+            }
+        } catch (RestClientException e) {
+            throw new RuntimeException("Failed to call predict department API", e);
+        }
+    }
+    public Integer getRepeatCount(String text, List<PastComplaint> pastComplaints) {
+        try {
+            RepeatCountRequest request = new RepeatCountRequest(text, pastComplaints);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<RepeatCountRequest> entity = new HttpEntity<>(request, headers);
+
+            ResponseEntity<Integer> response = restTemplateConfig.restTemplate().exchange(
+                    restTemplateConfig.getRepeatCountUrl(),
+                    HttpMethod.POST,
+                    entity,
+                    Integer.class
+            );
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                return response.getBody();
+            } else {
+                throw new RuntimeException("Failed to get repeat count");
+            }
+        } catch (RestClientException e) {
+            throw new RuntimeException("Failed to call repeat count API", e);
+        }
+    }
+    public Integer predictMalcs(MalcsRequest summary) {
+        try {
+            MalcsRequest request = new MalcsRequest(summary.getText());
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<MalcsRequest> entity = new HttpEntity<>(request, headers);
+
+            ResponseEntity<Integer> response = restTemplateConfig.restTemplate().exchange(
+                    restTemplateConfig.getPredictMalcsUrl(),
+                    HttpMethod.POST,
+                    entity,
+                    Integer.class
+            );
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                return response.getBody();
+            } else {
+                throw new RuntimeException("Failed to predict malcs");
+            }
+        } catch (RestClientException e) {
+            throw new RuntimeException("Failed to call predict malcs API", e);
+        }
+    }
+    private Member findMemberOrThrow(Long memberSeq) {
+        return memberRepository.findById(memberSeq)
+                .orElseThrow(() -> new RestApiException(NO_MEMBER));
+    }
+
+    private Team findTeamOrThrow(Long teamSeq) {
+        return teamRepository.findById(teamSeq)
+                .orElseThrow(() -> new RestApiException(NO_DEPARTMENT));
+    }
+
+    private ComplaintCreateResponseDTO saveAndCreateResponse(Complaint complaint) {
+        Long complaintSeq = complaintRepository.save(complaint).getComplaintSeq();
+
+        return ComplaintCreateResponseDTO.builder()
+                .complaintSeq(complaintSeq)
+                .build();
+    }
+
+    public String saveFile(MultipartFile file) {
+        return ExceptionHandlerUtil.executeWithIOException(
+                () -> saveAWSFile(file),
+                new RestApiException(FAIL_SAVED_FILE)
+        );
+    }
+
+    private String saveAWSFile(MultipartFile file) throws IOException {
+        String originalFilename = file.getOriginalFilename();
+        String uniqueFileName = generateUniqueFileName(originalFilename);
+        String s3Key = directory + "/" + uniqueFileName;
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(file.getContentType());
+        metadata.setContentLength(file.getSize());
+
+        amazonS3.putObject(bucket, s3Key, file.getInputStream(), metadata);
+
+        return amazonS3.getUrl(bucket, s3Key).toString();
+    }
+
+    private Complaint findComplaintOrThrow(Long id) {
+        return complaintRepository.findById(id)
+                .orElseThrow(() -> new RestApiException(NO_COMPLAINT));
+    }
+
+
+
+    private void updateComplaintDetails(Complaint complaint, ComplaintUpdateRequestDTO request) {
+
+
+        if(request.getFile()!=null) {
+            complaint.updateComplaintFile(
+                    request.getTitle(),
+                    request.getContent(),
+                    saveFile(request.getFile())
+            );
+        }
+        else{
+            complaint.updateComplaint(
+                    request.getTitle(),
+                    request.getContent()
+            );
+        }
+    }
+
+    private String generateUniqueFileName(String originalFilename) {
+        String uuid = UUID.randomUUID().toString();
+        String extension = StringUtils.getFilenameExtension(originalFilename);
+        return uuid + (extension != null ? "." + extension : "");
+    }
 }

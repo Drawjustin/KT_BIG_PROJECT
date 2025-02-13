@@ -1,17 +1,18 @@
 package com.example.demo.entity;
 
+import com.example.demo.entity.baseEntity.baseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
 @Entity
+//@SQLDelete(sql = "UPDATE complaint_comment SET is_deleted = true WHERE id = ?")
+//@SQLRestriction("is_deleted = false")
 @Table(name = "complaint_comment")
-public class ComplaintComment {
+public class ComplaintComment extends baseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,36 +27,10 @@ public class ComplaintComment {
     @Column(name = "complaint_comment_content", columnDefinition = "TEXT", nullable = false)
     private String complaintCommentContent;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "is_deleted")
-    private Boolean isDeleted;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.isDeleted = false;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
     @Builder
     public ComplaintComment(Complaint complaint, String complaintCommentContent) {
         this.complaint = complaint;
         this.complaintCommentContent = complaintCommentContent;
-        this.createdAt = LocalDateTime.now();
-        this.isDeleted = false;
-    }
-    public void updateComment(String commentContent) {
-        this.complaintCommentContent = commentContent;
-        this.updatedAt = LocalDateTime.now();
     }
 
 }
